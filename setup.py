@@ -83,5 +83,10 @@ setup(
         'Programming Language :: Python',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
+    entry_points={
+        'invenio.config': [
+            "demosite = invenio_demosite.config"
+        ]
+    },
     test_suite='invenio_demosite.testsuite.suite'
 )
