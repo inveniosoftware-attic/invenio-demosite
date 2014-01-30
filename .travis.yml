@@ -35,23 +35,20 @@ install:
   - "sudo a2enmod actions"
   - "sudo a2enmod rewrite"
   - "sudo mkdir /etc/apache2/ssl"
+  - "mkdir -p /home/travis/.virtualenvs/invenio/var/tmp/"
   - "sudo /usr/sbin/make-ssl-cert /usr/share/ssl-cert/ssleay.cnf /etc/apache2/ssl/apache.pem"
-  - sudo pip install --upgrade pip
-  - sudo pip install --upgrade setuptools
-  - sudo pip install --upgrade distribute
-  - sudo pip install --upgrade virtualenvwrapper
+  - "travis_retry sudo pip install --upgrade virtualenvwrapper"
   - ". `which virtualenvwrapper.sh`"
-  - mkvirtualenv invenio
-  - workon invenio
-  - "pip install . --process-dependency-links --allow-all-external"
-#  - "pybabel compile -f -d invenio/base/translations/"
-  - inveniomanage config create secret-key
-  - inveniomanage config set CFG_EMAIL_BACKEND flask.ext.email.backends.console.Mail
-  - inveniomanage config set CFG_BIBSCHED_PROCESS_USER `whoami`
-  - inveniomanage config set PACKAGES "['invenio_demosite', 'invenio.modules.*']"
+  - "mkvirtualenv invenio"
+  - "workon invenio"
+  - "travis_retry pip install nose"
+  - "travis_retry pip install . --process-dependency-links --allow-all-external"
+  - "inveniomanage config create secret-key"
+  - "inveniomanage config set CFG_EMAIL_BACKEND flask.ext.email.backends.console.Mail"
+  - "inveniomanage config set CFG_BIBSCHED_PROCESS_USER `whoami`"
 
 before_script:
-#  - "inveniomanage apache create-config"
+  - "inveniomanage apache create-config"
 #  - "sudo ln -s $WORKON_HOME/invenio/etc/apache/invenio-apache-vhost.conf /etc/apache2/sites-available/invenio"
 #  - "sudo ln -s $WORKON_HOME/invenio/etc/apache/invenio-apache-vhost-ssl.conf /etc/apache2/sites-available/invenio-ssl"
 #  - "sudo /usr/sbin/a2dissite default || echo ':('"
