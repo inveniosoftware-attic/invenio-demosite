@@ -26,14 +26,14 @@ import sys
 import datetime
 import time
 
-from invenio.config import \
-     CFG_SITE_URL, \
-     CFG_SITE_ADMIN_EMAIL, \
-     CFG_SITE_RECORD
-from invenio.legacy.dbquery import run_sql
+from invenio.base.globals import cfg
+from invenio.base.wrappers import lazy_import
+
 from invenio.testsuite import make_test_suite, run_test_suite, \
                               test_web_page_content, merge_error_messages, \
                               InvenioTestCase
+
+run_sql = lazy_import('invenio.legacy.dbquery:run_sql')
 
 
 class WebAlertWebPagesAvailabilityTest(InvenioTestCase):
@@ -42,7 +42,7 @@ class WebAlertWebPagesAvailabilityTest(InvenioTestCase):
     def test_your_alerts_pages_availability(self):
         """webalert - availability of Your Alerts pages"""
 
-        baseurl = CFG_SITE_URL + '/youralerts/'
+        baseurl = cfg['CFG_SITE_URL'] + '/youralerts/'
 
         _exports = ['', 'display', 'input', 'modify', 'list', 'add',
                     'update', 'remove']
@@ -60,7 +60,7 @@ class WebAlertHTMLToTextTest(InvenioTestCase):
 
     def test_your_alerts_pages_availability(self):
         """webalert - HTML to text conversion"""
-        from invenio.legacy.webalert.htmlalert import get_as_text
+        get_as_text = lazy_import('invenio.legacy.webalert.htmlparser:get_as_text')
 
         out = get_as_text(5)
         self.assertIn("High energy cosmic rays striking atoms at the top of the atmosphere give the rise to showers of particles striking the Earth's surface", out)
@@ -81,8 +81,10 @@ class WebAlertFilteringRestrictedRecords(InvenioTestCase):
         """
         webalert - prepare test alerts
         """
-        from invenio import alert_engine
-        from invenio.legacy.search_engine import get_creation_date
+        CFG_WEBALERT_DEBUG_LEVEL = lazy_import('invenio.legacy.webalert.alert_engine_config:CFG_WEBALERT_DEBUG_LEVEL')
+        alert_engine = lazy_import('invenio.legacy.webalert:alert_engine')
+
+        get_creation_date = lazy_import('invenio.legacy.search_engine:get_creation_date')
 
         # TODO: test alerts for baskets too
         self.added_query_ids = []
@@ -100,7 +102,7 @@ class WebAlertFilteringRestrictedRecords(InvenioTestCase):
                                    'user_query_basket_params': (6, 0, 'day', 'Juliet alert 1', 'y', '',)},
                       'mailing list 1': {'query_params': ('r', 'c=Theses&c=Poetry',),
                                          'user_query_params': (6,),
-                                         'user_query_basket_params': (6, 0, 'day', 'Mailing list alert 1', 'y', CFG_SITE_ADMIN_EMAIL,)},
+                                         'user_query_basket_params': (6, 0, 'day', 'Mailing list alert 1', 'y', cfg['CFG_SITE_ADMIN_EMAIL'],)},
                       'juliet 2': {'query_params': ('r', 'c=Theses',),
                                    'user_query_params': (6,),
                                    'user_query_basket_params': (6, 0, 'day', 'Juliet alert 2', 'y', '',)},
@@ -118,8 +120,8 @@ class WebAlertFilteringRestrictedRecords(InvenioTestCase):
         alert_date = datetime.datetime(*(time.strptime(get_creation_date(41, fmt="%Y-%m-%d"),
                                                        '%Y-%m-%d')[:6])).date() + datetime.timedelta(days=1)
         # Prevent emails to be sent, raise verbosity:
-        previous_cfg_webalert_debug_level = alert_engine.CFG_WEBALERT_DEBUG_LEVEL
-        alert_engine.CFG_WEBALERT_DEBUG_LEVEL = 3
+        previous_cfg_webalert_debug_level = CFG_WEBALERT_DEBUG_LEVEL
+        CFG_WEBALERT_DEBUG_LEVEL = 3
         # Re-route standard output:
         previous_stdout = sys.stdout # Re-route standard output
         sys.stdout = alert_output = StringIO()
@@ -127,7 +129,7 @@ class WebAlertFilteringRestrictedRecords(InvenioTestCase):
         alert_engine.run_alerts(date=alert_date)
         # Restore standard output and alert debug level
         sys.stdout = previous_stdout
-        alert_engine.CFG_WEBALERT_DEBUG_LEVEL = previous_cfg_webalert_debug_level
+        CFG_WEBALERT_DEBUG_LEVEL = previous_cfg_webalert_debug_level
 
         # Remove test alerts
         for query_id in self.added_query_ids:
@@ -146,15 +148,15 @@ class WebAlertFilteringRestrictedRecords(InvenioTestCase):
     def test_alert_theses_and_poems_for_juliet(self):
         """webalert - Juliet does not get Theses in alert"""
         self.assert_('-> these records have been filtered out, as user id 6 did not have access:\n[35, 36, 37, 38, 39, 40, 41, 42' in self.alerts['Juliet alert 1'])
-        self.assert_(CFG_SITE_RECORD + '/35' not in self.alerts['Juliet alert 1'])
-        self.assert_(CFG_SITE_RECORD + '/41' not in self.alerts['Juliet alert 1'])
-        self.assert_(CFG_SITE_RECORD + '/75' in self.alerts['Juliet alert 1'])
+        self.assert_(cfg['CFG_SITE_RECORD'] + '/35' not in self.alerts['Juliet alert 1'])
+        self.assert_(cfg['CFG_SITE_RECORD'] + '/41' not in self.alerts['Juliet alert 1'])
+        self.assert_(cfg['CFG_SITE_RECORD'] + '/75' in self.alerts['Juliet alert 1'])
 
     def test_alert_theses_and_poems_for_romeo(self):
         """webalert - Romeo gets Theses in alert"""
-        self.assert_(CFG_SITE_RECORD + '/35' in self.alerts['Romeo alert 1'])
-        self.assert_(CFG_SITE_RECORD + '/41' in self.alerts['Romeo alert 1'])
-        self.assert_(CFG_SITE_RECORD + '/75' in self.alerts['Romeo alert 1'])
+        self.assert_(cfg['CFG_SITE_RECORD'] + '/35' in self.alerts['Romeo alert 1'])
+        self.assert_(cfg['CFG_SITE_RECORD'] + '/41' in self.alerts['Romeo alert 1'])
+        self.assert_(cfg['CFG_SITE_RECORD'] + '/75' in self.alerts['Romeo alert 1'])
 
     def test_alert_theses_for_juliet(self):
         """webalert - Juliet does not receive empty Theses alert"""
@@ -163,9 +165,9 @@ class WebAlertFilteringRestrictedRecords(InvenioTestCase):
     def test_alert_theses_and_poems_for_mailinglist(self):
         """webalert - Mailing list gets Theses in alert"""
         self.assert_('-> these records have been filtered out' not in self.alerts['Mailing list alert 1'])
-        self.assert_(CFG_SITE_RECORD + '/35' in self.alerts['Mailing list alert 1'])
-        self.assert_(CFG_SITE_RECORD + '/41' in self.alerts['Mailing list alert 1'])
-        self.assert_(CFG_SITE_RECORD + '/75' in self.alerts['Mailing list alert 1'])
+        self.assert_(cfg['CFG_SITE_RECORD'] + '/35' in self.alerts['Mailing list alert 1'])
+        self.assert_(cfg['CFG_SITE_RECORD'] + '/41' in self.alerts['Mailing list alert 1'])
+        self.assert_(cfg['CFG_SITE_RECORD'] + '/75' in self.alerts['Mailing list alert 1'])
 
 TEST_SUITE = make_test_suite(WebAlertWebPagesAvailabilityTest,
                              WebAlertHTMLToTextTest,

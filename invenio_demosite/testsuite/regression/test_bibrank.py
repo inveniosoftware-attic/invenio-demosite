@@ -21,11 +21,14 @@
 
 __revision__ = "$Id$"
 
-from invenio.config import CFG_SITE_URL, CFG_SITE_RECORD
-from invenio.legacy.dbquery import run_sql
+from invenio.base.globals import cfg
+from invenio.base.wrappers import lazy_import
 from invenio.testsuite import make_test_suite, run_test_suite, \
                               test_web_page_content, merge_error_messages, \
                               InvenioTestCase, nottest
+
+run_sql = lazy_import('invenio.legacy.dbquery:run_sql')
+
 
 class BibRankWebPagesAvailabilityTest(InvenioTestCase):
     """Check BibRank web pages whether they are up or not."""
@@ -33,7 +36,7 @@ class BibRankWebPagesAvailabilityTest(InvenioTestCase):
     def test_rank_by_word_similarity_pages_availability(self):
         """bibrank - availability of ranking search results pages"""
 
-        baseurl = CFG_SITE_URL + '/search'
+        baseurl = cfg['CFG_SITE_URL'] + '/search'
 
         _exports = ['?p=ellis&r=wrd']
 
@@ -47,7 +50,7 @@ class BibRankWebPagesAvailabilityTest(InvenioTestCase):
     def test_similar_records_pages_availability(self):
         """bibrank - availability of similar records results pages"""
 
-        baseurl = CFG_SITE_URL + '/search'
+        baseurl = cfg['CFG_SITE_URL'] + '/search'
 
         _exports = ['?p=recid%3A18&rm=wrd']
 
@@ -64,10 +67,10 @@ class BibRankIntlMethodNames(InvenioTestCase):
     def test_i18n_ranking_method_names(self):
         """bibrank - I18N ranking method names"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/collection/Articles%20%26%20Preprints?as=1',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/collection/Articles%20%26%20Preprints?as=1',
                                                expected_text="times cited"))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/collection/Articles%20%26%20Preprints?as=1',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/collection/Articles%20%26%20Preprints?as=1',
                                                expected_text="journal impact factor"))
 
 class BibRankWordSimilarityRankingTest(InvenioTestCase):
@@ -76,13 +79,13 @@ class BibRankWordSimilarityRankingTest(InvenioTestCase):
     def test_search_results_ranked_by_similarity(self):
         """bibrank - search results ranked by word similarity"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=ellis&rm=wrd&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=ellis&rm=wrd&of=id',
                                                expected_text="[8, 10, 11, 12, 47, 17, 13, 16, 9, 14, 18, 15]"))
 
     def test_similar_records_link(self):
         """bibrank - 'Similar records' link"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=recid%3A77&rm=wrd&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=recid%3A77&rm=wrd&of=id',
                                                expected_text="[96, 95, 85, 77]"))
 
 class BibRankCitationRankingTest(InvenioTestCase):
@@ -91,7 +94,7 @@ class BibRankCitationRankingTest(InvenioTestCase):
     def test_search_results_ranked_by_citations(self):
         """bibrank - search results ranked by number of citations"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?cc=Articles+%26+Preprints&p=Klebanov&rm=citation&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?cc=Articles+%26+Preprints&p=Klebanov&rm=citation&of=id',
                                                username="admin",
                                                expected_text="[85, 77, 84]"))
 
@@ -100,14 +103,14 @@ class BibRankCitationRankingTest(InvenioTestCase):
         """bibrank - search results ranked by number of citations, verbose output"""
         #FIXME verbose is not supported in jinja2 templates
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?cc=Articles+%26+Preprints&p=Klebanov&rm=citation&verbose=2',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?cc=Articles+%26+Preprints&p=Klebanov&rm=citation&verbose=2',
                                                username="admin",
                                                expected_text="find_citations retlist [[85, 0], [77, 2], [84, 3]]"))
 
     def test_detailed_record_citations_tab(self):
         """bibrank - detailed record, citations tab"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/'+ CFG_SITE_RECORD +'/79/citations',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/'+ cfg['CFG_SITE_RECORD'] +'/79/citations',
                                                expected_text=["Cited by: 1 records",
                                                               "Co-cited with: 2 records"]))
 

@@ -21,7 +21,7 @@
 
 __revision__ = "$Id$"
 
-from invenio.config import CFG_SITE_URL
+from invenio.base.globals import cfg
 from invenio.testsuite import make_test_suite, run_test_suite, \
                               test_web_page_content, merge_error_messages, \
                               InvenioTestCase
@@ -33,7 +33,7 @@ class WebSearchAdminWebPagesAvailabilityTest(InvenioTestCase):
     def test_websearch_admin_interface_pages_availability(self):
         """websearchadmin - availability of WebSearch Admin interface pages"""
 
-        baseurl = CFG_SITE_URL + '/admin/websearch/websearchadmin.py'
+        baseurl = cfg['CFG_SITE_URL'] + '/admin/websearch/websearchadmin.py'
 
         _exports = ['',
                     '?mtype=perform_showall',
@@ -60,7 +60,7 @@ class WebSearchAdminWebPagesAvailabilityTest(InvenioTestCase):
     def test_websearch_admin_guide_availability(self):
         """websearchadmin - availability of WebSearch Admin guide pages"""
 
-        url = CFG_SITE_URL + '/help/admin/websearch-admin-guide'
+        url = cfg['CFG_SITE_URL'] + '/help/admin/websearch-admin-guide'
         error_messages = test_web_page_content(url,
                                                expected_text="WebSearch Admin Guide")
         if error_messages:

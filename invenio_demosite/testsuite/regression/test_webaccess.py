@@ -28,12 +28,14 @@ import cgi
 from urlparse import urlparse, urlunparse
 from urllib import urlopen, urlencode
 
-from invenio.config import CFG_SITE_URL, CFG_SITE_SECURE_URL, CFG_DEVEL_SITE
+from invenio.base.globals import cfg
 from invenio.testsuite import make_test_suite, run_test_suite, \
                               test_web_page_content, merge_error_messages, \
                               get_authenticated_mechanize_browser, \
                               InvenioTestCase
-from invenio.legacy.dbquery import run_sql
+from invenio.base.wrappers import lazy_import
+run_sql = lazy_import('invenio.legacy.dbquery:run_sql')
+
 
 class WebAccessWebPagesAvailabilityTest(InvenioTestCase):
     """Check WebAccess web pages whether they are up or not."""
@@ -41,7 +43,7 @@ class WebAccessWebPagesAvailabilityTest(InvenioTestCase):
     def test_webaccess_admin_interface_availability(self):
         """webaccess - availability of WebAccess Admin interface pages"""
 
-        baseurl = CFG_SITE_URL + '/admin/webaccess/webaccessadmin.py/'
+        baseurl = cfg['CFG_SITE_URL'] + '/admin/webaccess/webaccessadmin.py/'
 
         _exports = ['', 'delegate_startarea', 'manageaccounts', 'rolearea',
                     'actionarea', 'userarea', 'managerobotlogin', 'listgroups',
@@ -64,7 +66,7 @@ class WebAccessWebPagesAvailabilityTest(InvenioTestCase):
     def test_webaccess_admin_guide_availability(self):
         """webaccess - availability of WebAccess Admin guide pages"""
 
-        url = CFG_SITE_URL + '/help/admin/webaccess-admin-guide'
+        url = cfg['CFG_SITE_URL'] + '/help/admin/webaccess-admin-guide'
         error_messages = test_web_page_content(url,
                                                expected_text="WebAccess Admin Guide")
         if error_messages:
@@ -74,7 +76,7 @@ class WebAccessWebPagesAvailabilityTest(InvenioTestCase):
     def test_webaccess_becomeuser(self):
         """webaccess - becomeuser functionality"""
         browser = get_authenticated_mechanize_browser("admin")
-        browser.open(CFG_SITE_SECURE_URL + '/admin/webaccess/webaccessadmin.py/manageaccounts?mtype=perform_modifyaccounts')
+        browser.open(cfg['CFG_SITE_SECURE_URL'] + '/admin/webaccess/webaccessadmin.py/manageaccounts?mtype=perform_modifyaccounts')
         browser.select_form(nr=0)
         browser['email_user_pattern'] = 'romeo'
         browser.submit()
@@ -119,13 +121,13 @@ class WebAccessUseBasketsTest(InvenioTestCase):
 
     def test_precached_area_authorization(self):
         """webaccess - login-time precached authorizations for usebaskets"""
-        error_messages = test_web_page_content(CFG_SITE_SECURE_URL + '/youraccount/display?ln=en', username='jekyll', password='j123ekyll', expected_text='Your Baskets')
-        error_messages.extend(test_web_page_content(CFG_SITE_SECURE_URL + '/youraccount/display?ln=en', username='hyde', password='h123yde', unexpected_text='Your Baskets'))
+        error_messages = test_web_page_content(cfg['CFG_SITE_SECURE_URL'] + '/youraccount/display?ln=en', username='jekyll', password='j123ekyll', expected_text='Your Baskets')
+        error_messages.extend(test_web_page_content(cfg['CFG_SITE_SECURE_URL'] + '/youraccount/display?ln=en', username='hyde', password='h123yde', unexpected_text='Your Baskets'))
 
         if error_messages:
             self.fail(merge_error_messages(error_messages))
 
-if CFG_DEVEL_SITE:
+if False: #FIXME cfg['CFG_DEVEL_SITE']:
     class WebAccessRobotLoginTest(InvenioTestCase):
         """
         Check whether robot login functionality is OK.
@@ -153,7 +155,7 @@ if CFG_DEVEL_SITE:
             self.a_nickname = "foo-bar"
             self.another_nickname = "baz"
             self.some_groups = ["a group for regression test", "another group for regression test"]
-            self.myip = urlopen(CFG_SITE_URL + "/httptest/whatismyip").read()
+            self.myip = urlopen(cfg['CFG_SITE_URL'] + "/httptest/whatismyip").read()
             from invenio.legacy.external_authentication.robot import update_robot_key
             for method_name in self.robot_login_methods:
                 update_robot_key(method_name, self.a_robot, self.a_password)
@@ -192,7 +194,7 @@ if CFG_DEVEL_SITE:
         def test_robot_login_method_with_groups(self):
             """webaccess - robot login method with groups"""
             for method_name, method in self.robot_login_methods.iteritems():
-                url = method.test_create_example_url(self.a_email, method_name, self.a_robot, self.myip, groups=self.some_groups, referer=CFG_SITE_SECURE_URL + "/yourgroups/display")
+                url = method.test_create_example_url(self.a_email, method_name, self.a_robot, self.myip, groups=self.some_groups, referer=cfg['CFG_SITE_SECURE_URL'] + "/yourgroups/display")
                 try:
                     for group in self.some_groups:
                         error_messages = test_web_page_content(url, expected_text="%s [%s]" % (group, method_name))

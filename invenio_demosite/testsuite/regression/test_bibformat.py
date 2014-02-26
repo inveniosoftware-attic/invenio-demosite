@@ -23,15 +23,16 @@ __revision__ = "$Id$"
 
 import re
 
-from invenio.config import CFG_SITE_URL, CFG_SITE_LANG, CFG_SITE_RECORD
+from invenio.base.globals import cfg
 from invenio.base.wrappers import lazy_import
 from invenio.testsuite import InvenioTestCase, make_test_suite, \
     make_url, get_authenticated_mechanize_browser, \
     run_test_suite, test_web_page_content
 
-format_record = lazy_import('invenio.bibformat:format_record')
-BibFormatObject = lazy_import('invenio.bibformat_engine:BibFormatObject')
-bfe_authority_author = lazy_import('invenio.bibformat_elements.bfe_authority_author')
+format_record = lazy_import('invenio.modules.formatter.__init__:format_record')
+BibFormatObject = lazy_import('invenio.modules.formatter.engine:BibFormatObject')
+#bfe_authority_author = lazy_import('invenio.bibformat_elements.bfe_authority_author')
+LazyTemplateContextFunctionsCache = lazy_import('invenio.modules.formatter.engine:LazyTemplateContextFunctionsCache')
 
 
 class BibFormatAPITest(InvenioTestCase):
@@ -41,16 +42,17 @@ class BibFormatAPITest(InvenioTestCase):
         """bibformat - Checking BibFormat API"""
         result = format_record(recID=73,
                                of='hx',
-                               ln=CFG_SITE_LANG,
+                               ln=cfg['CFG_SITE_LANG'],
                                verbose=0,
                                search_pattern=[],
                                xml_record=None,
                                user_info=None,
                                on_the_fly=True)
 
-        pageurl = CFG_SITE_URL + '/%s/73?of=hx' % CFG_SITE_RECORD
+        pageurl = cfg['CFG_SITE_URL'] + '/%s/73?of=hx' % cfg['CFG_SITE_RECORD']
         result = test_web_page_content(pageurl,
                                        expected_text=result)
+
 
 class BibFormatObjectAPITest(InvenioTestCase):
     """Check BibFormatObject (bfo) APIs"""
@@ -77,6 +79,7 @@ class BibFormatObjectAPITest(InvenioTestCase):
         self.assertEqual(self.bfo_test_1.kb('DBCOLLID2BIBTEX', '', 'bar'),
                          'bar')
 
+
 class BibFormatBibTeXTest(InvenioTestCase):
     """Check output produced by BibFormat for BibTeX output for
     various records"""
@@ -99,10 +102,11 @@ class BibFormatBibTeXTest(InvenioTestCase):
     def test_bibtex_output(self):
         """bibformat - BibTeX output"""
 
-        pageurl = CFG_SITE_URL + '/%s/74?of=hx' % CFG_SITE_RECORD
+        pageurl = cfg['CFG_SITE_URL'] + '/%s/74?of=hx' % cfg['CFG_SITE_RECORD']
         result = test_web_page_content(pageurl,
                                        expected_text=self.record_74_hx)
         self.assertEqual([], result)
+
 
 class BibFormatDetailedHTMLTest(InvenioTestCase):
     """Check output produced by BibFormat for detailed HTML ouput for
@@ -123,8 +127,8 @@ class BibFormatDetailedHTMLTest(InvenioTestCase):
         self.record_74_hd_title = '''<center><big><big><strong>Quasinormal modes of Reissner-Nordstrom Anti-de Sitter Black Holes</strong></big></big></center>'''
 
         self.record_74_hd_authors = '''<a href="%(siteurl)s/search?f=author&amp;p=Wang%%2C%%20B&amp;ln=%(lang)s">Wang, B</a><small> (Fudan University)</small> ; <a href="%(siteurl)s/search?f=author&amp;p=Lin%%2C%%20C%%20Y&amp;ln=%(lang)s">Lin, C Y</a> ; <a href="%(siteurl)s/search?f=author&amp;p=Abdalla%%2C%%20E&amp;ln=%(lang)s">Abdalla, E</a><br />'''% \
-                                     {'siteurl' : CFG_SITE_URL,
-                                      'lang': CFG_SITE_LANG}
+                                     {'siteurl' : cfg['CFG_SITE_URL'],
+                                      'lang': cfg['CFG_SITE_LANG']}
 
         self.record_74_hd_abstract = '''<small><strong>Abstract: </strong>Complex frequencies associated with quasinormal modes for large Reissner-Nordstr$\ddot{o}$m Anti-de Sitter black holes have been computed. These frequencies have close relation to the black hole charge and do not linearly scale withthe black hole temperature as in Schwarzschild Anti-de Sitter case. In terms of AdS/CFT correspondence, we found that the bigger the black hole charge is, the quicker for the approach to thermal equilibrium in the CFT. The propertiesof quasinormal modes for $l&gt;0$ have also been studied.</small><br />'''
 
@@ -133,8 +137,8 @@ class BibFormatDetailedHTMLTest(InvenioTestCase):
         self.record_74_hd_fulltext = '''0003295.pdf"><img style="border:none"'''
 
         self.record_74_hd_citations = '''<strong>Cited by:</strong> try citation search for <a href="%(siteurl)s/search?f=reference&amp;p=hep-th/0003295&amp;ln=%(lang)s">hep-th/0003295</a>'''% \
-                                      {'siteurl' : CFG_SITE_URL,
-                                       'lang': CFG_SITE_LANG}
+                                      {'siteurl' : cfg['CFG_SITE_URL'],
+                                       'lang': cfg['CFG_SITE_LANG']}
         self.record_74_hd_references = '''<li><small>[17]</small> <small>A. Chamblin, R. Emparan, C. V. Johnson and R. C. Myers, Phys. Rev., D60: 104026 (1999) 5070 90 110 130 150 r+ 130 230 330 50 70 90 110 130 150 r+</small> </li>'''
 
         # Record 7 (Picture)
@@ -153,14 +157,14 @@ class BibFormatDetailedHTMLTest(InvenioTestCase):
         self.record_7_hd_abstract = '''<p><span class="blocknote">
  Caption</span><br /> <small>Conference "Internet, Web, What's next?" on 26 June 1998 at CERN : Tim Berners-Lee, inventor of the World-Wide Web and Director of the W3C, explains how the Web came to be and give his views on the future.</small></p><p><span class="blocknote">
  Légende</span><br /><small>Conference "Internet, Web, What's next?" le 26 juin 1998 au CERN: Tim Berners-Lee, inventeur du World-Wide Web et directeur du W3C, explique comment le Web est ne, et donne ses opinions sur l'avenir.</small></p>'''
-        self.record_7_hd_resource = '''<img src="%s/%s/7/files/9806033.gif?subformat=icon" alt="9806033" style="max-width:250px;_width:250px;" />''' % (CFG_SITE_URL, CFG_SITE_RECORD)
-        self.record_7_hd_resource_link = '%s/%s/7/files/9806033.jpeg' %  (CFG_SITE_URL, CFG_SITE_RECORD)
+        self.record_7_hd_resource = '''<img src="%s/%s/7/files/9806033.gif?subformat=icon" alt="9806033" style="max-width:250px;_width:250px;" />''' % (cfg['CFG_SITE_URL'], cfg['CFG_SITE_RECORD'])
+        self.record_7_hd_resource_link = '%s/%s/7/files/9806033.jpeg' %  (cfg['CFG_SITE_URL'], cfg['CFG_SITE_RECORD'])
 
     def test_detailed_html_output(self):
         """bibformat - Detailed HTML output"""
 
         # Test record 74 (Article)
-        pageurl = CFG_SITE_URL + '/%s/74?of=hd' % CFG_SITE_RECORD
+        pageurl = cfg['CFG_SITE_URL'] + '/%s/74?of=hd' % cfg['CFG_SITE_RECORD']
         result = test_web_page_content(pageurl,
                                        expected_text=[self.record_74_hd_header,
                                                       self.record_74_hd_title,
@@ -174,7 +178,7 @@ class BibFormatDetailedHTMLTest(InvenioTestCase):
         self.assertEqual([], result)
 
         # Test record 7 (Picture)
-        pageurl = CFG_SITE_URL + '/%s/7?of=hd' % CFG_SITE_RECORD
+        pageurl = cfg['CFG_SITE_URL'] + '/%s/7?of=hd' % cfg['CFG_SITE_RECORD']
         result = test_web_page_content(pageurl,
                                        expected_text=[self.record_7_hd_header,
                                                       self.record_7_hd_title,
@@ -186,7 +190,7 @@ class BibFormatDetailedHTMLTest(InvenioTestCase):
 
     def test_detailed_html_edit_record(self):
         """bibformat - Detailed HTML output edit record link presence"""
-        pageurl = CFG_SITE_URL + '/%s/74?of=hd' % CFG_SITE_RECORD
+        pageurl = cfg['CFG_SITE_URL'] + '/%s/74?of=hd' % cfg['CFG_SITE_RECORD']
         result = test_web_page_content(pageurl, username='admin',
                                        expected_text="Edit This Record")
         self.assertEqual([], result)
@@ -194,13 +198,13 @@ class BibFormatDetailedHTMLTest(InvenioTestCase):
     def test_detailed_html_no_error_message(self):
         """bibformat - Detailed HTML output without error message"""
         # No error message should be displayed in the web interface, whatever happens
-        pageurl = CFG_SITE_URL + '/%s/74?of=hd' % CFG_SITE_RECORD
+        pageurl = cfg['CFG_SITE_URL'] + '/%s/74?of=hd' % cfg['CFG_SITE_RECORD']
         result = test_web_page_content(pageurl, username='admin',
                                        expected_text=["Exception",
                                                       "Could not"])
         self.assertNotEqual([], result)
 
-        pageurl = CFG_SITE_URL + '/%s/7?of=hd' % CFG_SITE_RECORD
+        pageurl = cfg['CFG_SITE_URL'] + '/%s/7?of=hd' % cfg['CFG_SITE_RECORD']
         result = test_web_page_content(pageurl, username='admin',
                                        expected_text=["Exception",
                                                       "Could not"])
@@ -252,12 +256,12 @@ class BibFormatNLMTest(InvenioTestCase):
   <ref/>
 </article>
 
-</articles>''' % {'siteurl': CFG_SITE_URL, 'CFG_SITE_RECORD': CFG_SITE_RECORD}
+</articles>''' % {'siteurl': cfg['CFG_SITE_URL'], 'CFG_SITE_RECORD': cfg['CFG_SITE_RECORD']}
 
     def test_nlm_output(self):
         """bibformat - NLM output"""
 
-        pageurl = CFG_SITE_URL + '/%s/70?of=xn' % CFG_SITE_RECORD
+        pageurl = cfg['CFG_SITE_URL'] + '/%s/70?of=xn' % cfg['CFG_SITE_RECORD']
         result = test_web_page_content(pageurl,
                                        expected_text=self.record_70_xn)
         try:
@@ -284,7 +288,7 @@ class BibFormatBriefHTMLTest(InvenioTestCase):
 
     def test_brief_html_output(self):
         """bibformat - Brief HTML output"""
-        pageurl = CFG_SITE_URL + '/%s/76?of=HB' % CFG_SITE_RECORD
+        pageurl = cfg['CFG_SITE_URL'] + '/%s/76?of=HB' % cfg['CFG_SITE_RECORD']
         result = test_web_page_content(pageurl,
                                        expected_text=[self.record_76_hb_title,
                                                       self.record_76_hb_author,
@@ -369,7 +373,7 @@ class BibFormatMARCXMLTest(InvenioTestCase):
 
     def test_marcxml_output(self):
         """bibformat - MARCXML output"""
-        pageurl = CFG_SITE_URL + '/%s/9?of=xm' % CFG_SITE_RECORD
+        pageurl = cfg['CFG_SITE_URL'] + '/%s/9?of=xm' % cfg['CFG_SITE_RECORD']
         result = test_web_page_content(pageurl,
                                        expected_text=[self.record_9_xm_beg,
                                                       self.record_9_xm_end])
@@ -401,7 +405,7 @@ class BibFormatMARCTest(InvenioTestCase):
     def test_marc_output(self):
         """bibformat - MARC output"""
 
-        pageurl = CFG_SITE_URL + '/%s/29?of=hm' % CFG_SITE_RECORD
+        pageurl = cfg['CFG_SITE_URL'] + '/%s/29?of=hm' % cfg['CFG_SITE_RECORD']
         result = test_web_page_content(pageurl,
                                        expected_text=[self.record_29_hm_beg,
                                                       self.record_29_hm_end])
@@ -413,37 +417,37 @@ class BibFormatTitleFormattingTest(InvenioTestCase):
     def test_subtitle_in_html_brief(self):
         """bibformat - title subtitle in HTML brief formats"""
         self.assertEqual([],
-          test_web_page_content(CFG_SITE_URL + '/search?p=statistics+computer',
+          test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=statistics+computer',
             expected_text="Statistics: a computer approach"))
 
     def test_subtitle_in_html_detailed(self):
         """bibformat - title subtitle in HTML detailed formats"""
         self.assertEqual([],
-          test_web_page_content(CFG_SITE_URL + '/search?p=statistics+computer&of=HD',
+          test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=statistics+computer&of=HD',
             expected_text="Statistics: a computer approach"))
 
     def test_title_edition_in_html_brief(self):
         """bibformat - title edition in HTML brief formats"""
         self.assertEqual([],
-          test_web_page_content(CFG_SITE_URL + '/search?p=2nd',
+          test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=2nd',
             expected_text="Introductory statistics: a decision map; 2nd ed"))
 
     def test_title_edition_in_html_detailed(self):
         """bibformat - title edition in HTML detailed formats"""
         self.assertEqual([],
-          test_web_page_content(CFG_SITE_URL + '/search?p=2nd&of=HD',
+          test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=2nd&of=HD',
             expected_text="Introductory statistics: a decision map; 2nd ed"))
 
     def test_title_part_in_html_brief(self):
         """bibformat - title part in HTML brief formats"""
         self.assertEqual([],
-          test_web_page_content(CFG_SITE_URL + '/search?p=analyse+informatique',
+          test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=analyse+informatique',
             expected_text="Analyse informatique, t.2"))
 
     def test_title_part_in_html_detailed(self):
         """bibformat - title part in HTML detailed formats"""
         self.assertEqual([],
-          test_web_page_content(CFG_SITE_URL + '/search?p=analyse+informatique&of=HD',
+          test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=analyse+informatique&of=HD',
             expected_text="Analyse informatique, t.2: L'accomplissement"))
 
 class BibFormatISBNFormattingTest(InvenioTestCase):
@@ -452,7 +456,7 @@ class BibFormatISBNFormattingTest(InvenioTestCase):
     def test_isbn_in_html_detailed(self):
         """bibformat - ISBN in HTML detailed formats"""
         self.assertEqual([],
-          test_web_page_content(CFG_SITE_URL + '/search?p=analyse+informatique&of=HD',
+          test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=analyse+informatique&of=HD',
             expected_text="ISBN: 2225350574"))
 
 class BibFormatPublInfoFormattingTest(InvenioTestCase):
@@ -461,13 +465,13 @@ class BibFormatPublInfoFormattingTest(InvenioTestCase):
     def test_publinfo_in_html_brief(self):
         """bibformat - publication reference info in HTML brief formats"""
         self.assertEqual([],
-          test_web_page_content(CFG_SITE_URL + '/search?p=recid%3A84',
+          test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=recid%3A84',
             expected_text="Nucl. Phys. B: 656 (2003) pp. 23-36"))
 
     def test_publinfo_in_html_detailed(self):
         """bibformat - publication reference info in HTML detailed formats"""
         self.assertEqual([],
-          test_web_page_content(CFG_SITE_URL + '/%s/84' % CFG_SITE_RECORD,
+          test_web_page_content(cfg['CFG_SITE_URL'] + '/%s/84' % cfg['CFG_SITE_RECORD'],
             expected_text="Nucl. Phys. B: 656 (2003) pp. 23-36"))
 
 
@@ -477,13 +481,13 @@ class BibFormatAuthorityRecordsTest(InvenioTestCase):
     def test_brief_output(self):
         """bibformat - brief authority record format outputs something"""
         self.assertEqual([],
-          test_web_page_content(CFG_SITE_URL + '/search?cc=Authority+Records&rg=100',
+          test_web_page_content(cfg['CFG_SITE_URL'] + '/search?cc=Authority+Records&rg=100',
             expected_text="Ellis, John, 1946-"))
 
     def test_detailed_output(self):
         """bibformat - brief authority record format outputs some basic information"""
         self.assertEqual([],
-          test_web_page_content(CFG_SITE_URL + '/record/118',
+          test_web_page_content(cfg['CFG_SITE_URL'] + '/record/118',
             expected_text=["Ellis, Jonathan Richard, 1946-", "Control Number"]))
 
     def test_empty_string(self):
@@ -495,8 +499,9 @@ class BibFormatAuthorityRecordsTest(InvenioTestCase):
                 else: afield; return []
 
         bfo = BFO()
-        self.assertTrue("Variant" in bfe_authority_author.format_element(bfo, detail='yes'))
-        self.assertTrue(", , " not in bfe_authority_author.format_element(bfo, detail='yes'))
+        #self.assertTrue("Variant" in bfe_authority_author.format_element(bfo, detail='yes'))
+        self.assertTrue("Variant" in LazyTemplateContextFunctionsCache.bibformat_elements(bfo, detail='yes'))
+        self.assertTrue(", , " not in LazyTemplateContextFunctionsCache.bibformat_elements(bfo, detail='yes'))
 
 
 class BibFormatAuthorityRecordsBrowsingTest(InvenioTestCase):

@@ -26,7 +26,7 @@ import re
 from datetime import timedelta
 
 from invenio.testsuite import make_test_suite, run_test_suite, nottest, InvenioTestCase
-from invenio.importutils import lazy_import
+from invenio.base.wrappers import lazy_import
 
 WordTable = lazy_import('invenio.legacy.bibindex.engine:WordTable')
 get_word_tables = lazy_import('invenio.legacy.bibindex.engine:get_word_tables')
@@ -42,30 +42,30 @@ get_index_tags = lazy_import('invenio.legacy.bibindex.engine_utils:get_index_tag
 get_tag_indexes = lazy_import('invenio.legacy.bibindex.engine_utils:get_tag_indexes')
 get_all_indexes = lazy_import('invenio.legacy.bibindex.engine_utils:get_all_indexes')
 
-from invenio.legacy.bibindex.engine_config import CFG_BIBINDEX_ADDING_RECORDS_STARTED_STR, \
-    CFG_BIBINDEX_INDEX_TABLE_TYPE, \
-    CFG_BIBINDEX_UPDATE_MESSAGE
+CFG_BIBINDEX_ADDING_RECORDS_STARTED_STR = lazy_import('invenio.legacy.bibindex.engine_config:CFG_BIBINDEX_ADDING_RECORDS_STARTED_STR')
+CFG_BIBINDEX_INDEX_TABLE_TYPE = lazy_import('invenio.legacy.bibindex.engine_config:CFG_BIBINDEX_INDEX_TABLE_TYPE')
+CFG_BIBINDEX_UPDATE_MESSAGE= lazy_import('invenio.legacy.bibindex.engine_config:CFG_BIBINDEX_UPDATE_MESSAGE')
+
 
 task_low_level_submission = lazy_import('invenio.legacy.bibsched.bibtask:task_low_level_submission')
-from invenio.config import CFG_BINDIR, CFG_LOGDIR
+from invenio.base.globals import cfg
 
 run_sql = lazy_import('invenio.legacy.dbquery:run_sql')
 deserialize_via_marshal = lazy_import('invenio.legacy.dbquery:deserialize_via_marshal')
 
 from intbitset import intbitset
-get_record = lazy_import('invenio.search_engine:get_record')
+get_record = lazy_import('invenio.legacy.search_engine.__init__:get_record')
 get_fieldvalues = lazy_import('invenio.legacy.bibrecord:get_fieldvalues')
 
 get_index_strings_by_control_no = lazy_import('invenio.legacy.bibauthority.engine:get_index_strings_by_control_no')
 get_control_nos_from_recID = lazy_import('invenio.legacy.bibauthority.engine:get_control_nos_from_recID')
 
 run_sql_drop_silently = lazy_import('invenio.legacy.bibindex.engine_utils:run_sql_drop_silently')
-
-bibupload = lazy_import('invenio.bibupload:bibupload')
-xml_marc_to_records = lazy_import('invenio.bibupload:xml_marc_to_records')
-
+bibupload = lazy_import('invenio.legacy.bibupload.engine:bibupload')
+xml_marc_to_records = lazy_import('invenio.legacy.bibupload.engine:xml_marc_to_records')
+#FIXME: unknown import
 wipe_out_record_from_all_tables = lazy_import('invenio.bibupload_regression_tests:wipe_out_record_from_all_tables')
-record_get_field_value = lazy_import('invenio.bibrecord:record_get_field_value')
+record_get_field_value = lazy_import('invenio.legacy.bibrecord.__init__:record_get_field_value')
 get_max_recid = lazy_import('invenio.bibsort_engine:get_max_recid')
 
 
@@ -75,7 +75,7 @@ def reindex_for_type_with_bibsched(index_name, force_all=False, *other_options):
        @param force_all: if it's True function will reindex all records
        not just affected ones
     """
-    program = os.path.join(CFG_BINDIR, 'bibindex')
+    program = os.path.join(cfg['CFG_BINDIR'], 'bibindex')
     args = ['bibindex', 'bibindex_regression_tests', '-w', index_name, '-u', 'admin']
     args.extend(other_options)
     if force_all:
@@ -750,7 +750,7 @@ class BibIndexAuthorityRecordTest(InvenioTestCase):
         # run bibindex again
         task_id = reindex_for_type_with_bibsched(index_name, force_all=True)
 
-        filename = os.path.join(CFG_LOGDIR, 'bibsched_task_' + str(task_id) + '.log')
+        filename = os.path.join(cfg['CFG_LOGDIR'], 'bibsched_task_' + str(task_id) + '.log')
         _file = open(filename)
         text = _file.read() # small file
         _file.close()
@@ -1418,7 +1418,7 @@ class BibIndexCLICallTest(InvenioTestCase):
         """bibindex - checks if correct message for wrong index appears"""
         index_name = "titlexrg"
         task_id = reindex_for_type_with_bibsched(index_name, force_all=True)
-        filename = os.path.join(CFG_LOGDIR, 'bibsched_task_' + str(task_id) + '.log')
+        filename = os.path.join(cfg['CFG_LOGDIR'], 'bibsched_task_' + str(task_id) + '.log')
         fl = open(filename)
         text = fl.read() # small file
         fl.close()
@@ -1428,7 +1428,7 @@ class BibIndexCLICallTest(InvenioTestCase):
         """bibindex - checks if correct message for index up to date appears"""
         index_name = "abstract"
         task_id = reindex_for_type_with_bibsched(index_name)
-        filename = os.path.join(CFG_LOGDIR, 'bibsched_task_' + str(task_id) + '.log')
+        filename = os.path.join(cfg['CFG_LOGDIR'], 'bibsched_task_' + str(task_id) + '.log')
         fl = open(filename)
         text = fl.read() # small file
         fl.close()

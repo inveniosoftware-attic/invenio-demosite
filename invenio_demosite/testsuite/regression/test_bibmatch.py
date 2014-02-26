@@ -23,7 +23,7 @@
 
 __revision__ = "$Id$"
 
-from invenio.config import CFG_SITE_RECORD
+from invenio.base.globals import cfg
 from invenio.base.wrappers import lazy_import
 from invenio.testsuite import InvenioTestCase, make_test_suite, run_test_suite
 
@@ -414,7 +414,7 @@ class BibMatchTest(InvenioTestCase):
   </datafield>
 </record>
 </collection>
-""" % CFG_SITE_RECORD
+""" % cfg['CFG_SITE_RECORD']
         # Restricted record in thesis collection
         self.recxml5 = """
     <?xml version="1.0" encoding="UTF-8"?>

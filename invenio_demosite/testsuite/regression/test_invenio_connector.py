@@ -23,7 +23,7 @@ __revision__ = "$Id$"
 
 import os
 
-from invenio.config import CFG_SITE_URL, CFG_SITE_SECURE_URL
+from invenio.base.globals import cfg
 from invenio.base.wrappers import lazy_import
 from invenio.testsuite import InvenioTestCase, make_test_suite, run_test_suite
 
@@ -35,7 +35,7 @@ class InvenioConnectorTest(InvenioTestCase):
 
     def test_local_search(self):
         """InvenioConnector - local search"""
-        server = InvenioConnector(CFG_SITE_URL)
+        server = InvenioConnector(cfg['CFG_SITE_URL'])
         result = server.search(p='ellis', of='id')
         self.assertTrue(len(result) > 0, \
                         'did not get local search results.')
@@ -49,7 +49,7 @@ class InvenioConnectorTest(InvenioTestCase):
 
     def test_search_collections(self):
         """InvenioConnector - collection search"""
-        server = InvenioConnector(CFG_SITE_URL)
+        server = InvenioConnector(cfg['CFG_SITE_URL'])
         result = server.search(p='', c=['Books'], of='id')
         self.assertTrue(len(result) > 0, \
                         'did not get collection search results.')
@@ -57,11 +57,11 @@ class InvenioConnectorTest(InvenioTestCase):
     def test_search_local_restricted_collections(self):
         """InvenioConnector - local restricted collection search"""
         from invenio.utils.connector import InvenioConnectorAuthError
-        server = InvenioConnector(CFG_SITE_URL)
+        server = InvenioConnector(cfg['CFG_SITE_URL'])
         search_params = dict(p='LBL-28106', c=['Theses'], of='id')
         self.assertRaises(InvenioConnectorAuthError, server.search, **search_params)
-
-        server = InvenioConnector(CFG_SITE_SECURE_URL, user='admin', password='')
+        #FIXME InvenioConnectorAuthError: You have to use a secure URL (HTTPS) to login
+        server = InvenioConnector(cfg['CFG_SITE_SECURE_URL'], user='admin', password='')
         result = server.search(p='LBL-28106', c=['Theses'], of='id')
         self.assertTrue(len(result) > 0, \
                         'did not get restricted collection search results.')

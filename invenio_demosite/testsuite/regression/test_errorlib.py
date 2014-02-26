@@ -24,11 +24,15 @@ __revision__ = "$Id$"
 import os
 import sys
 
-from invenio.ext.logging import register_exception, get_pretty_traceback
-from invenio.config import CFG_SITE_URL, CFG_LOGDIR
+from invenio.base.globals import cfg
+from invenio.base.wrappers import lazy_import
 from invenio.testsuite import make_test_suite, run_test_suite, \
                               test_web_page_content, merge_error_messages, \
                               InvenioTestCase
+
+register_exception = lazy_import('invenio.ext.logging:register_exception')
+get_pretty_traceback = lazy_import('invenio.ext.logging:get_pretty_traceback')
+
 
 class ErrorlibWebPagesAvailabilityTest(InvenioTestCase):
     """Check errorlib web pages whether they are up or not."""
@@ -36,7 +40,7 @@ class ErrorlibWebPagesAvailabilityTest(InvenioTestCase):
     def test_your_baskets_pages_availability(self):
         """errorlib - availability of error sending pages"""
 
-        baseurl = CFG_SITE_URL + '/error/'
+        baseurl = cfg['CFG_SITE_URL'] + '/error/'
 
         _exports = ['', 'send']
 
@@ -47,11 +51,12 @@ class ErrorlibWebPagesAvailabilityTest(InvenioTestCase):
             self.fail(merge_error_messages(error_messages))
         return
 
+
 class ErrorlibRegisterExceptionTest(InvenioTestCase):
     """Check errorlib register_exception functionality."""
 
     def setUp(self):
-        from invenio.legacy.dbquery import run_sql
+        run_sql = lazy_import('invenio.legacy.dbquery:run_sql')
         run_sql("DELETE FROM hstEXCEPTION")
 
     def test_simple_register_exception(self):
@@ -60,7 +65,7 @@ class ErrorlibRegisterExceptionTest(InvenioTestCase):
             raise Exception('test-exception')
         except:
             result = register_exception()
-        log_content = open(os.path.join(CFG_LOGDIR, 'invenio.err')).read()
+        log_content = open(os.path.join(cfg['CFG_LOGDIR'], 'invenio.err')).read()
         self.failUnless('test_simple_register_exception' in log_content)
         self.failUnless('test-exception' in log_content)
         self.assertEqual(1, result, "register_exception have not returned 1")
@@ -72,7 +77,7 @@ class ErrorlibRegisterExceptionTest(InvenioTestCase):
             raise Exception(text)
         except:
             result = register_exception(alert_admin=True)
-        log_content = open(os.path.join(CFG_LOGDIR, 'invenio.err')).read()
+        log_content = open(os.path.join(cfg['CFG_LOGDIR'], 'invenio.err')).read()
         self.failUnless('test_alert_admin_register_exception' in log_content)
         self.failUnless(text in log_content)
         self.assertEqual(1, result, "register_exception have not returned 1")

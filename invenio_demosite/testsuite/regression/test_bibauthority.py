@@ -27,7 +27,7 @@ from invenio.legacy.bibauthority.config import \
 
 from invenio.testsuite import make_test_suite, run_test_suite, \
     InvenioTestCase
-from invenio.importutils import lazy_import
+from invenio.base.wrappers import lazy_import
 is_authority_record = lazy_import('invenio.legacy.bibauthority.engine:is_authority_record')
 get_dependent_records_for_control_no = lazy_import('invenio.legacy.bibauthority.engine:get_dependent_records_for_control_no')
 get_dependent_records_for_recID = lazy_import('invenio.legacy.bibauthority.engine:get_dependent_records_for_recID')

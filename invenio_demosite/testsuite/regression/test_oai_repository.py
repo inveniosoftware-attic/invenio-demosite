@@ -27,11 +27,7 @@ import re
 
 from cStringIO import StringIO
 
-from invenio.config import CFG_SITE_URL, \
-     CFG_OAI_SLEEP, \
-     CFG_OAI_LOAD, \
-     CFG_OAI_ID_FIELD
-from invenio.legacy.dbquery import run_sql
+from invenio.base.globals import cfg
 from invenio.base.wrappers import lazy_import
 from intbitset import intbitset
 from invenio.testsuite import make_test_suite, run_test_suite, \
@@ -40,6 +36,7 @@ from invenio.testsuite import make_test_suite, run_test_suite, \
 
 oai_repository_server = lazy_import('invenio.legacy.oairepository.server')
 search_engine = lazy_import('invenio.legacy.search_engine')
+run_sql = lazy_import('invenio.legacy.dbquery:run_sql')
 
 
 class OAIRepositoryTouchSetTest(InvenioTestCase):
@@ -84,7 +81,7 @@ class OAIRepositoryWebPagesAvailabilityTest(InvenioTestCase):
     def test_oai_server_pages_availability(self):
         """oairepository - availability of OAI server pages"""
 
-        baseurl = CFG_SITE_URL + '/oai2d'
+        baseurl = cfg['CFG_SITE_URL'] + '/oai2d'
 
         _exports = [#fast commands first:
                     '?verb=Identify',
@@ -103,7 +100,7 @@ class OAIRepositoryWebPagesAvailabilityTest(InvenioTestCase):
                 # some sleep required for verbs other than Identify
                 # and ListMetadataFormats, since oai2d refuses too
                 # frequent access:
-                time.sleep(CFG_OAI_SLEEP)
+                time.sleep(cfg['CFG_OAI_SLEEP'])
             error_messages.extend(test_web_page_content(url,
                                                         expected_text=
                                                         '</OAI-PMH>'))
@@ -138,7 +135,7 @@ class TestSelectiveHarvesting(InvenioTestCase):
         sample_datestamp = datestamps[0][1] # Take one datestamp
         sample_oai_id = datestamps[0][0] # Take corresponding oai id
         sample_id = search_engine.perform_request_search(p=sample_oai_id,
-                                                         f=CFG_OAI_ID_FIELD)[0] # Find corresponding system number id
+                                                         f=cfg['CFG_OAI_ID_FIELD'])[0] # Find corresponding system number id
 
         # There must be some datestamps
         self.assertNotEqual([], datestamps)
@@ -192,8 +189,8 @@ class TestPerformance(InvenioTestCase):
         """Setting up some variables"""
         # Determine how many records are served
         self.number_of_records = len(oai_repository_server.oai_get_recid_list("", "", ""))
-        if CFG_OAI_LOAD < self.number_of_records:
-            self.number_of_records = CFG_OAI_LOAD
+        if cfg['CFG_OAI_LOAD'] < self.number_of_records:
+            self.number_of_records = cfg['CFG_OAI_LOAD']
 
     def test_response_speed_oai(self):
         """oairepository - speed of response for oai_dc output"""

@@ -19,7 +19,8 @@
 
 """Regression tests for BibKnowledge."""
 
-from invenio.config import CFG_SITE_URL, CFG_SITE_SECURE_URL, CFG_TMPDIR
+from invenio.base.globals import cfg
+from invenio.base.wrappers import lazy_import
 from invenio.testsuite import InvenioTestCase, make_test_suite, \
     run_test_suite, test_web_page_content
 
@@ -48,13 +49,13 @@ class BibknowledgeRegressionTests(InvenioTestCase):
 
     def test_kb_pages_available(self):
         """bibknowledge - test /kb page availability"""
-        kbpage = CFG_SITE_URL+"/kb"
+        kbpage = cfg['CFG_SITE_URL']+"/kb"
         errs = test_web_page_content(kbpage)
         self.assertEqual([], errs)
 
     def test_kb_pages_curator_can_read(self):
         """bibknowledge - test that balthasar from the curator group can read page"""
-        kbpage = CFG_SITE_URL+"/kb"
+        kbpage = cfg['CFG_SITE_URL']+"/kb"
         errs = test_web_page_content(kbpage, username="balthasar",
                                      password="b123althasar",
                                      expected_text="BibKnowledge Admin")
@@ -99,7 +100,7 @@ class BibknowledgeRegressionTests(InvenioTestCase):
 
     def test_EJOURNALS_export_as_json(self):
         """bibknowledge - export key-value mappings to web as json list"""
-        kbpage = CFG_SITE_URL+"/kb/export?kbname=EJOURNALS&format=jquery"
+        kbpage = cfg['CFG_SITE_URL']+"/kb/export?kbname=EJOURNALS&format=jquery"
         expected = '[{"value": "AAS Photo Bull.", "label": "AAS Photo Bull."},'
         errs = test_web_page_content(kbpage, expected_text=expected)
         self.assertEqual([], errs)
@@ -143,34 +144,34 @@ class BibknowledgeRegressionTests(InvenioTestCase):
         #get the taxonomy file
         response = mechanize.urlopen("http://invenio-software.org/download/invenio-demo-site-files/HEP.rdf")
         content = response.read()
-        f = open(CFG_TMPDIR+"/HEP.rdf","w")
+        f = open(cfg['CFG_TMPDIR']+"/HEP.rdf","w")
         f.write(content)
         f.close()
         #upload it to the right destination, but log in first
         browser = mechanize.Browser()
-        browser.open(CFG_SITE_SECURE_URL + "/youraccount/login")
+        browser.open(cfg['CFG_SITE_SECURE_URL'] + "/youraccount/login")
         browser.select_form(nr=0)
         browser['nickname'] = username
         browser['password'] = password
         browser.submit()
         #go to upload page
-        uploadpage = browser.open(CFG_SITE_URL+"/kb?kb="+str(new_kb_id))
+        uploadpage = browser.open(cfg['CFG_SITE_URL']+"/kb?kb="+str(new_kb_id))
         #check that we are there
         content = uploadpage.read()
         namethere = content.count("testtaxonomy")
         assert namethere > 0
         #upload
-        browser.open(CFG_SITE_URL+"/kb?kb="+str(new_kb_id))
+        browser.open(cfg['CFG_SITE_URL']+"/kb?kb="+str(new_kb_id))
         browser.select_form(name="upload")
         browser.form["kb"] = str(new_kb_id) #force the id
-        browser.form.add_file(open(CFG_TMPDIR+"/HEP.rdf"), content_type='text/plain', filename="HEP.rdf", name="file")
+        browser.form.add_file(open(cfg['CFG_TMPDIR']+"/HEP.rdf"), content_type='text/plain', filename="HEP.rdf", name="file")
         browser.submit()
         #check that we can get an item from the kb
         items = get_kbt_items_for_bibedit(new_kb_name, "prefLabel", "Altarelli")
         #item should contain 1 string: 'Altarelli-Parisi equation'
         self.assertEqual(1, len(items))
         #delete the temp file
-        remove(CFG_TMPDIR+"/HEP.rdf")
+        remove(cfg['CFG_TMPDIR']+"/HEP.rdf")
         #delete the test odf the DB
         delete_kb(new_kb_name)
         still_there = kb_exists(new_kb_name)
@@ -185,32 +186,32 @@ class BibknowledgeRegressionTests(InvenioTestCase):
 
     def test_kbd_export_as_list(self):
         """bibknowledge - export dynamic kb to web as list of values"""
-        kbpage = CFG_SITE_URL+"/kb/export?kbname="+self.dyn_kbname
+        kbpage = cfg['CFG_SITE_URL']+"/kb/export?kbname="+self.dyn_kbname
         errs = test_web_page_content(kbpage, expected_text=['Charles Darwin', '李白'])
         self.assertEqual([], errs)
 
     def test_kbd_export_as_json(self):
         """bibknowledge - export dynamic kb to web as json list"""
-        kbpage = CFG_SITE_URL+"/kb/export?kbname="+self.dyn_kbname+'&format=jquery'
+        kbpage = cfg['CFG_SITE_URL']+"/kb/export?kbname="+self.dyn_kbname+'&format=jquery'
         errs = test_web_page_content(kbpage, expected_text=['["Charles Darwin",', '"\\u674e\\u767d"]'])
         self.assertEqual([], errs)
 
     def test_kbd_retrieval_as_json(self):
         """bibknowledge - retrieve dynamic kb as json list"""
-        from invenio.modules.knowledge.api import get_kbd_values_json
+        get_kbd_values_json = lazy_import('invenio.modules.knowledge.api:get_kbd_values_json')
         api_returns = get_kbd_values_json(self.dyn_kbname, 'Rodentia')
         expected = '["Charles Darwin"]'
         self.assertEqual(expected, api_returns)
 
     def test_kbd_search_as_json(self):
         """bibknowledge - search dynamic kb on web; get json hits"""
-        kbpage = CFG_SITE_URL+"/kb/export?kbname="+self.dyn_kbname+'&format=jquery&term=Rodentia'
+        kbpage = cfg['CFG_SITE_URL']+"/kb/export?kbname="+self.dyn_kbname+'&format=jquery&term=Rodentia'
         errs = test_web_page_content(kbpage, expected_text='["Charles Darwin"]')
         self.assertEqual([], errs)
 
     def test_kb_for_bibedit(self):
         """bibknowledge - test a bibedit-style *very* dynamic kb"""
-        from invenio.modules.knowledge.api import get_kbd_values_for_bibedit
+        get_kbd_values_for_bibedit = lazy_import('invenio.modules.knowledge.api:get_kbd_values_for_bibedit')
         myvalues = get_kbd_values_for_bibedit("100__a", searchwith="Ellis", expression="100__a:*%*")
         self.assertEqual(1, len(myvalues))
 

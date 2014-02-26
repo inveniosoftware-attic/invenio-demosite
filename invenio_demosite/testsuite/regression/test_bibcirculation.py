@@ -21,7 +21,7 @@
 
 __revision__ = "$Id$"
 
-from invenio.config import CFG_SITE_URL, CFG_SITE_SECURE_URL
+from invenio.base.globals import cfg
 from invenio.testsuite import make_test_suite, run_test_suite, \
                               test_web_page_content, merge_error_messages, \
                               InvenioTestCase
@@ -33,7 +33,7 @@ class BibCirculationUsersWebPagesAvailabilityTest(InvenioTestCase):
     def test_your_loans_page_availability(self):
         """bibcirculation - availability of your loans page"""
 
-        baseurl = CFG_SITE_URL + '/yourloans/'
+        baseurl = cfg['CFG_SITE_URL'] + '/yourloans/'
 
         _exports = ['', 'display', 'loanshistoricaloverview']
 
@@ -51,7 +51,7 @@ class BibCirculationAdminsWebPagesAvailabilityTest(InvenioTestCase):
     def test_admin_pages_availability(self):
         """bibcirculation - availability of main admin page"""
 
-        baseurl = CFG_SITE_URL + '/admin2/bibcirculation'
+        baseurl = cfg['CFG_SITE_URL'] + '/admin2/bibcirculation'
 
         self.assertEqual([], test_web_page_content(baseurl,
                                         expected_text="BibCirculation Admin"))
@@ -61,7 +61,7 @@ class BibCirculationAdminsWebPagesAvailabilityTest(InvenioTestCase):
     def test_borrower_search_availability(self):
         """bibcirculation - availability of borrower search"""
 
-        baseurl = CFG_SITE_SECURE_URL + '/admin2/bibcirculation/' \
+        baseurl = cfg['CFG_SITE_SECURE_URL'] + '/admin2/bibcirculation/' \
                               + 'borrower_search_result?column=name&string=john'
 
         self.assertEqual([], test_web_page_content(baseurl, username='admin',
@@ -72,7 +72,7 @@ class BibCirculationAdminsWebPagesAvailabilityTest(InvenioTestCase):
     def test_item_search_availability(self):
         """bibcirculation - availability of item search"""
 
-        baseurl = CFG_SITE_SECURE_URL + '/admin2/bibcirculation/' \
+        baseurl = cfg['CFG_SITE_SECURE_URL'] + '/admin2/bibcirculation/' \
                               + 'item_search_result?f=barcode&p=bc-34001'
 
         self.assertEqual([], test_web_page_content(baseurl, username='admin',

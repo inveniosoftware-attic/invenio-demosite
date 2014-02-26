@@ -24,10 +24,10 @@ __revision__ = "$Id$"
 from invenio.testsuite import InvenioTestCase
 import mechanize
 import re
-
-from invenio.config import CFG_SITE_URL, CFG_WEBSESSION_DIFFERENTIATE_BETWEEN_GUESTS
+from invenio.base.globals import cfg
 from invenio.testsuite import make_test_suite, run_test_suite, InvenioTestCase, \
                               test_web_page_content, make_url, make_surl, merge_error_messages
+
 
 class WebBasketWebPagesAvailabilityTest(InvenioTestCase):
     """Check WebBasket web pages whether they are up or not."""
@@ -35,7 +35,7 @@ class WebBasketWebPagesAvailabilityTest(InvenioTestCase):
     def test_your_baskets_pages_availability(self):
         """webbasket - availability of Your Baskets pages"""
 
-        baseurl = CFG_SITE_URL + '/yourbaskets/'
+        baseurl = cfg['CFG_SITE_URL'] + '/yourbaskets/'
 
         _exports = ['', 'display_item', 'display', 'search', 'write_note',
                     'save_note', 'delete_note', 'add', 'delete', 'modify',
@@ -44,7 +44,7 @@ class WebBasketWebPagesAvailabilityTest(InvenioTestCase):
                     'write_public_note', 'save_public_note',]
 
         error_messages = []
-        if CFG_WEBSESSION_DIFFERENTIATE_BETWEEN_GUESTS:
+        if cfg['CFG_WEBSESSION_DIFFERENTIATE_BETWEEN_GUESTS']:
             for url in [baseurl + page for page in _exports]:
                 error_messages.extend(test_web_page_content(url))
         for url in [baseurl + page for page in _exports]:
@@ -164,7 +164,7 @@ class WebBasketRecordsAdditionTest(InvenioTestCase):
         """webbasket - addition of records as guest"""
         # FIXME: needs updating as per the new WebBasket UI
 
-        if not CFG_WEBSESSION_DIFFERENTIATE_BETWEEN_GUESTS:
+        if not cfg['CFG_WEBSESSION_DIFFERENTIATE_BETWEEN_GUESTS']:
             self.fail('SKIPPED: guests users are not differentiated')
         browser = mechanize.Browser()
         self._add_records_to_basket_and_check_content(browser)

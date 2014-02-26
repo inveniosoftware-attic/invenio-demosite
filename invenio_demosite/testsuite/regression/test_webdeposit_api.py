@@ -34,8 +34,8 @@ class TestWebDepositAPI(InvenioTestCase):
         from random import randint
         from invenio.modules.apikeys import create_new_web_api_key, \
             get_available_web_api_keys
-        from invenio.modules.deposit.loader import \
-            deposition_metadata
+        #FIXME unknown import 'deposition_metadata'
+        from invenio.modules.deposit.loader import deposition_metadata
         # self.clear_tables()
 
         create_new_web_api_key(1, key_description='webdeposit_api_testing')
@@ -55,7 +55,7 @@ class TestWebDepositAPI(InvenioTestCase):
         from invenio.modules.apikeys import build_web_request
 
         url = url_for('webdeposit_api.deposition_create',
-                      deposition_type=self.deposition)
+                      deposition_types=self.deposition)
 
         url_create = build_web_request(url, api_key=self.apikey,
                                        timestamp=False)
@@ -94,7 +94,7 @@ class TestWebDepositAPI(InvenioTestCase):
         data = {'form_data': json.dumps(form_data),
                 'uuid': self.uuid}
         url = url_for('webdeposit_api.json_set',
-                      deposition_type=self.deposition)
+                      deposition_metadata=self.deposition)
         url_set = build_web_request(url, {},
                                     uid=1, api_key=self.apikey,
                                     timestamp=False)
@@ -102,7 +102,7 @@ class TestWebDepositAPI(InvenioTestCase):
             response = c.post(url_set, data=data)
             assert response._status_code == 200
 
-            url = url_for('webdeposit_api.json_get', deposition_type=self.deposition)
+            url = url_for('webdeposit_api.json_get', deposition_metadata=self.deposition)
             url_get = build_web_request(url, {'uuid':
                                         self.uuid},
                                         uid=1, api_key=self.apikey,

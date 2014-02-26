@@ -23,9 +23,10 @@ __revision__ = "$Id$"
 
 from invenio.testsuite import InvenioTestCase
 
-from invenio.config import CFG_SITE_URL
+from invenio.base.globals import cfg
 from invenio.testsuite import make_test_suite, run_test_suite, \
                               test_web_page_content, merge_error_messages
+
 
 class BibRankAdminWebPagesAvailabilityTest(InvenioTestCase):
     """Check BibRank Admin web pages whether they are up or not."""
@@ -33,7 +34,7 @@ class BibRankAdminWebPagesAvailabilityTest(InvenioTestCase):
     def test_bibrank_admin_interface_pages_availability(self):
         """bibrankadmin - availability of BibRank Admin interface pages"""
 
-        baseurl = CFG_SITE_URL + '/admin/bibrank/bibrankadmin.py/'
+        baseurl = cfg['CFG_SITE_URL'] + '/admin/bibrank/bibrankadmin.py/'
 
         _exports = ['', 'addrankarea', 'modifytranslations',
                     'modifycollection', 'showrankdetails', 'modifyrank',
@@ -56,7 +57,7 @@ class BibRankAdminWebPagesAvailabilityTest(InvenioTestCase):
     def test_bibrank_admin_guide_availability(self):
         """bibrankadmin - availability of BibRank Admin guide pages"""
 
-        url = CFG_SITE_URL + '/help/admin/bibrank-admin-guide'
+        url = cfg['CFG_SITE_URL'] + '/help/admin/bibrank-admin-guide'
         error_messages = test_web_page_content(url,
                                                expected_text="BibRank Admin Guide")
         if error_messages:

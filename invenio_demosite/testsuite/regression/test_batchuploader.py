@@ -30,13 +30,16 @@ import socket
 from urllib import urlencode
 
 from invenio.testsuite import make_test_suite, run_test_suite
-from invenio.legacy.dbquery import run_sql
 from invenio.utils.json import json
-from invenio.config import CFG_DEVEL_SITE, CFG_SITE_URL, CFG_TMPDIR, CFG_BINDIR
-from invenio.legacy.bibsched.cli import get_last_taskid, delete_task
+from invenio.base.globals import cfg
+from invenio.base.wrappers import lazy_import
 from invenio.utils.shell import run_shell_command
-from invenio.legacy.bibupload.engine_regression_tests import GenericBibUploadTest
 from invenio.utils.url import make_user_agent_string
+
+run_sql = lazy_import('invenio.legacy.dbquery:run_sql')
+get_last_taskid = lazy_import('invenio.legacy.bibsched.cli:get_last_taskid')
+delete_task = lazy_import('invenio.legacy.bibsched.cli:delete_task')
+GenericBibUploadTest = lazy_import('invenio.legacy.bibupload.engine_regression_tests:GenericBibUploadTest')
 
 CFG_HAS_CURL = os.path.exists("/usr/bin/curl")
 
@@ -44,7 +47,10 @@ CFG_HAS_CURL = os.path.exists("/usr/bin/curl")
 ## or 127.0.1.1, a.k.a. localhost, so the following checks if the current host
 ## is well recognized as localhost. Otherwise disable tests since they would
 ## fail due to not enough authorizations.
-CFG_LOCALHOST_OK = socket.gethostbyname(urlparse.urlparse(CFG_SITE_URL)[1].split(':')[0]) in ('127.0.0.1', '127.0.1.1')
+
+#FIXME
+CFG_LOCALHOST_OK = socket.gethostbyname(urlparse.urlparse(cfg['CFG_SITE_URL'])[1].split(':')[0]) in ('127.0.0.1', '127.0.1.1')
+
 
 class BatchUploaderRobotUploadTests(GenericBibUploadTest):
     """
@@ -52,10 +58,10 @@ class BatchUploaderRobotUploadTests(GenericBibUploadTest):
     """
     def setUp(self):
         GenericBibUploadTest.setUp(self)
-        self.callback_result_path = os.path.join(CFG_TMPDIR, 'robotupload.json')
-        self.callback_url = CFG_SITE_URL + '/httptest/post2?%s' % urlencode({
+        self.callback_result_path = os.path.join(cfg['CFG_TMPDIR'], 'robotupload.json')
+        self.callback_url = cfg['CFG_SITE_URL'] + '/httptest/post2?%s' % urlencode({
                     "save": self.callback_result_path})
-        self.oracle_callback_url = CFG_SITE_URL + '/httptest/oraclefriendly?%s' % urlencode({
+        self.oracle_callback_url = cfg['CFG_SITE_URL'] + '/httptest/oraclefriendly?%s' % urlencode({
                     "save": self.callback_result_path})
         if os.path.exists(self.callback_result_path):
             os.remove(self.callback_result_path)
@@ -72,30 +78,30 @@ class BatchUploaderRobotUploadTests(GenericBibUploadTest):
     <subfield code="a">TEST</subfield>
   </datafield>
 </record>"""
-        self.req = urllib2.Request(CFG_SITE_URL + '/batchuploader/robotupload/insert')
+        self.req = urllib2.Request(cfg['CFG_SITE_URL'] + '/batchuploader/robotupload/insert')
         self.req.add_header('Content-Type', 'application/marcxml+xml')
         self.req.add_header('User-Agent', make_user_agent_string('BatchUploader'))
         self.req.add_data(self.marcxml)
-        self.req_callback = urllib2.Request(CFG_SITE_URL + '/batchuploader/robotupload/insert?' + urlencode({
+        self.req_callback = urllib2.Request(cfg['CFG_SITE_URL'] + '/batchuploader/robotupload/insert?' + urlencode({
                 'callback_url': self.callback_url}))
         self.req_callback.add_header('Content-Type', 'application/marcxml+xml')
         self.req_callback.add_header('User-Agent', 'invenio_webupload')
         self.req_callback.add_data(self.marcxml)
-        self.nonce_url = CFG_SITE_URL + '/batchuploader/robotupload/insert?' + urlencode({
+        self.nonce_url = cfg['CFG_SITE_URL'] + '/batchuploader/robotupload/insert?' + urlencode({
                 'nonce': "1234",
                 'callback_url': self.callback_url})
         self.req_nonce = urllib2.Request(self.nonce_url)
         self.req_nonce.add_header('Content-Type', 'application/marcxml+xml')
         self.req_nonce.add_header('User-Agent', 'invenio_webupload')
         self.req_nonce.add_data(self.marcxml)
-        self.oracle_url = CFG_SITE_URL + '/batchuploader/robotupload/insert?' + urlencode({
+        self.oracle_url = cfg['CFG_SITE_URL'] + '/batchuploader/robotupload/insert?' + urlencode({
                 'special_treatment': 'oracle',
                 'callback_url': self.oracle_callback_url})
         self.req_oracle = urllib2.Request(self.oracle_url)
         self.req_oracle.add_header('Content-Type', 'application/marcxml+xml')
         self.req_oracle.add_header('User-Agent', 'invenio_webupload')
         self.req_oracle.add_data(self.marcxml)
-        self.legacy_url = CFG_SITE_URL + '/batchuploader/robotupload'
+        self.legacy_url = cfg['CFG_SITE_URL'] + '/batchuploader/robotupload'
 
     def tearDown(self):
         GenericBibUploadTest.tearDown(self)
@@ -126,21 +132,21 @@ class BatchUploaderRobotUploadTests(GenericBibUploadTest):
             result = urllib2.urlopen(self.req).read()
             self.failUnless("[INFO]" in result)
             current_task = get_last_taskid()
-            run_shell_command("%s/bibupload %%s" % CFG_BINDIR, [str(current_task)])
+            run_shell_command("%s/bibupload %%s" % cfg['CFG_BINDIR'], [str(current_task)])
             current_recid = run_sql("SELECT MAX(id) FROM bibrec")[0][0]
             self.failIfEqual(self.last_recid, current_recid)
             record = get_record(current_recid)
             self.assertEqual(record['245'][0][0], [('a', 'The title')])
 
-    if CFG_DEVEL_SITE and CFG_LOCALHOST_OK:
+    if cfg['CFG_DEVEL_SITE'] and CFG_LOCALHOST_OK:
         ## This expect a particular testing web handler that is available
-        ## only when CFG_DEVEL_SITE is set up correctly
+        ## only when cfg['CFG_DEVEL_SITE'] is set up correctly
         def test_insert_with_callback(self):
             """batchuploader - robotupload insert with callback"""
             result = urllib2.urlopen(self.req_callback).read()
             self.failUnless("[INFO]" in result, '"%s" did not contained [INFO]' % result)
             current_task = get_last_taskid()
-            run_shell_command("%s/bibupload %%s" % CFG_BINDIR, [str(current_task)])
+            run_shell_command("%s/bibupload %%s" % cfg['CFG_BINDIR'], [str(current_task)])
             results = json.loads(open(self.callback_result_path).read())
             self.failUnless('results' in results)
             self.assertEqual(len(results['results']), 1)
@@ -153,7 +159,7 @@ class BatchUploaderRobotUploadTests(GenericBibUploadTest):
             result = urllib2.urlopen(self.req_nonce).read()
             self.failUnless("[INFO]" in result, '"%s" did not contained "[INFO]"' % result)
             current_task = get_last_taskid()
-            run_shell_command("%s/bibupload %%s" % CFG_BINDIR, [str(current_task)])
+            run_shell_command("%s/bibupload %%s" % cfg['CFG_BINDIR'], [str(current_task)])
             results = json.loads(open(self.callback_result_path).read())
             self.failUnless('results' in results, '"%s" did not contained "results" key' % results)
             self.assertEqual(len(results['results']), 1)
@@ -170,7 +176,7 @@ class BatchUploaderRobotUploadTests(GenericBibUploadTest):
             result = urllib2.urlopen(self.req_oracle).read()
             self.failUnless("[INFO]" in result, '"%s" did not contained "[INFO]"' % result)
             current_task = get_last_taskid()
-            run_shell_command("%s/bibupload %%s" % CFG_BINDIR, [str(current_task)])
+            run_shell_command("%s/bibupload %%s" % cfg['CFG_BINDIR'], [str(current_task)])
             results = json.loads(open(self.callback_result_path).read())
             self.failUnless('results' in results, '"%s" did not contained "results" key' % results)
             self.assertEqual(len(results['results']), 1)
@@ -181,13 +187,13 @@ class BatchUploaderRobotUploadTests(GenericBibUploadTest):
         if CFG_HAS_CURL:
             def test_insert_via_curl(self):
                 """batchuploader - robotupload insert via CLI curl"""
-                curl_input_file = os.path.join(CFG_TMPDIR, 'curl_test.xml')
+                curl_input_file = os.path.join(cfg['CFG_TMPDIR'], 'curl_test.xml')
                 open(curl_input_file, "w").write(self.marcxml)
                 try:
                     result = run_shell_command('/usr/bin/curl -T %s %s -A %s -H "Content-Type: application/marcxml+xml"', [curl_input_file, self.nonce_url, make_user_agent_string('BatchUploader')])[1]
                     self.failUnless("[INFO]" in result)
                     current_task = get_last_taskid()
-                    run_shell_command("%s/bibupload %%s" % CFG_BINDIR, [str(current_task)])
+                    run_shell_command("%s/bibupload %%s" % cfg['CFG_BINDIR'], [str(current_task)])
                     results = json.loads(open(self.callback_result_path).read())
                     self.failUnless('results' in results, '"%s" did not contained [INFO]' % result)
                     self.assertEqual(len(results['results']), 1)
@@ -200,14 +206,14 @@ class BatchUploaderRobotUploadTests(GenericBibUploadTest):
 
             def test_legacy_insert_via_curl(self):
                 """batchuploader - robotupload legacy insert via CLI curl"""
-                curl_input_file = os.path.join(CFG_TMPDIR, 'curl_test.xml')
+                curl_input_file = os.path.join(cfg['CFG_TMPDIR'], 'curl_test.xml')
                 open(curl_input_file, "w").write(self.marcxml)
                 try:
                     ## curl -F 'file=@localfile.xml' -F 'mode=-i' [-F 'callback_url=http://...'] [-F 'nonce=1234'] http://cds.cern.ch/batchuploader/robotupload -A invenio_webupload
                     code, result, err = run_shell_command("/usr/bin/curl -v -F file=@%s -F 'mode=-i' -F callback_url=%s -F nonce=1234 %s -A %s", [curl_input_file, self.callback_url, self.legacy_url, make_user_agent_string('BatchUploader')])
                     self.failUnless("[INFO]" in result, '[INFO] not find in results: %s, %s' % (result, err))
                     current_task = get_last_taskid()
-                    run_shell_command("%s/bibupload %%s" % CFG_BINDIR, [str(current_task)])
+                    run_shell_command("%s/bibupload %%s" % cfg['CFG_BINDIR'], [str(current_task)])
                     results = json.loads(open(self.callback_result_path).read())
                     self.failUnless('results' in results, '"%s" did not contained [INFO]' % result)
                     self.assertEqual(len(results['results']), 1)

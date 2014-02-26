@@ -23,9 +23,10 @@ __revision__ = "$Id$"
 
 from invenio.testsuite import InvenioTestCase
 
-from invenio.config import CFG_SITE_URL
+from invenio.base.globals import cfg
 from invenio.testsuite import make_test_suite, run_test_suite, \
                               test_web_page_content, merge_error_messages
+
 
 class BibEditWebPagesAvailabilityTest(InvenioTestCase):
     """Check BibEdit web pages whether they are up or not."""
@@ -33,7 +34,7 @@ class BibEditWebPagesAvailabilityTest(InvenioTestCase):
     def test_bibedit_admin_interface_availability(self):
         """bibedit - availability of BibEdit Admin interface pages"""
 
-        baseurl = CFG_SITE_URL + '/record/1/'
+        baseurl = cfg['CFG_SITE_URL'] + '/record/1/'
 
         _exports = ['edit']
 
@@ -54,7 +55,7 @@ class BibEditWebPagesAvailabilityTest(InvenioTestCase):
     def test_bibedit_admin_guide_availability(self):
         """bibedit - availability of BibEdit Admin guide pages"""
 
-        url = CFG_SITE_URL + '/help/admin/bibedit-admin-guide'
+        url = cfg['CFG_SITE_URL'] + '/help/admin/bibedit-admin-guide'
         error_messages = test_web_page_content(url,
                                                expected_text="BibEdit Admin Guide")
         if error_messages:

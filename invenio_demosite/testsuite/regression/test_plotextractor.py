@@ -23,7 +23,7 @@ __revision__ = "$Id$"
 
 import os
 
-from invenio.config import CFG_TMPDIR, CFG_SITE_URL
+from invenio.base.globals import cfg
 from invenio.testsuite import make_test_suite, run_test_suite, InvenioTestCase
 
 
@@ -31,15 +31,15 @@ class GetDefaultsTest(InvenioTestCase):
     """Test function to get default values."""
     def setUp(self):
         self.arXiv_id = "arXiv:astro-ph_0104076"
-        self.tarball = "%s/2001/04/arXiv:astro-ph_0104076/arXiv:astro-ph_0104076" % (CFG_TMPDIR,)
+        self.tarball = "%s/2001/04/arXiv:astro-ph_0104076/arXiv:astro-ph_0104076" % (cfg['CFG_TMPDIR'],)
 
     def test_get_defaults(self):
         """plotextractor - get defaults"""
         from invenio.utils.shell import run_shell_command
         from invenio.utils.plotextractor.cli import get_defaults
-        sdir_should_be = os.path.join(CFG_TMPDIR, self.arXiv_id + '_plots')
+        sdir_should_be = os.path.join(cfg['CFG_TMPDIR'], self.arXiv_id + '_plots')
         refno_should_be = "15" # Note: For ATLANTIS DEMO site
-        sdir, refno = get_defaults(tarball=self.tarball, sdir=None, refno_url=CFG_SITE_URL)
+        sdir, refno = get_defaults(tarball=self.tarball, sdir=None, refno_url=cfg['CFG_SITE_URL'])
         if sdir != None:
             run_shell_command("rm -rf %s" % (sdir,))
         self.assertTrue(sdir == sdir_should_be, \

@@ -26,13 +26,14 @@ __revision__ = \
 
 from mechanize import Browser
 
-from invenio.legacy.dbquery import run_sql
-from invenio.config import CFG_SITE_SECURE_URL
-from invenio.mailutils_unit_tests import MailTestCase
+from invenio.base.globals import cfg
 from invenio.base.wrappers import lazy_import
 from invenio.testsuite import InvenioTestCase, make_test_suite, run_test_suite
+from invenio.testsuite.test_ext_email import MailTestCase
 
+run_sql = lazy_import('invenio.legacy.dbquery:run_sql')
 webuser = lazy_import('invenio.legacy.webuser')
+
 
 class IsUserSuperAdminTests(InvenioTestCase):
     """Test functions related to the isUserSuperAdmin function."""
@@ -60,7 +61,7 @@ class WebSessionYourSettingsTests(MailTestCase):
     def test_password_setting(self):
         """webuser - check password settings"""
         browser = Browser()
-        browser.open(CFG_SITE_SECURE_URL + "/youraccount/login")
+        browser.open(cfg['CFG_SITE_SECURE_URL'] + "/youraccount/login")
         browser.select_form(nr=0)
         browser['nickname'] = 'admin'
         browser['password'] = ''
@@ -75,7 +76,7 @@ class WebSessionYourSettingsTests(MailTestCase):
                       (expected_response, login_response_body))
 
         # Going to set new password from "" to "123"
-        browser.open(CFG_SITE_SECURE_URL + "/youraccount/edit")
+        browser.open(cfg['CFG_SITE_SECURE_URL'] + "/youraccount/edit")
         browser.select_form(name="edit_password")
         browser['old_password'] = ""
         browser['password'] = "123"
@@ -90,7 +91,7 @@ class WebSessionYourSettingsTests(MailTestCase):
                     (expected_response, change_password_body))
 
         # Going to set a wrong old password
-        browser.open(CFG_SITE_SECURE_URL + "/youraccount/edit")
+        browser.open(cfg['CFG_SITE_SECURE_URL'] + "/youraccount/edit")
         browser.select_form(name="edit_password")
         browser['old_password'] = "321"
         browser['password'] = "123"
@@ -105,7 +106,7 @@ class WebSessionYourSettingsTests(MailTestCase):
                     (expected_response, change_password_body))
 
         # Going to put different new passwords
-        browser.open(CFG_SITE_SECURE_URL + "/youraccount/edit")
+        browser.open(cfg['CFG_SITE_SECURE_URL'] + "/youraccount/edit")
         browser.select_form(name="edit_password")
         browser['old_password'] = "123"
         browser['password'] = "123"
@@ -120,7 +121,7 @@ class WebSessionYourSettingsTests(MailTestCase):
                     (expected_response, change_password_body))
 
         # Reset the situation
-        browser.open(CFG_SITE_SECURE_URL + "/youraccount/edit")
+        browser.open(cfg['CFG_SITE_SECURE_URL'] + "/youraccount/edit")
         browser.select_form(name="edit_password")
         browser['old_password'] = "123"
         browser['password'] = ""
@@ -137,7 +138,7 @@ class WebSessionYourSettingsTests(MailTestCase):
     def test_email_caseless(self):
         """webuser - check email caseless"""
         browser = Browser()
-        browser.open(CFG_SITE_SECURE_URL + "/youraccount/register")
+        browser.open(cfg['CFG_SITE_SECURE_URL'] + "/youraccount/register")
         browser.select_form(nr=0)
         browser['email'] = 'foo@cds.cern.ch'
         browser['nickname'] = 'foobar'
@@ -155,7 +156,7 @@ class WebSessionYourSettingsTests(MailTestCase):
 
 
         browser = Browser()
-        browser.open(CFG_SITE_SECURE_URL + "/youraccount/register")
+        browser.open(cfg['CFG_SITE_SECURE_URL'] + "/youraccount/register")
         browser.select_form(nr=0)
         browser['email'] = 'foo@cds.cern.ch'
         browser['nickname'] = 'foobar2'
@@ -172,7 +173,7 @@ class WebSessionYourSettingsTests(MailTestCase):
                       (expected_response, login_response_body))
 
         browser = Browser()
-        browser.open(CFG_SITE_SECURE_URL + "/youraccount/register")
+        browser.open(cfg['CFG_SITE_SECURE_URL'] + "/youraccount/register")
         browser.select_form(nr=0)
         browser['email'] = 'FOO@cds.cern.ch'
         browser['nickname'] = 'foobar2'
@@ -193,7 +194,7 @@ class WebSessionYourSettingsTests(MailTestCase):
 
         # logging in as admin
         browser = Browser()
-        browser.open(CFG_SITE_SECURE_URL + "/youraccount/login")
+        browser.open(cfg['CFG_SITE_SECURE_URL'] + "/youraccount/login")
         browser.select_form(nr=0)
         browser['nickname'] = 'admin'
         browser['password'] = ''
@@ -208,7 +209,7 @@ class WebSessionYourSettingsTests(MailTestCase):
                       (expected_response, login_response_body))
 
         # Going to edit page and setting records per group to 20
-        browser.open(CFG_SITE_SECURE_URL + "/youraccount/edit/WebSearchSettings")
+        browser.open(cfg['CFG_SITE_SECURE_URL'] + "/youraccount/edit/WebSearchSettings")
         browser.select_form(nr=0)
         browser['rg'] = ["25"]
         browser.submit()
@@ -222,7 +223,7 @@ class WebSessionYourSettingsTests(MailTestCase):
                       (expected_response, changed_settings_body))
 
         # Going to the search page, making an empty search
-        browser.open(CFG_SITE_SECURE_URL)
+        browser.open(cfg['CFG_SITE_SECURE_URL'])
         browser.select_form(name="search")
         browser.submit()
         expected_response = "1 to 25"
@@ -234,7 +235,7 @@ class WebSessionYourSettingsTests(MailTestCase):
                       (expected_response, records_found_body))
 
         # Going again to edit and setting records per group back to 10
-        browser.open(CFG_SITE_SECURE_URL + "/youraccount/edit/WebSearchSettings")
+        browser.open(cfg['CFG_SITE_SECURE_URL'] + "/youraccount/edit/WebSearchSettings")
         browser.select_form(name="edit")
         browser['rg'] = ["10"]
         browser.submit()
@@ -248,7 +249,7 @@ class WebSessionYourSettingsTests(MailTestCase):
                       (expected_response, changed_settings_body))
 
         # Logging out!
-        browser.open(CFG_SITE_SECURE_URL + "/youraccount/logout")
+        browser.open(cfg['CFG_SITE_SECURE_URL'] + "/youraccount/logout")
         expected_response = "You are no longer recognized"
         logout_response_body = browser.response().read()
         try:
@@ -258,7 +259,7 @@ class WebSessionYourSettingsTests(MailTestCase):
                       (expected_response, logout_response_body))
 
         # Logging in again
-        browser.open(CFG_SITE_SECURE_URL + "/youraccount/login")
+        browser.open(cfg['CFG_SITE_SECURE_URL'] + "/youraccount/login")
         browser.select_form(nr=0)
         browser['nickname'] = 'admin'
         browser['password'] = ''
@@ -273,7 +274,7 @@ class WebSessionYourSettingsTests(MailTestCase):
                       (expected_response, login_response_body))
 
         # Let's go to search and check that the setting is still there
-        browser.open(CFG_SITE_SECURE_URL)
+        browser.open(cfg['CFG_SITE_SECURE_URL'])
         browser.select_form(name="search")
         browser.submit()
         expected_response = "1 to 10"

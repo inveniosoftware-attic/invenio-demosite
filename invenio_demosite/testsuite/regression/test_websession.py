@@ -25,11 +25,13 @@ __revision__ = \
     "$Id$"
 
 from mechanize import Browser
-from invenio.config import CFG_SITE_SECURE_URL, CFG_SITE_ADMIN_EMAIL
 from invenio.testsuite import make_test_suite, run_test_suite, \
                               test_web_page_content, merge_error_messages, \
                               InvenioTestCase
-from invenio.legacy.dbquery import run_sql
+from invenio.base.globals import cfg
+from invenio.base.wrappers import lazy_import
+
+run_sql = lazy_import('invenio.legacy.dbquery:run_sql')
 
 class WebSessionWebPagesAvailabilityTest(InvenioTestCase):
     """Check WebSession web pages whether they are up or not."""
@@ -37,7 +39,7 @@ class WebSessionWebPagesAvailabilityTest(InvenioTestCase):
     def test_your_account_pages_availability(self):
         """websession - availability of Your Account pages"""
 
-        baseurl = CFG_SITE_SECURE_URL + '/youraccount/'
+        baseurl = cfg['CFG_SITE_SECURE_URL'] + '/youraccount/'
 
         _exports = ['', 'edit', 'change', 'lost', 'display',
                     'send_email', 'youradminactivities',
@@ -54,7 +56,7 @@ class WebSessionWebPagesAvailabilityTest(InvenioTestCase):
     def test_your_groups_pages_availability(self):
         """websession - availability of Your Groups pages"""
 
-        baseurl = CFG_SITE_SECURE_URL + '/yourgroups/'
+        baseurl = cfg['CFG_SITE_SECURE_URL'] + '/yourgroups/'
 
         _exports = ['', 'display', 'create', 'join', 'leave', 'edit', 'members']
 
@@ -72,11 +74,11 @@ class WebSessionLostYourPasswordTest(InvenioTestCase):
     def test_lost_your_password_for_internal_accounts(self):
         """websession - sending lost password for internal admin account"""
 
-        try_with_account = CFG_SITE_ADMIN_EMAIL
+        try_with_account = cfg['CFG_SITE_ADMIN_EMAIL']
 
-        # click on "send lost password" for CFG_SITE_ADMIN_EMAIL internal account
+        # click on "send lost password" for cfg['CFG_SITE_ADMIN_EMAIL'] internal account
         browser = Browser()
-        browser.open(CFG_SITE_SECURE_URL + "/youraccount/lost")
+        browser.open(cfg['CFG_SITE_SECURE_URL'] + "/youraccount/lost")
         browser.select_form(nr=0)
         browser['p_email'] = try_with_account
         try:

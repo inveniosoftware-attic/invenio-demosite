@@ -21,7 +21,7 @@
 
 __revision__ = "$Id$"
 
-from invenio.config import CFG_SITE_URL
+from invenio.base.globals import cfg
 from invenio.testsuite import make_test_suite, run_test_suite, \
                               test_web_page_content, test_web_page_existence, \
                               InvenioTestCase
@@ -33,29 +33,29 @@ class BibConvertWebPagesAvailabilityTest(InvenioTestCase):
     def test_availability_bibconvert_admin_guide(self):
         """bibconvert - availability of BibConvert Admin Guide page"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/help/admin/bibconvert-admin-guide',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/help/admin/bibconvert-admin-guide',
                                                expected_text="BibConvert Admin Guide"))
         return
 
     def test_availability_bibconvert_admin_guide_parts(self):
         """bibconvert - availability of BibConvert Admin Guide parts"""
-        test_web_page_existence(CFG_SITE_URL + '/static/bibconvert-admin-guide/bibtex.cfg')
-        test_web_page_existence(CFG_SITE_URL + '/static/bibconvert-admin-guide/dcq.cfg')
-        test_web_page_existence(CFG_SITE_URL + '/static/bibconvert-admin-guide/dcq.dat')
-        test_web_page_existence(CFG_SITE_URL + '/static/bibconvert-admin-guide/dcxml-to-marcxml.cfg')
-        test_web_page_existence(CFG_SITE_URL + '/static/bibconvert-admin-guide/example_oaimarc2xm.xsl')
-        test_web_page_existence(CFG_SITE_URL + '/static/bibconvert-admin-guide/example_oaimarc2xm_collID.kb')
-        test_web_page_existence(CFG_SITE_URL + '/static/bibconvert-admin-guide/sample.cfg')
-        test_web_page_existence(CFG_SITE_URL + '/static/bibconvert-admin-guide/sample.dat')
-        test_web_page_existence(CFG_SITE_URL + '/static/bibconvert-admin-guide/sample.kb')
+        test_web_page_existence(cfg['CFG_SITE_URL'] + '/static/bibconvert-admin-guide/bibtex.cfg')
+        test_web_page_existence(cfg['CFG_SITE_URL'] + '/static/bibconvert-admin-guide/dcq.cfg')
+        test_web_page_existence(cfg['CFG_SITE_URL'] + '/static/bibconvert-admin-guide/dcq.dat')
+        test_web_page_existence(cfg['CFG_SITE_URL'] + '/static/bibconvert-admin-guide/dcxml-to-marcxml.cfg')
+        test_web_page_existence(cfg['CFG_SITE_URL'] + '/static/bibconvert-admin-guide/example_oaimarc2xm.xsl')
+        test_web_page_existence(cfg['CFG_SITE_URL'] + '/static/bibconvert-admin-guide/example_oaimarc2xm_collID.kb')
+        test_web_page_existence(cfg['CFG_SITE_URL'] + '/static/bibconvert-admin-guide/sample.cfg')
+        test_web_page_existence(cfg['CFG_SITE_URL'] + '/static/bibconvert-admin-guide/sample.dat')
+        test_web_page_existence(cfg['CFG_SITE_URL'] + '/static/bibconvert-admin-guide/sample.kb')
 
     def test_availability_bibconvert_hacking_pages(self):
         """bibconvert - availability of BibConvert Hacking Guide pages"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/help/hacking/bibconvert-internals',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/help/hacking/bibconvert-internals',
                                                expected_text="BibConvert Internals"))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/help/hacking/bibconvert-api',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/help/hacking/bibconvert-api',
                                                expected_text="BibConvert API"))
         return
 

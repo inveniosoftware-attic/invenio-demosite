@@ -24,11 +24,12 @@ import sys
 import os
 from warnings import warn
 
-from invenio.bibclassify_unit_tests import BibClassifyTestCase
-from invenio.config import CFG_SITE_URL
+from invenio.base.globals import cfg
 from invenio.base.wrappers import lazy_import
 from invenio.testsuite import make_test_suite, run_test_suite, \
     test_web_page_content
+
+BibClassifyTestCase = lazy_import('invenio.modules.classifier.testsuite.test_classifier:BibClassifyTestCase')
 
 bconfig = lazy_import('invenio.legacy.bibclassify.config')
 bibclassify_cli = lazy_import('invenio.legacy.bibclassify.cli')
@@ -41,20 +42,20 @@ class BibClassifyRegressionTest(BibClassifyTestCase):
 
     def test_availability_bibclassify_admin_guide(self):
         """bibclassify - availability of BibClassify Admin Guide page"""
-        self.assertEqual([], test_web_page_content(CFG_SITE_URL +
+        self.assertEqual([], test_web_page_content(cfg['CFG_SITE_URL'] +
             '/help/admin/bibclassify-admin-guide',
             expected_text="BibClassify Admin Guide"))
         return
 
     def test_availability_bibclassify_hacking_pages(self):
         """bibclassify - availability of BibClassify Hacking Guide pages"""
-        self.assertEqual([], test_web_page_content(CFG_SITE_URL +
+        self.assertEqual([], test_web_page_content(cfg['CFG_SITE_URL'] +
             '/help/hacking/bibclassify-internals',
             expected_text="BibClassify Internals"))
-        self.assertEqual([], test_web_page_content(CFG_SITE_URL +
+        self.assertEqual([], test_web_page_content(cfg['CFG_SITE_URL'] +
             '/help/hacking/bibclassify-hep-taxonomy',
             expected_text="The HEP taxonomy: rationale and extensions"))
-        self.assertEqual([], test_web_page_content(CFG_SITE_URL +
+        self.assertEqual([], test_web_page_content(cfg['CFG_SITE_URL'] +
             '/help/hacking/bibclassify-extraction-algorithm',
             expected_text="The code behind BibClassify: the extraction algorithm"))
         return

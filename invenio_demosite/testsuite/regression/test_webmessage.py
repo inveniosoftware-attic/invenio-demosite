@@ -21,7 +21,7 @@
 
 __revision__ = "$Id$"
 
-from invenio.config import CFG_SITE_URL, CFG_SITE_LANG
+from invenio.base.globals import cfg
 from invenio.base.wrappers import lazy_import
 from invenio.testsuite import make_test_suite, run_test_suite, \
                               test_web_page_content, merge_error_messages, \
@@ -56,7 +56,7 @@ class WebMessageWebPagesAvailabilityTest(InvenioTestCase):
     def test_your_message_pages_availability(self):
         """webmessage - availability of Your Messages pages"""
 
-        baseurl = CFG_SITE_URL + '/yourmessages/'
+        baseurl = cfg['CFG_SITE_URL'] + '/yourmessages/'
 
         _exports = ['', 'display', 'write', 'send', 'delete', 'delete_all',
                     'display_msg']
@@ -81,12 +81,12 @@ class WebMessageSendingAndReceivingMessageTest(InvenioTestCase):
                                         msg_to_group="",
                                         msg_subject="Hi romeo",
                                         msg_body="hello romeo how are you?",
-                                        ln=CFG_SITE_LANG)
+                                        ln=cfg['CFG_SITE_LANG'])
         # it is verified that romeo received the message
         result = get_all_messages_for_user(5)
         self.assertEqual("Hi romeo", result[0].subject)
         self.assertEqual("juliet", result[0].user_from.nickname)
-        webmessage.perform_request_delete_msg(5, result[0].id, ln=CFG_SITE_LANG)
+        webmessage.perform_request_delete_msg(5, result[0].id, ln=cfg['CFG_SITE_LANG'])
 
     def test_setting_message_status(self):
         """webmessage - status from "new" to "read" """
@@ -96,13 +96,13 @@ class WebMessageSendingAndReceivingMessageTest(InvenioTestCase):
                                         msg_to_group="",
                                         msg_subject="Hi romeo",
                                         msg_body="hello romeo how are you?",
-                                        ln=CFG_SITE_LANG)
+                                        ln=cfg['CFG_SITE_LANG'])
         msgid =  get_all_messages_for_user(5)[0].id
         # status is changed
         set_message_status(5, msgid, 'R')
         msgstatus = get_all_messages_for_user(5)[0].sent_to_users[0].status
         self.assertEqual(msgstatus, 'R')
-        webmessage.perform_request_delete_msg(5, msgid, ln=CFG_SITE_LANG)
+        webmessage.perform_request_delete_msg(5, msgid, ln=cfg['CFG_SITE_LANG'])
 
     def test_getting_nb_new_msg(self):
         """webmessage - count the nb of new message"""
@@ -113,7 +113,7 @@ class WebMessageSendingAndReceivingMessageTest(InvenioTestCase):
                                         msg_to_group="",
                                         msg_subject="Hi romeo",
                                         msg_body="hello romeo how are you?",
-                                        ln=CFG_SITE_LANG)
+                                        ln=cfg['CFG_SITE_LANG'])
         self.assertEqual(get_nb_new_messages_for_user(5), 1)
 
     def test_getting_nb_readable_messages(self):
@@ -125,12 +125,12 @@ class WebMessageSendingAndReceivingMessageTest(InvenioTestCase):
                                         msg_to_group="",
                                         msg_subject="Hi romeo",
                                         msg_body="hello romeo how are you?",
-                                        ln=CFG_SITE_LANG)
+                                        ln=cfg['CFG_SITE_LANG'])
         msgid =  get_all_messages_for_user(5)[0].id
         # status is changed
         set_message_status(5, msgid, 'R')
         self.assertEqual(get_nb_readable_messages_for_user(5), 1)
-        webmessage.perform_request_delete_msg(5, msgid, ln=CFG_SITE_LANG)
+        webmessage.perform_request_delete_msg(5, msgid, ln=cfg['CFG_SITE_LANG'])
 
     def test_getting_all_messages_for_user(self):
         """webmessage - get all message for user"""
@@ -141,19 +141,19 @@ class WebMessageSendingAndReceivingMessageTest(InvenioTestCase):
                                         msg_to_group="",
                                         msg_subject="Hi romeo",
                                         msg_body="hello romeo how are you?",
-                                        ln=CFG_SITE_LANG)
+                                        ln=cfg['CFG_SITE_LANG'])
         webmessage.perform_request_send(6,
                                         msg_to_user="romeo",
                                         msg_to_group="",
                                         msg_subject="Hi romeo",
                                         msg_body="hello romeo how are you?",
-                                        ln=CFG_SITE_LANG)
+                                        ln=cfg['CFG_SITE_LANG'])
         webmessage.perform_request_send(6,
                                         msg_to_user="romeo",
                                         msg_to_group="",
                                         msg_subject="Hi romeo",
                                         msg_body="hello romeo how are you?",
-                                        ln=CFG_SITE_LANG)
+                                        ln=cfg['CFG_SITE_LANG'])
         self.assertEqual(len(get_all_messages_for_user(5)), 3)
         delete_all_messages(5)
 
@@ -166,19 +166,19 @@ class WebMessageSendingAndReceivingMessageTest(InvenioTestCase):
                                         msg_to_group="",
                                         msg_subject="Hi romeo",
                                         msg_body="hello romeo how are you?",
-                                        ln=CFG_SITE_LANG)
+                                        ln=cfg['CFG_SITE_LANG'])
         webmessage.perform_request_send(6,
                                         msg_to_user="romeo",
                                         msg_to_group="",
                                         msg_subject="Hi romeo",
                                         msg_body="hello romeo how are you?",
-                                        ln=CFG_SITE_LANG)
+                                        ln=cfg['CFG_SITE_LANG'])
         webmessage.perform_request_send(6,
                                         msg_to_user="romeo",
                                         msg_to_group="",
                                         msg_subject="Hi romeo",
                                         msg_body="hello romeo how are you?",
-                                        ln=CFG_SITE_LANG)
+                                        ln=cfg['CFG_SITE_LANG'])
         self.assertEqual(count_nb_messages(5), 3)
         delete_all_messages(5)
         self.assertEqual(count_nb_messages(5), 0)
@@ -193,7 +193,7 @@ class WebMessageSendingAndReceivingMessageTest(InvenioTestCase):
                                         msg_to_group="",
                                         msg_subject="Hi romeo",
                                         msg_body="hello romeo how are you?",
-                                        ln=CFG_SITE_LANG)
+                                        ln=cfg['CFG_SITE_LANG'])
         msg_id = get_all_messages_for_user(5)[0].id
         delete_message_from_user_inbox(5, msg_id)
         self.assertEqual(count_nb_messages(5), 0)
@@ -223,7 +223,7 @@ class WebMessageSendingAndReceivingMessageTest(InvenioTestCase):
         send_message(5, msgid, status=CFG_WEBMESSAGE_STATUS_CODE['NEW'])
         result = get_all_messages_for_user(5)
         self.assertEqual("hello", result[0].subject)
-        webmessage.perform_request_delete_msg(5, result[0].id, ln=CFG_SITE_LANG)
+        webmessage.perform_request_delete_msg(5, result[0].id, ln=cfg['CFG_SITE_LANG'])
 
     def test_check_quota(self):
         """webmessage - you give a quota, it returns users over-quota"""
@@ -232,25 +232,25 @@ class WebMessageSendingAndReceivingMessageTest(InvenioTestCase):
                                         msg_to_group="",
                                         msg_subject="Hi jekyll",
                                         msg_body="hello how are you?",
-                                        ln=CFG_SITE_LANG)
+                                        ln=cfg['CFG_SITE_LANG'])
         webmessage.perform_request_send(6,
                                         msg_to_user="jekyll",
                                         msg_to_group="",
                                         msg_subject="Hi jekyll",
                                         msg_body="hello how are you?",
-                                        ln=CFG_SITE_LANG)
+                                        ln=cfg['CFG_SITE_LANG'])
         webmessage.perform_request_send(6,
                                         msg_to_user="jekyll",
                                         msg_to_group="",
                                         msg_subject="Hi jekyll",
                                         msg_body="hello how are you?",
-                                        ln=CFG_SITE_LANG)
+                                        ln=cfg['CFG_SITE_LANG'])
         webmessage.perform_request_send(6,
                                         msg_to_user="jekyll",
                                         msg_to_group="",
                                         msg_subject="Hi jekyll",
                                         msg_body="hello how are you?",
-                                        ln=CFG_SITE_LANG)
+                                        ln=cfg['CFG_SITE_LANG'])
         d = check_quota(3)
         self.assertEqual(d.keys()[0], 2)
         delete_all_messages(2)

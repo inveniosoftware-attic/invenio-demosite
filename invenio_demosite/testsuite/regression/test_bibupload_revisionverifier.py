@@ -29,22 +29,19 @@ print_record = lazy_import('invenio.legacy.search_engine:print_record')
 bibupload = lazy_import('invenio.bibupload:bibupload')
 xml_marc_to_records = lazy_import('invenio.bibupload:xml_marc_to_records')
 
+run_sql = lazy_import('invenio.legacy.dbquery:run_sql')
+
 record_get_field_value = lazy_import('invenio.legacy.bibrecord:record_get_field_value')
 record_xml_output = lazy_import('invenio.legacy.bibrecord:record_xml_output')
 
-from invenio.legacy.bibupload.revisionverifier \
-                        import RevisionVerifier, \
-                               InvenioBibUploadConflictingRevisionsError, \
-                               InvenioBibUploadMissing005Error, \
-                               InvenioBibUploadUnchangedRecordError, \
-                               InvenioBibUploadInvalidRevisionError
+RevisionVerifier = lazy_import('invenio.legacy.bibupload.revisionverifier:RevisionVerifier')
+InvenioBibUploadConflictingRevisionsError = lazy_import('invenio.legacy.bibupload.revisionverifier:InvenioBibUploadConflictingRevisionsError')
+InvenioBibUploadMissing005Error = lazy_import('invenio.legacy.bibupload.revisionverifier:InvenioBibUploadMissing005Error')
+InvenioBibUploadUnchangedRecordError = lazy_import('invenio.legacy.bibupload.revisionverifier:InvenioBibUploadUnchangedRecordError')
+InvenioBibUploadInvalidRevisionError = lazy_import('invenio.legacy.bibupload.revisionverifier:InvenioBibUploadInvalidRevisionError')
 
-from invenio.legacy.bibupload.engine_regression_tests import GenericBibUploadTest, \
-                                               compare_xmbuffers
-
-from invenio.testsuite import make_test_suite, run_test_suite, nottest
-
-from invenio.legacy.dbquery import run_sql
+GenericBibUploadTest = lazy_import('invenio.legacy.bibupload.engine_regression_tests:GenericBibUploadTest')
+compare_xmbuffers = lazy_import('invenio.legacy.bibupload.engine_regression_tests:compare_xmbuffers')
 
 
 @nottest

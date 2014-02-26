@@ -21,17 +21,19 @@
 
 from invenio.testsuite import make_test_suite, run_test_suite, InvenioTestCase
 from intbitset import intbitset
+from invenio.base.wrappers import lazy_import
 
 
 class WebSearchSummarizerTests(InvenioTestCase):
     """Test utility functions for search engine summarizer."""
 
     def test_basic(self):
-        from invenio.legacy.search_engine.summarizer import summarize_records
+        summarize_records = lazy_import('invenio.legacy.search_engine.summarizer:summarize_records')
+        #FIXME
         summarize_records(intbitset(range(1, 100)), 'hcs', 'en')
 
     def test_xml(self):
-        from invenio.legacy.search_engine.summarizer import summarize_records
+        summarize_records = lazy_import('invenio.legacy.search_engine.summarizer:summarize_records')
         summarize_records(intbitset(range(1, 100)), 'xcs', 'en')
 
 

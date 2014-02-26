@@ -21,10 +21,7 @@
 
 
 from flask import url_for
-from invenio.config import CFG_SITE_URL, \
-                           CFG_SITE_SECURE_URL, \
-                           CFG_SITE_RECORD, \
-                           CFG_WEBLINKBACK_TRACKBACK_ENABLED
+from invenio.base.globals import cfg
 from invenio.base.wrappers import lazy_import
 from invenio.testsuite import make_test_suite, \
     run_test_suite, \
@@ -91,12 +88,12 @@ class WebLinkbackWebPagesAvailabilityTest(InvenioTestCase):
 
         error_messages = []
 
-        baseurl = CFG_SITE_SECURE_URL + '/%s/10/linkbacks/' % CFG_SITE_RECORD
+        baseurl = cfg['CFG_SITE_SECURE_URL'] + '/%s/10/linkbacks/' % cfg['CFG_SITE_RECORD']
         _exports = ['', 'display', 'index', 'approve', 'reject']
         for url in [baseurl + page for page in _exports]:
             error_messages.extend(test_web_page_content(url))
 
-        baseurl = CFG_SITE_URL + '/linkbacks/'
+        baseurl = cfg['CFG_SITE_URL'] + '/linkbacks/'
         error_messages.extend(test_web_page_content(baseurl))
 
         if error_messages:
@@ -105,7 +102,7 @@ class WebLinkbackWebPagesAvailabilityTest(InvenioTestCase):
     def test_weblinkback_admin_interface_availability(self):
         """weblinkback - availability of WebLinkback Admin interface pages"""
 
-        baseurl = CFG_SITE_URL + '/admin/weblinkback/weblinkbackadmin.py/'
+        baseurl = cfg['CFG_SITE_URL'] + '/admin/weblinkback/weblinkbackadmin.py/'
 
         _exports = ['', 'lists', 'linkbacks']
 
@@ -214,14 +211,14 @@ class WebLinkbackDatabaseTest(InvenioTestCase):
         self.assertEqual(5, len(get_all_linkbacks(recid=42, status=CFG_WEBLINKBACK_STATUS['PENDING'])))
         self.assertEqual(0, len(get_all_linkbacks(recid=42, status=CFG_WEBLINKBACK_STATUS['APPROVED'])))
 
-        url = CFG_SITE_SECURE_URL + '/%s/41/linkbacks/' % CFG_SITE_RECORD
+        url = cfg['CFG_SITE_SECURE_URL'] + '/%s/41/linkbacks/' % cfg['CFG_SITE_RECORD']
         expected_texts = ('Linkbacks to review: 4', 'Linkbacks: 0', 'URL1', 'URL2', 'URL3', 'URL4')
         for text in expected_texts:
             self.assertEqual([], test_web_page_content(url,
                                                        username='admin',
                                                        expected_text=text))
 
-        url = CFG_SITE_SECURE_URL + '/%s/42/linkbacks/' % CFG_SITE_RECORD
+        url = cfg['CFG_SITE_SECURE_URL'] + '/%s/42/linkbacks/' % cfg['CFG_SITE_RECORD']
         expected_texts = ('Linkbacks to review: 5', 'Linkbacks: 0', 'URL5', 'URL6', 'URL7', 'URL8', 'URL1')
         for text in expected_texts:
             self.assertEqual([], test_web_page_content(url,
@@ -246,7 +243,7 @@ class WebLinkbackDatabaseTest(InvenioTestCase):
         linkback_status = linkback[5]
         self.assertEqual(CFG_WEBLINKBACK_STATUS['APPROVED'], linkback_status)
 
-        url = CFG_SITE_SECURE_URL + '/%s/41/linkbacks/' % CFG_SITE_RECORD
+        url = cfg['CFG_SITE_SECURE_URL'] + '/%s/41/linkbacks/' % cfg['CFG_SITE_RECORD']
         expected_texts = ('Linkbacks to review: 3', 'Linkbacks: 1')
         for text in expected_texts:
             self.assertEqual([], test_web_page_content(url,
@@ -266,7 +263,7 @@ class WebLinkbackDatabaseTest(InvenioTestCase):
         linkback_status = linkback[5]
         self.assertEqual(CFG_WEBLINKBACK_STATUS['REJECTED'], linkback_status)
 
-        url = CFG_SITE_SECURE_URL + '/%s/42/linkbacks/' % CFG_SITE_RECORD
+        url = cfg['CFG_SITE_SECURE_URL'] + '/%s/42/linkbacks/' % cfg['CFG_SITE_RECORD']
         expected_texts = ('Linkbacks to review: 4', 'Linkbacks: 0')
         for text in expected_texts:
             self.assertEqual([], test_web_page_content(url,
@@ -295,7 +292,7 @@ class WebLinkbackDatabaseTest(InvenioTestCase):
         self.assertEqual(CFG_WEBLINKBACK_TYPE['TRACKBACK'], linkback[4])
         self.assertEqual(CFG_WEBLINKBACK_STATUS['PENDING'], linkback[5])
 
-        url = CFG_SITE_SECURE_URL + '/%s/42/linkbacks/' % CFG_SITE_RECORD
+        url = cfg['CFG_SITE_SECURE_URL'] + '/%s/42/linkbacks/' % cfg['CFG_SITE_RECORD']
         expected_texts = ('Linkbacks to review: 6', 'Linkbacks: 0')
         for text in expected_texts:
             self.assertEqual([], test_web_page_content(url,
@@ -323,7 +320,7 @@ class WebLinkbackDatabaseTest(InvenioTestCase):
         self.assertEqual(1, len(get_urls_and_titles(CFG_WEBLINKBACK_PAGE_TITLE_STATUS['NEW'])))
         self.assertEqual(0, len(get_urls_and_titles(CFG_WEBLINKBACK_PAGE_TITLE_STATUS['MANUALLY_SET'])))
 
-        url = CFG_SITE_SECURE_URL + '/%s/42/linkbacks/' % CFG_SITE_RECORD
+        url = cfg['CFG_SITE_SECURE_URL'] + '/%s/42/linkbacks/' % cfg['CFG_SITE_RECORD']
         expected_texts = ('Linkbacks to review: 5', 'Linkbacks: 1')
         for text in expected_texts:
             self.assertEqual([], test_web_page_content(url,
@@ -357,7 +354,7 @@ class WebLinkbackDatabaseTest(InvenioTestCase):
         self.assertEqual(CFG_WEBLINKBACK_TYPE['TRACKBACK'], linkback[4])
         self.assertEqual(CFG_WEBLINKBACK_STATUS['PENDING'], linkback[5])
 
-        url = CFG_SITE_SECURE_URL + '/%s/42/linkbacks/' % CFG_SITE_RECORD
+        url = cfg['CFG_SITE_SECURE_URL'] + '/%s/42/linkbacks/' % cfg['CFG_SITE_RECORD']
         expected_texts = ('Linkbacks to review: 6', 'Linkbacks: 0')
         for text in expected_texts:
             self.assertEqual([], test_web_page_content(url,
@@ -384,7 +381,7 @@ class WebLinkbackDatabaseTest(InvenioTestCase):
         self.assertEqual(0, len(get_urls_and_titles(CFG_WEBLINKBACK_PAGE_TITLE_STATUS['NEW'])))
         self.assertEqual(1, len(get_urls_and_titles(CFG_WEBLINKBACK_PAGE_TITLE_STATUS['MANUALLY_SET'])))
 
-        url = CFG_SITE_SECURE_URL + '/%s/42/linkbacks/' % CFG_SITE_RECORD
+        url = cfg['CFG_SITE_SECURE_URL'] + '/%s/42/linkbacks/' % cfg['CFG_SITE_RECORD']
         expected_texts = ('Linkbacks to review: 5', 'Linkbacks: 1')
         for text in expected_texts:
             self.assertEqual([], test_web_page_content(url,
@@ -432,7 +429,7 @@ class WebLinkbackDatabaseTest(InvenioTestCase):
                                        follow_redirects=True)
             self.assert404(response)
 
-        if CFG_WEBLINKBACK_TRACKBACK_ENABLED:
+        if cfg['CFG_WEBLINKBACK_TRACKBACK_ENABLED']:
             _test_send_trackback_enabled()
         else:
             _test_send_trackback_disabled()
@@ -460,7 +457,7 @@ class WebLinkbackDatabaseTest(InvenioTestCase):
         self.assertEqual(6 + self._max_id_lnkENTRY, approved_linkbacks[3][0])
         self.assertEqual(7 + self._max_id_lnkENTRY, approved_linkbacks[4][0])
 
-        url = CFG_SITE_SECURE_URL + '/linkbacks/'
+        url = cfg['CFG_SITE_SECURE_URL'] + '/linkbacks/'
         expected_texts = ('URL1', 'URL2', 'URL5', 'URL6', 'URL7')
         for text in expected_texts:
             self.assertEqual([], test_web_page_content(url,
@@ -486,7 +483,7 @@ class WebLinkbackDatabaseTest(InvenioTestCase):
         self.assertEqual(3, len(admin_url_log_table))
         self.assertEqual(12, len(log_table))
 
-        url = CFG_SITE_SECURE_URL + '/admin/weblinkback/weblinkbackadmin.py/lists'
+        url = cfg['CFG_SITE_SECURE_URL'] + '/admin/weblinkback/weblinkbackadmin.py/lists'
         expected_texts = ('url1', 'url2', 'url3')
         for text in expected_texts:
             self.assertEqual([], test_web_page_content(url,
@@ -526,7 +523,7 @@ class WebLinkbackDatabaseTest(InvenioTestCase):
         # 1 url inserted       (13)
         self.assertEqual(13 + self._max_id_lnkLOG, admin_url_log_table[1][1])
 
-        url = CFG_SITE_SECURE_URL + '/admin/weblinkback/weblinkbackadmin.py/lists'
+        url = cfg['CFG_SITE_SECURE_URL'] + '/admin/weblinkback/weblinkbackadmin.py/lists'
         expected_texts = ('url1', 'url3')
         for text in expected_texts:
             self.assertEqual([], test_web_page_content(url,
@@ -684,7 +681,7 @@ class WebLinkbackUpdaterTest(InvenioTestCase):
     if HAS_MOCK:
         def test_update_titles_of_new_linkbacks(self):
             """weblinkback - test update titles of new linkbacks"""
-            if CFG_WEBLINKBACK_TRACKBACK_ENABLED:
+            if cfg['CFG_WEBLINKBACK_TRACKBACK_ENABLED']:
                 self.assertNotEqual([], test_web_page_content(url_for('weblinkback.sendtrackback', recid=30, url='http://www.google.au', title='Google'), username='admin'))
                 self.assertNotEqual([], test_web_page_content(url_for('weblinkback.sendtrackback', recid=30, url='http://www.google.at'), username='admin'))
                 self.assertNotEqual([], test_web_page_content(url_for('weblinkback.sendtrackback', recid=30, url='http://www.google.co.za', title='Google'), username='admin'))
@@ -701,7 +698,7 @@ class WebLinkbackUpdaterTest(InvenioTestCase):
     if HAS_MOCK:
         def test_update_titles_of_old_linkbacks(self):
             """weblinkback - test update titles of old linkbacks"""
-            if CFG_WEBLINKBACK_TRACKBACK_ENABLED:
+            if cfg['CFG_WEBLINKBACK_TRACKBACK_ENABLED']:
                 self.assertNotEqual([], test_web_page_content(url_for('weblinkback.sendtrackback', recid=30, url='http://www.google.au', title='Google'), username='admin'))
                 self.assertNotEqual([], test_web_page_content(url_for('weblinkback.sendtrackback', recid=30, url='http://www.google.at'), username='admin'))
                 self.assertNotEqual([], test_web_page_content(url_for('weblinkback.sendtrackback', recid=30, url='http://www.google.co.za', title='Google'), username='admin'))
@@ -730,7 +727,7 @@ class WebLinkbackUpdaterTest(InvenioTestCase):
     if HAS_MOCK:
         def test_update_manually_set_page_titles(self):
             """weblinkback - test update manually set page titles"""
-            if CFG_WEBLINKBACK_TRACKBACK_ENABLED:
+            if cfg['CFG_WEBLINKBACK_TRACKBACK_ENABLED']:
                 self.assertNotEqual([], test_web_page_content(url_for('weblinkback.sendtrackback', recid=30, url='http://www.google.au', title='Google'), username='admin'))
                 self.assertNotEqual([], test_web_page_content(url_for('weblinkback.sendtrackback', recid=30, url='http://www.google.at'), username='admin'))
                 self.assertNotEqual([], test_web_page_content(url_for('weblinkback.sendtrackback', recid=30, url='http://www.google.co.za', title='Google'), username='admin'))
@@ -747,7 +744,7 @@ class WebLinkbackUpdaterTest(InvenioTestCase):
     if HAS_MOCK:
         def test_detect_and_disable_broken_linkbacks(self):
             """weblinkback - test detect and disable broken linkbacks"""
-            if CFG_WEBLINKBACK_TRACKBACK_ENABLED:
+            if cfg['CFG_WEBLINKBACK_TRACKBACK_ENABLED']:
                 self.assertNotEqual([], test_web_page_content(url_for('weblinkback.sendtrackback', recid=30, url='http://www.google.au', title='Google'), username='admin'))
                 self.assertNotEqual([], test_web_page_content(url_for('weblinkback.sendtrackback', recid=30, url='http://www.google.at'), username='admin'))
                 self.assertNotEqual([], test_web_page_content(url_for('weblinkback.sendtrackback', recid=30, url='http://www.google.co.za', title='GoogleCOZA'), username='admin'))

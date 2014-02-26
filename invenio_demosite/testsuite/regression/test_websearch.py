@@ -37,9 +37,7 @@ if sys.hexversion < 0x2040000:
 from flask import url_for
 from mechanize import Browser, LinkNotFoundError, HTTPError
 
-from invenio.config import CFG_SITE_URL, CFG_SITE_NAME, CFG_SITE_LANG, \
-    CFG_SITE_RECORD, CFG_SITE_LANGS, \
-    CFG_SITE_SECURE_URL, CFG_WEBSEARCH_SPIRES_SYNTAX
+from invenio.base.globals import cfg
 from invenio.base.wrappers import lazy_import
 from invenio.testsuite import make_test_suite, \
                               run_test_suite, \
@@ -48,12 +46,13 @@ from invenio.testsuite import make_test_suite, \
                               merge_error_messages, InvenioTestCase, \
                               get_authenticated_mechanize_browser
 from invenio.utils.url import same_urls_p
-from invenio.legacy.dbquery import run_sql
-from invenio.legacy.search_engine.query_parser_unit_tests import DATEUTIL_AVAILABLE
 
 reindex_word_tables_into_testtables = lazy_import('invenio.bibindex_regression_tests:reindex_word_tables_into_testtables')
+run_sql = lazy_import('invenio.legacy.dbquery:run_sql')
+GOT_DATEUTIL = lazy_import('invenio.utils.date:GOT_DATEUTIL')
 
-if 'fr' in CFG_SITE_LANGS:
+
+if False: #FIXME 'fr' in cfg['CFG_SITE_LANGS']:
     lang_french_configured = True
 else:
     lang_french_configured = False
@@ -114,7 +113,7 @@ class WebSearchWebPagesAvailabilityTest(InvenioTestCase):
     def test_search_interface_pages_availability(self):
         """websearch - availability of search interface pages"""
 
-        baseurl = CFG_SITE_URL + '/'
+        baseurl = cfg['CFG_SITE_URL'] + '/'
 
         _exports = ['', 'collection/Poetry', 'collection/Poetry?as=1']
 
@@ -128,7 +127,7 @@ class WebSearchWebPagesAvailabilityTest(InvenioTestCase):
     def test_search_results_pages_availability(self):
         """websearch - availability of search results pages"""
 
-        baseurl = CFG_SITE_URL + '/search'
+        baseurl = cfg['CFG_SITE_URL'] + '/search'
 
         _exports = ['', '?c=Poetry', '?p=ellis', '/cache', '/log']
 
@@ -142,7 +141,7 @@ class WebSearchWebPagesAvailabilityTest(InvenioTestCase):
     def test_search_detailed_record_pages_availability(self):
         """websearch - availability of search detailed record pages"""
 
-        baseurl = CFG_SITE_URL + '/'+ CFG_SITE_RECORD +'/'
+        baseurl = cfg['CFG_SITE_URL'] + '/'+ cfg['CFG_SITE_RECORD'] +'/'
 
         _exports = ['', '1', '1/', '1/files', '1/files/']
 
@@ -156,7 +155,7 @@ class WebSearchWebPagesAvailabilityTest(InvenioTestCase):
     def test_browse_results_pages_availability(self):
         """websearch - availability of browse results pages"""
 
-        baseurl = CFG_SITE_URL + '/search'
+        baseurl = cfg['CFG_SITE_URL'] + '/search'
 
         _exports = ['?p=ellis&f=author&action_browse=Browse']
 
@@ -170,40 +169,40 @@ class WebSearchWebPagesAvailabilityTest(InvenioTestCase):
     def test_help_page_availability(self):
         """websearch - availability of Help Central page"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/help',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/help',
                                                expected_text="Help Central"))
 
     if lang_french_configured:
         def test_help_page_availability_fr(self):
             """websearch - availability of Help Central page in french"""
             self.assertEqual([],
-                             test_web_page_content(CFG_SITE_URL + '/help/?ln=fr',
+                             test_web_page_content(cfg['CFG_SITE_URL'] + '/help/?ln=fr',
                                                    expected_text="Centre d'aide"))
 
     def test_search_tips_page_availability(self):
         """websearch - availability of Search Tips"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/help/search-tips',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/help/search-tips',
                                                expected_text="Search Tips"))
 
     if lang_french_configured:
         def test_search_tips_page_availability_fr(self):
             """websearch - availability of Search Tips in french"""
             self.assertEqual([],
-                             test_web_page_content(CFG_SITE_URL + '/help/search-tips?ln=fr',
+                             test_web_page_content(cfg['CFG_SITE_URL'] + '/help/search-tips?ln=fr',
                                                    expected_text="Conseils de recherche"))
 
     def test_search_guide_page_availability(self):
         """websearch - availability of Search Guide"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/help/search-guide',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/help/search-guide',
                                                expected_text="Search Guide"))
 
     if lang_french_configured:
         def test_search_guide_page_availability_fr(self):
             """websearch - availability of Search Guide in french"""
             self.assertEqual([],
-                             test_web_page_content(CFG_SITE_URL + '/help/search-guide?ln=fr',
+                             test_web_page_content(cfg['CFG_SITE_URL'] + '/help/search-guide?ln=fr',
                                                    expected_text="Guide de recherche"))
 
 class WebSearchTestLegacyURLs(InvenioTestCase):
@@ -223,12 +222,12 @@ class WebSearchTestLegacyURLs(InvenioTestCase):
             self.failUnless(same_urls_p(got, new), got)
 
         # Use the root URL unless we need more
-        check(make_url('/', c=CFG_SITE_NAME),
-              make_url('/', ln=CFG_SITE_LANG))
+        check(make_url('/', c=cfg['CFG_SITE_NAME']),
+              make_url('/', ln=cfg['CFG_SITE_LANG']))
 
         # Other collections are redirected in the /collection area
         check(make_url('/', c='Poetry'),
-              make_url('/collection/Poetry', ln=CFG_SITE_LANG))
+              make_url('/collection/Poetry', ln=cfg['CFG_SITE_LANG']))
 
         ## NOTE &as= is not supported anymore
         # Drop unnecessary arguments, like ln and as (when they are
@@ -244,7 +243,7 @@ class WebSearchTestLegacyURLs(InvenioTestCase):
 
         # Support the /index.py addressing too
         check(make_url('/index.py', c='Poetry'),
-              make_url('/collection/Poetry', ln=CFG_SITE_LANG))
+              make_url('/collection/Poetry', ln=cfg['CFG_SITE_LANG']))
 
 
     def test_legacy_search(self):
@@ -275,31 +274,31 @@ class WebSearchTestLegacyURLs(InvenioTestCase):
 
                 self.failUnless(same_urls_p(got, new), got)
 
-            # direct recid searches are redirected to /CFG_SITE_RECORD
+            # direct recid searches are redirected to /cfg['CFG_SITE_RECORD']
             check(make_url('/search.py', recid=1, ln='fr'),
-                  make_url('/%s/1' % CFG_SITE_RECORD, ln='fr'))
+                  make_url('/%s/1' % cfg['CFG_SITE_RECORD'], ln='fr'))
 
     def test_legacy_search_help_link(self):
         """websearch - legacy Search Help page link"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/help/search/index.en.html',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/help/search/index.en.html',
                                                expected_text="Help Central"))
 
     if lang_french_configured:
         def test_legacy_search_tips_link(self):
             """websearch - legacy Search Tips page link"""
             self.assertEqual([],
-                             test_web_page_content(CFG_SITE_URL + '/help/search/tips.fr.html',
+                             test_web_page_content(cfg['CFG_SITE_URL'] + '/help/search/tips.fr.html',
                                                    expected_text="Conseils de recherche"))
 
     def test_legacy_search_guide_link(self):
         """websearch - legacy Search Guide page link"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/help/search/guide.en.html',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/help/search/guide.en.html',
                                                expected_text="Search Guide"))
 
 class WebSearchTestRecord(InvenioTestCase):
-    """ Check the interface of the /CFG_SITE_RECORD results """
+    """ Check the interface of the /cfg['CFG_SITE_RECORD'] results """
 
     def test_format_links(self):
         """ websearch - check format links for records """
@@ -308,24 +307,24 @@ class WebSearchTestRecord(InvenioTestCase):
 
         # We open the record in all known HTML formats
         for hformat in ('hd', 'hx', 'hm'):
-            browser.open(make_url('/%s/1' % CFG_SITE_RECORD, of=hformat))
+            browser.open(make_url('/%s/1' % cfg['CFG_SITE_RECORD'], of=hformat))
 
             if hformat == 'hd':
                 # hd format should have a link to the following
                 # formats
                 for oformat in ('hx', 'hm', 'xm', 'xd'):
-                    target = make_url('/%s/1/export/%s?ln=en' % (CFG_SITE_RECORD, oformat))
+                    target = make_url('/%s/1/export/%s?ln=en' % (cfg['CFG_SITE_RECORD'], oformat))
                     try:
                         browser.find_link(url=target)
                     except LinkNotFoundError:
                         try:
-                            target = make_url('/%s/1/export/%s' % (CFG_SITE_RECORD, oformat))
+                            target = make_url('/%s/1/export/%s' % (cfg['CFG_SITE_RECORD'], oformat))
                         except LinkNotFoundError:
                             self.fail('link %r should be in page' % target)
             else:
                 # non-hd HTML formats should have a link back to
                 # the main detailed record
-                target = '/%s/1' % CFG_SITE_RECORD
+                target = '/%s/1' % cfg['CFG_SITE_RECORD']
                 try:
                     browser.find_link(url=target)
                 except LinkNotFoundError:
@@ -334,45 +333,45 @@ class WebSearchTestRecord(InvenioTestCase):
         return
 
     def test_exported_formats(self):
-        """ websearch - check formats exported through /CFG_SITE_RECORD/1/export/ URLs"""
+        """ websearch - check formats exported through /cfg['CFG_SITE_RECORD']/1/export/ URLs"""
 
         self.assertEqual([],
-                         test_web_page_content(make_url('/%s/1/export/hm' % CFG_SITE_RECORD),
+                         test_web_page_content(make_url('/%s/1/export/hm' % cfg['CFG_SITE_RECORD']),
                                                expected_text='245__ $$aALEPH experiment'))
         self.assertEqual([],
-                         test_web_page_content(make_url('/%s/1/export/hd' % CFG_SITE_RECORD),
+                         test_web_page_content(make_url('/%s/1/export/hd' % cfg['CFG_SITE_RECORD']),
                                                expected_text='<strong>ALEPH experiment'))
         self.assertEqual([],
-                         test_web_page_content(make_url('/%s/1/export/xm' % CFG_SITE_RECORD),
+                         test_web_page_content(make_url('/%s/1/export/xm' % cfg['CFG_SITE_RECORD']),
                                                expected_text='<subfield code="a">ALEPH experiment'))
         self.assertEqual([],
-                         test_web_page_content(make_url('/%s/1/export/xd' % CFG_SITE_RECORD),
+                         test_web_page_content(make_url('/%s/1/export/xd' % cfg['CFG_SITE_RECORD']),
                                                expected_text='<dc:title>ALEPH experiment'))
         self.assertEqual([],
-                         test_web_page_content(make_url('/%s/1/export/hs' % CFG_SITE_RECORD),
+                         test_web_page_content(make_url('/%s/1/export/hs' % cfg['CFG_SITE_RECORD']),
                                                expected_text='<a href="/%s/1?ln=%s">ALEPH experiment' % \
-                                               (CFG_SITE_RECORD, CFG_SITE_LANG)))
+                                               (cfg['CFG_SITE_RECORD'], cfg['CFG_SITE_LANG'])))
         self.assertEqual([],
-                         test_web_page_content(make_url('/%s/1/export/hx' % CFG_SITE_RECORD),
+                         test_web_page_content(make_url('/%s/1/export/hx' % cfg['CFG_SITE_RECORD']),
                                                expected_text='title         = "{ALEPH experiment'))
         self.assertEqual([],
-                         test_web_page_content(make_url('/%s/1/export/t?ot=245' % CFG_SITE_RECORD),
+                         test_web_page_content(make_url('/%s/1/export/t?ot=245' % cfg['CFG_SITE_RECORD']),
                                                expected_text='245__ $$aALEPH experiment'))
         self.assertNotEqual([],
-                         test_web_page_content(make_url('/%s/1/export/t?ot=245' % CFG_SITE_RECORD),
+                         test_web_page_content(make_url('/%s/1/export/t?ot=245' % cfg['CFG_SITE_RECORD']),
                                                expected_text='001__'))
         self.assertEqual([],
-                         test_web_page_content(make_url('/%s/1/export/h?ot=245' % CFG_SITE_RECORD),
+                         test_web_page_content(make_url('/%s/1/export/h?ot=245' % cfg['CFG_SITE_RECORD']),
                                                expected_text='245__ $$aALEPH experiment'))
         self.assertNotEqual([],
-                         test_web_page_content(make_url('/%s/1/export/h?ot=245' % CFG_SITE_RECORD),
+                         test_web_page_content(make_url('/%s/1/export/h?ot=245' % cfg['CFG_SITE_RECORD']),
                                                expected_text='001__'))
         return
 
     def test_plots_tab(self):
         """ websearch - test to ensure the plots tab is working """
         self.assertEqual([],
-                         test_web_page_content(make_url('/%s/8/plots' % CFG_SITE_RECORD),
+                         test_web_page_content(make_url('/%s/8/plots' % cfg['CFG_SITE_RECORD']),
                                                expected_text='div id="clip"',
                                                unexpected_text='Abstract'))
     def test_meta_header(self):
@@ -403,7 +402,7 @@ class WebSearchTestCollections(InvenioTestCase):
                 try:
                     browser.follow_link(url=url)
                 except LinkNotFoundError:
-                    args['ln'] = CFG_SITE_LANG
+                    args['ln'] = cfg['CFG_SITE_LANG']
                     url = url_for('search.search', **args)
                     browser.follow_link(url=url)
 
@@ -427,7 +426,7 @@ class WebSearchTestCollections(InvenioTestCase):
             return
 
         kargs = {}
-        kargs['ln'] = CFG_SITE_LANG
+        kargs['ln'] = cfg['CFG_SITE_LANG']
 
         # We navigate from immediate son to immediate son...
         browser.open(make_url('/', **kargs))
@@ -463,7 +462,7 @@ class WebSearchTestCollections(InvenioTestCase):
                 if not path:
                     continue
 
-                if path[0] == CFG_SITE_RECORD:
+                if path[0] == cfg['CFG_SITE_RECORD']:
                     try:
                         records.add(int(path[1]))
                     except:
@@ -483,7 +482,7 @@ class WebSearchTestCollections(InvenioTestCase):
 
             return records
 
-        # We must have 10 links to the corresponding /CFG_SITE_RECORD
+        # We must have 10 links to the corresponding /cfg['CFG_SITE_RECORD']
         found = harvest()
         self.failUnlessEqual(len(found), 10)
 
@@ -562,7 +561,7 @@ class WebSearchTestBrowse(InvenioTestCase):
 
     def test_browse_restricted_record_as_unauthorized_user(self):
         """websearch - browse for a record that belongs to a restricted collection as an unauthorized user."""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?p=CERN-THESIS-99-074&f=088__a&action_browse=Browse&ln=en',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=CERN-THESIS-99-074&f=088__a&action_browse=Browse&ln=en',
                                                username = 'guest',
                                                expected_text = ['Hits', '088__a'],
                                                unexpected_text = ['>CERN-THESIS-99-074</a>'])
@@ -571,7 +570,7 @@ class WebSearchTestBrowse(InvenioTestCase):
 
     def test_browse_restricted_record_as_unauthorized_user_in_restricted_collection(self):
         """websearch - browse for a record that belongs to a restricted collection as an unauthorized user."""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?p=CERN-THESIS-99-074&f=088__a&action_browse=Browse&c=ALEPH+Theses&ln=en',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=CERN-THESIS-99-074&f=088__a&action_browse=Browse&c=ALEPH+Theses&ln=en',
                                                username='guest',
                                                expected_text= ['This collection is restricted'],
                                                unexpected_text= ['Hits', '>CERN-THESIS-99-074</a>'])
@@ -580,7 +579,7 @@ class WebSearchTestBrowse(InvenioTestCase):
 
     def test_browse_restricted_record_as_authorized_user(self):
         """websearch - browse for a record that belongs to a restricted collection as an authorized user."""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?p=CERN-THESIS-99-074&f=088__a&action_browse=Browse&ln=en',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=CERN-THESIS-99-074&f=088__a&action_browse=Browse&ln=en',
                                                username='admin',
                                                password='',
                                                expected_text= ['Hits', '088__a'],
@@ -590,7 +589,7 @@ class WebSearchTestBrowse(InvenioTestCase):
 
     def test_browse_restricted_record_as_authorized_user_in_restricted_collection(self):
         """websearch - browse for a record that belongs to a restricted collection as an authorized user."""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?p=CERN-THESIS-99-074&f=088__a&action_browse=Browse&c=ALEPH+Theses&ln=en',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=CERN-THESIS-99-074&f=088__a&action_browse=Browse&c=ALEPH+Theses&ln=en',
                                                username='admin',
                                                password='',
                                                expected_text= ['Hits', '>CERN-THESIS-99-074</a>'])
@@ -598,17 +597,17 @@ class WebSearchTestBrowse(InvenioTestCase):
             self.fail(merge_error_messages(error_messages))
 
     def test_browse_exact_author_help_link(self):
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?ln=en&p=Dasse%2C+Michel&f=author&action_browse=Browse',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&p=Dasse%2C+Michel&f=author&action_browse=Browse',
                                                username = 'guest',
                                                expected_text = ['Did you mean to browse in', 'index?'])
         if error_messages:
             self.fail(merge_error_messages(error_messages))
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?ln=en&p=Dasse%2C+Michel&f=firstauthor&action_browse=Browse',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&p=Dasse%2C+Michel&f=firstauthor&action_browse=Browse',
                                                username = 'guest',
                                                expected_text = ['Did you mean to browse in', 'index?'])
         if error_messages:
             self.fail(merge_error_messages(error_messages))
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?ln=en&as=1&m1=a&p1=Dasse%2C+Michel&f1=author&op1=a&m2=a&p2=&f2=firstauthor&op2=a&m3=a&p3=&f3=&action_browse=Browse',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&as=1&m1=a&p1=Dasse%2C+Michel&f1=author&op1=a&m2=a&p2=&f2=firstauthor&op2=a&m3=a&p3=&f3=&action_browse=Browse',
                                                username = 'guest',
                                                expected_text = ['Did you mean to browse in', 'index?'])
         if error_messages:
@@ -712,7 +711,7 @@ class WebSearchTestSearch(InvenioTestCase):
                 del original[to_drop]
 
         if 'ln' not in original:
-            original['ln'] = [CFG_SITE_LANG]
+            original['ln'] = cfg['CFG_SITE_LANG']
 
         # we should get a few searches back, which are identical
         # except for the p field being substituted (and the cc field
@@ -720,14 +719,14 @@ class WebSearchTestSearch(InvenioTestCase):
         if 'cc' in original:
             del original['cc']
 
-        for link in browser.links(url_regex=re.compile(CFG_SITE_URL + r'/search\?')):
+        for link in browser.links(url_regex=re.compile(cfg['CFG_SITE_URL'] + r'/search\?')):
             if link.text == 'Advanced Search':
                 continue
 
             dummy, target = parse_url(link.url)
 
             if 'ln' not in target:
-                target['ln'] = [CFG_SITE_LANG]
+                target['ln'] = cfg['CFG_SITE_LANG']
 
             original['p'] = [link.text]
             self.failUnlessEqual(original, target)
@@ -891,12 +890,12 @@ class WebSearchCJKTokenizedSearchTest(InvenioTestCase):
 
     def test_title_cjk_tokenized_two_characters(self):
         """CJKTokenizer - test for finding chinese poetry with two CJK characters"""
-        self.assertEqual([], test_web_page_content(CFG_SITE_URL + '/search?ln=en&sc=1&p=title%3A敬亭&f=&of=id',
+        self.assertEqual([], test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&sc=1&p=title%3A敬亭&f=&of=id',
                                                    expected_text='[104]'))
 
     def test_title_cjk_tokenized_single_character(self):
         """CJKTokenizer - test for finding chinese poetry with one CJK character"""
-        self.assertEqual([], test_web_page_content(CFG_SITE_URL + '/search?ln=en&sc=1&p=title%3A亭&f=&of=id',
+        self.assertEqual([], test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&sc=1&p=title%3A亭&f=&of=id',
                                                    expected_text='[104]'))
 
 
@@ -913,7 +912,7 @@ class WebSearchTestWildcardLimit(InvenioTestCase):
     def test_wildcard_limit_correctly_passed_when_set(self):
         """websearch - wildcard limit is correctly passed when set"""
         self.assertEqual([],
-            test_web_page_content(CFG_SITE_URL + '/search?p=e*&f=author&of=id&wl=5&rg=100',
+            test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=e*&f=author&of=id&wl=5&rg=100',
                                   expected_text="[9, 10, 11, 17, 46, 48, 50, 51, 52, 53, 54, 67, 72, 74, 81, 88, 92, 96]"))
 
     def test_wildcard_limit_correctly_not_active(self):
@@ -970,147 +969,147 @@ class WebSearchNearestTermsTest(InvenioTestCase):
     #def test_nearest_terms_box_in_okay_query(self):
     #    """ websearch - no nearest terms box for a successful query """
     #    self.assertEqual([],
-    #                     test_web_page_content(CFG_SITE_URL + '/search?p=ellis',
+    #                     test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=ellis',
     #                                           expected_text="jump to record"))
 
     def test_nearest_terms_box_in_unsuccessful_simple_query(self):
         """ websearch - nearest terms box for unsuccessful simple query """
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=ellisz',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=ellisz',
                                                expected_text="Nearest terms in any collection are",
-                                               expected_link_target=CFG_SITE_URL+"/search?ln=en&p=embed",
+                                               expected_link_target=cfg['CFG_SITE_URL']+"/search?ln=en&p=embed",
                                                expected_link_label='embed'))
 
     def test_nearest_terms_box_in_unsuccessful_simple_accented_query(self):
         """ websearch - nearest terms box for unsuccessful accented query """
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=elliszà',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=elliszà',
                                                expected_text="Nearest terms in any collection are",
-                                               expected_link_target=CFG_SITE_URL+"/search?ln=en&p=embed",
+                                               expected_link_target=cfg['CFG_SITE_URL']+"/search?ln=en&p=embed",
                                                expected_link_label='embed'))
 
     def test_nearest_terms_box_in_unsuccessful_structured_query(self):
         """ websearch - nearest terms box for unsuccessful structured query """
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=ellisz&f=author',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=ellisz&f=author',
                                                expected_text="Nearest terms in any collection are",
-                                               expected_link_target=CFG_SITE_URL+"/search?ln=en&p=eisenhandler&f=author",
+                                               expected_link_target=cfg['CFG_SITE_URL']+"/search?ln=en&p=eisenhandler&f=author",
                                                expected_link_label='eisenhandler'))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=author%3Aellisz',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=author%3Aellisz',
                                                expected_text="Nearest terms in any collection are",
-                                               expected_link_target=CFG_SITE_URL+"/search?ln=en&p=author%3Aeisenhandler",
+                                               expected_link_target=cfg['CFG_SITE_URL']+"/search?ln=en&p=author%3Aeisenhandler",
                                                expected_link_label='eisenhandler'))
 
 
     def test_nearest_terms_box_in_query_with_invalid_index(self):
         """ websearch - nearest terms box for queries with invalid indexes specified """
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=bednarz%3Aellis',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=bednarz%3Aellis',
                                                expected_text="Nearest terms in any collection are",
-                                               expected_link_target=CFG_SITE_URL+"/search?ln=en&p=bednarz",
+                                               expected_link_target=cfg['CFG_SITE_URL']+"/search?ln=en&p=bednarz",
                                                expected_link_label='bednarz'))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=1%3Aellis',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=1%3Aellis',
                                                expected_text="no index 1.",
-                                               expected_link_target=CFG_SITE_URL+"/record/47?ln=en",
+                                               expected_link_target=cfg['CFG_SITE_URL']+"/record/47?ln=en",
                                                expected_link_label="Detailed record"))
 
     def test_nearest_terms_box_in_unsuccessful_phrase_query(self):
         """ websearch - nearest terms box for unsuccessful phrase query """
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=author%3A%22Ellis%2C+Z%22',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=author%3A%22Ellis%2C+Z%22',
                                                expected_text="Nearest terms in any collection are",
-                                               expected_link_target=CFG_SITE_URL+"/search?ln=en&p=author%3A%22Enqvist%2C+K%22",
+                                               expected_link_target=cfg['CFG_SITE_URL']+"/search?ln=en&p=author%3A%22Enqvist%2C+K%22",
                                                expected_link_label='Enqvist, K'))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=%22ellisz%22&f=author',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=%22ellisz%22&f=author',
                                                expected_text="Nearest terms in any collection are",
-                                               expected_link_target=CFG_SITE_URL+"/search?ln=en&p=%22Enqvist%2C+K%22&f=author",
+                                               expected_link_target=cfg['CFG_SITE_URL']+"/search?ln=en&p=%22Enqvist%2C+K%22&f=author",
                                                expected_link_label='Enqvist, K'))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=%22elliszà%22&f=author',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=%22elliszà%22&f=author',
                                                expected_text="Nearest terms in any collection are",
-                                               expected_link_target=CFG_SITE_URL+"/search?ln=en&p=%22Enqvist%2C+K%22&f=author",
+                                               expected_link_target=cfg['CFG_SITE_URL']+"/search?ln=en&p=%22Enqvist%2C+K%22&f=author",
                                                expected_link_label='Enqvist, K'))
 
     def test_nearest_terms_box_in_unsuccessful_partial_phrase_query(self):
         """ websearch - nearest terms box for unsuccessful partial phrase query """
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=author%3A%27Ellis%2C+Z%27',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=author%3A%27Ellis%2C+Z%27',
                                                expected_text="Nearest terms in any collection are",
-                                               expected_link_target=CFG_SITE_URL+"/search?ln=en&p=author%3A%27Enqvist%2C+K%27",
+                                               expected_link_target=cfg['CFG_SITE_URL']+"/search?ln=en&p=author%3A%27Enqvist%2C+K%27",
                                                expected_link_label='Enqvist, K'))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=%27ellisz%27&f=author',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=%27ellisz%27&f=author',
                                                expected_text="Nearest terms in any collection are",
-                                               expected_link_target=CFG_SITE_URL+"/search?ln=en&p=%27Enqvist%2C+K%27&f=author",
+                                               expected_link_target=cfg['CFG_SITE_URL']+"/search?ln=en&p=%27Enqvist%2C+K%27&f=author",
                                                expected_link_label='Enqvist, K'))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=%27elliszà%27&f=author',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=%27elliszà%27&f=author',
                                                expected_text="Nearest terms in any collection are",
-                                               expected_link_target=CFG_SITE_URL+"/search?ln=en&p=%27Enqvist%2C+K%27&f=author",
+                                               expected_link_target=cfg['CFG_SITE_URL']+"/search?ln=en&p=%27Enqvist%2C+K%27&f=author",
                                                expected_link_label='Enqvist, K'))
 
     def test_nearest_terms_box_in_unsuccessful_partial_phrase_advanced_query(self):
         """ websearch - nearest terms box for unsuccessful partial phrase advanced search query """
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p1=aaa&f1=title&m1=p&as=1',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p1=aaa&f1=title&m1=p&as=1',
                                                expected_text="Nearest terms in any collection are",
-                                               expected_link_target=CFG_SITE_URL+"/search?ln=en&f1=title&as=1&p1=A+simple+functional+form+for+proton-nucleus+total+reaction+cross+sections&m1=p",
+                                               expected_link_target=cfg['CFG_SITE_URL']+"/search?ln=en&f1=title&as=1&p1=A+simple+functional+form+for+proton-nucleus+total+reaction+cross+sections&m1=p",
                                                expected_link_label='A simple functional form for proton-nucleus total reaction cross sections'))
 
     @nottest
     def test_nearest_terms_box_in_unsuccessful_exact_phrase_advanced_query(self):
         """ websearch - nearest terms box for unsuccessful exact phrase advanced search query """
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p1=aaa&f1=title&m1=e&as=1',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p1=aaa&f1=title&m1=e&as=1',
                                                expected_text="Nearest terms in any collection are",
-                                               expected_link_target=CFG_SITE_URL+"/search?ln=en&f1=title&as=1&p1=A+simple+functional+form+for+proton-nucleus+total+reaction+cross+sections&m1=e",
+                                               expected_link_target=cfg['CFG_SITE_URL']+"/search?ln=en&f1=title&as=1&p1=A+simple+functional+form+for+proton-nucleus+total+reaction+cross+sections&m1=e",
                                                expected_link_label='A simple functional form for proton-nucleus total reaction cross sections'))
 
     def test_nearest_terms_box_in_unsuccessful_boolean_query(self):
         """ websearch - nearest terms box for unsuccessful boolean query """
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=title%3Aellisz+author%3Aellisz',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=title%3Aellisz+author%3Aellisz',
                                                expected_text="Nearest terms in any collection are",
-                                               expected_link_target=CFG_SITE_URL+"/search?ln=en&p=title%3Aenergi+author%3Aellisz",
+                                               expected_link_target=cfg['CFG_SITE_URL']+"/search?ln=en&p=title%3Aenergi+author%3Aellisz",
                                                expected_link_label='energi'))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=title%3Aenergi+author%3Aenergie',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=title%3Aenergi+author%3Aenergie',
                                                expected_text="Nearest terms in any collection are",
-                                               expected_link_target=CFG_SITE_URL+"/search?ln=en&p=title%3Aenergi+author%3Aenqvist",
+                                               expected_link_target=cfg['CFG_SITE_URL']+"/search?ln=en&p=title%3Aenergi+author%3Aenqvist",
                                                expected_link_label='enqvist'))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?ln=en&p=title%3Aellisz+author%3Aellisz&f=keyword',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&p=title%3Aellisz+author%3Aellisz&f=keyword',
                                                expected_text="Nearest terms in any collection are",
-                                               expected_link_target=CFG_SITE_URL+"/search?ln=en&p=title%3Aenergi+author%3Aellisz&f=keyword",
+                                               expected_link_target=cfg['CFG_SITE_URL']+"/search?ln=en&p=title%3Aenergi+author%3Aellisz&f=keyword",
                                                expected_link_label='energi'))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?ln=en&p=title%3Aenergi+author%3Aenergie&f=keyword',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&p=title%3Aenergi+author%3Aenergie&f=keyword',
                                                expected_text="Nearest terms in any collection are",
-                                               expected_link_target=CFG_SITE_URL+"/search?ln=en&p=title%3Aenergi+author%3Aenqvist&f=keyword",
+                                               expected_link_target=cfg['CFG_SITE_URL']+"/search?ln=en&p=title%3Aenergi+author%3Aenqvist&f=keyword",
                                                expected_link_label='enqvist'))
 
     def test_nearest_terms_box_in_unsuccessful_uppercase_query(self):
         """ websearch - nearest terms box for unsuccessful uppercase query """
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=fOo%3Atest',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=fOo%3Atest',
                                                expected_text="Nearest terms in any collection are",
-                                               expected_link_target=CFG_SITE_URL+"/search?ln=en&p=food",
+                                               expected_link_target=cfg['CFG_SITE_URL']+"/search?ln=en&p=food",
                                                expected_link_label='food'))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=arXiv%3A1007.5048',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=arXiv%3A1007.5048',
                                                expected_text="Nearest terms in any collection are",
-                                               expected_link_target=CFG_SITE_URL+"/search?ln=en&p=artist",
+                                               expected_link_target=cfg['CFG_SITE_URL']+"/search?ln=en&p=artist",
                                                expected_link_label='artist'))
 
     def test_nearest_terms_box_in_unsuccessful_spires_query(self):
         """ websearch - nearest terms box for unsuccessful spires query """
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?ln=en&p=find+a+foobar',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&p=find+a+foobar',
                                                expected_text="Nearest terms in any collection are",
-                                               expected_link_target=CFG_SITE_URL+"/search?ln=en&p=find+a+finch",
+                                               expected_link_target=cfg['CFG_SITE_URL']+"/search?ln=en&p=find+a+finch",
                                                expected_link_label='finch'))
 
 
@@ -1120,20 +1119,20 @@ class WebSearchBooleanQueryTest(InvenioTestCase):
     def test_successful_boolean_query(self):
         """ websearch - successful boolean query """
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=ellis+muon',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=ellis+muon',
                                                expected_text="records found",
                                                expected_link_label="Detailed record"))
 
     def test_unsuccessful_boolean_query_where_all_individual_terms_match(self):
         """ websearch - unsuccessful boolean query where all individual terms match """
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=ellis+muon+letter',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=ellis+muon+letter',
                                                expected_text="Boolean query returned no hits. Please combine your search terms differently."))
 
     def test_unsuccessful_boolean_query_in_advanced_search_where_all_individual_terms_match(self):
         """ websearch - unsuccessful boolean query in advanced search where all individual terms match """
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?m1=a&p1=ellis&op1=a&m2=a&p2=muon&op2=a&p3=letter',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?m1=a&p1=ellis&op1=a&m2=a&p2=muon&op2=a&p3=letter',
                                                expected_text="Boolean query returned no hits. Please combine your search terms differently."))
 
 
@@ -1143,15 +1142,15 @@ class WebSearchAuthorQueryTest(InvenioTestCase):
     def test_propose_similar_author_names_box(self):
         """ websearch - propose similar author names box """
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=Ellis%2C+R&f=author',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=Ellis%2C+R&f=author',
                                                expected_text="See also: similar author names",
-                                               expected_link_target=CFG_SITE_URL+"/search?ln=en&p=Ellis%2C+R+K&f=author",
+                                               expected_link_target=cfg['CFG_SITE_URL']+"/search?ln=en&p=Ellis%2C+R+K&f=author",
                                                expected_link_label="Ellis, R K"))
 
     def test_do_not_propose_similar_author_names_box(self):
         """ websearch - do not propose similar author names box """
-        errmsgs = test_web_page_content(CFG_SITE_URL + '/search?p=author%3A%22Ellis%2C+R%22',
-                                        expected_link_target=CFG_SITE_URL+"/search?ln=en&p=Ellis%2C+R+K&f=author",
+        errmsgs = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=author%3A%22Ellis%2C+R%22',
+                                        expected_link_target=cfg['CFG_SITE_URL']+"/search?ln=en&p=Ellis%2C+R+K&f=author",
                                         expected_link_label="Ellis, R K")
         if errmsgs[0].find("does not contain link to") > -1:
             pass
@@ -1370,7 +1369,7 @@ class WebSearchSearchEnginePythonAPITest(InvenioTestCase):
 000000001 909CP $$rCalder, N
 000000001 909CS $$sn$$w200231
 000000001 980__ $$aPICTURE
-""" % {'siteurl': CFG_SITE_URL,
+""" % {'siteurl': cfg['CFG_SITE_URL'],
        'rec_1_rev': get_fieldvalues(1, '005__')[0],
        'rec_85_rev': get_fieldvalues(85, '005__')[0],
        'rec_107_rev': get_fieldvalues(107, '005__')[0]})
@@ -1856,7 +1855,7 @@ class WebSearchSearchEnginePythonAPITest(InvenioTestCase):
     <subfield code="a">PICTURE</subfield>
   </datafield>
 </record>
-</collection>""" % {'siteurl': CFG_SITE_URL,
+</collection>""" % {'siteurl': cfg['CFG_SITE_URL'],
                     'rec_1_rev': get_fieldvalues(1, '005__')[0],
                     'rec_85_rev': get_fieldvalues(85, '005__')[0],
                     'rec_107_rev': get_fieldvalues(107, '005__')[0]})
@@ -1944,47 +1943,47 @@ class WebSearchSearchEngineWebAPITest(InvenioTestCase):
     def test_search_engine_web_api_for_failed_query(self):
         """websearch - search engine Web API for failed query"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=aoeuidhtns&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=aoeuidhtns&of=id',
                                                expected_text="[]"))
 
     def test_search_engine_web_api_for_failed_query_format_intbitset(self):
         """websearch - search engine Web API for failed query, output format intbitset"""
         from intbitset import intbitset
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=aoeuidhtns&of=intbitset',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=aoeuidhtns&of=intbitset',
                                                expected_text=intbitset().fastdump()))
 
     def test_search_engine_web_api_for_successful_query(self):
         """websearch - search engine Web API for successful query"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=ellis&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=ellis&of=id',
                                                expected_text="[8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 47]"))
 
     def test_search_engine_web_api_ignore_paging_parameter(self):
         """websearch - search engine Web API for successful query, ignore paging parameters"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=ellis&of=id&rg=5&jrec=3',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=ellis&of=id&rg=5&jrec=3',
                                                expected_text="[8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 47]"))
 
     def test_search_engine_web_api_respect_sorting_parameter(self):
         """websearch - search engine Web API for successful query, respect sorting parameters"""
         from intbitset import intbitset
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=klebanov&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=klebanov&of=id',
                                                expected_text="[84, 85]"))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=klebanov&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=klebanov&of=id',
                                                username="admin",
                                                expected_text="[77, 84, 85]"))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=klebanov&of=id&sf=909C4v',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=klebanov&of=id&sf=909C4v',
                                                expected_text="[85, 84]"))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=klebanov&of=id&sf=909C4v',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=klebanov&of=id&sf=909C4v',
                                                username="admin",
                                                expected_text="[77, 85, 84]"))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=klebanov&of=intbitset&sf=909C4v',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=klebanov&of=intbitset&sf=909C4v',
                                                username="admin",
                                                expected_text=intbitset([77, 84, 85]).fastdump()))
 
@@ -1992,59 +1991,59 @@ class WebSearchSearchEngineWebAPITest(InvenioTestCase):
         """websearch - search engine Web API for successful query, respect ranking parameters"""
         from intbitset import intbitset
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=klebanov&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=klebanov&of=id',
                                                expected_text="[84, 85]"))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=klebanov&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=klebanov&of=id',
                                                username="admin",
                                                expected_text="[77, 84, 85]"))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=klebanov&of=id&rm=citation',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=klebanov&of=id&rm=citation',
                                                expected_text="[85, 84]"))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=klebanov&of=id&rm=citation',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=klebanov&of=id&rm=citation',
                                                username="admin",
                                                expected_text="[85, 77, 84]"))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=klebanov&of=intbitset&rm=citation',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=klebanov&of=intbitset&rm=citation',
                                                username="admin",
                                                expected_text=intbitset([77, 84, 85]).fastdump()))
 
     def test_search_engine_web_api_for_existing_record(self):
         """websearch - search engine Web API for existing record"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?recid=8&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?recid=8&of=id',
                                                expected_text="[8]"))
 
     def test_search_engine_web_api_for_nonexisting_record(self):
         """websearch - search engine Web API for non-existing record"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?recid=123456789&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?recid=123456789&of=id',
                                                expected_text="[]"))
 
     def test_search_engine_web_api_for_nonexisting_collection(self):
         """websearch - search engine Web API for non-existing collection"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?c=Foo&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?c=Foo&of=id',
                                                expected_text="[]"))
 
     def test_search_engine_web_api_for_range_of_records(self):
         """websearch - search engine Web API for range of records"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?recid=1&recidb=10&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?recid=1&recidb=10&of=id',
                                                expected_text="[1, 2, 3, 4, 5, 6, 7, 8, 9]"))
 
     def test_search_engine_web_api_ranked_by_citation(self):
         """websearch - search engine Web API for citation ranking"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=recid%3A81&rm=citation&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=recid%3A81&rm=citation&of=id',
                                                expected_text="[82, 83, 87, 89]"))
 
     def test_search_engine_web_api_textmarc_full(self):
         """websearch - search engine Web API for Text MARC output, full"""
         from invenio.legacy.bibrecord import get_fieldvalues
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=higgs&of=tm',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=higgs&of=tm',
                                                expected_text="""\
 000000107 001__ 107
 000000107 003__ SzGeCERN
@@ -2159,7 +2158,7 @@ class WebSearchSearchEngineWebAPITest(InvenioTestCase):
 000000001 909CP $$rCalder, N
 000000001 909CS $$sn$$w200231
 000000001 980__ $$aPICTURE
-""" % {'siteurl': CFG_SITE_URL,
+""" % {'siteurl': cfg['CFG_SITE_URL'],
        'rec_1_rev': get_fieldvalues(1, '005__')[0],
        'rec_85_rev': get_fieldvalues(85, '005__')[0],
        'rec_107_rev': get_fieldvalues(107, '005__')[0]}))
@@ -2167,7 +2166,7 @@ class WebSearchSearchEngineWebAPITest(InvenioTestCase):
     def test_search_engine_web_api_textmarc_field_filtered(self):
         """websearch - search engine Web API for Text MARC output, field-filtered"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=higgs&of=tm&ot=100,700',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=higgs&of=tm&ot=100,700',
                                                expected_text="""\
 000000085 100__ $$aGirardello, L$$uINFN$$uUniversita di Milano-Bicocca
 000000085 700__ $$aPorrati, Massimo
@@ -2178,7 +2177,7 @@ class WebSearchSearchEngineWebAPITest(InvenioTestCase):
     def test_search_engine_web_api_textmarc_field_filtered_hidden_guest(self):
         """websearch - search engine Web API for Text MARC output, field-filtered, hidden field, no guest access"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=higgs&of=tm&ot=100,595',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=higgs&of=tm&ot=100,595',
                                                expected_text="""\
 000000085 100__ $$aGirardello, L$$uINFN$$uUniversita di Milano-Bicocca
 000000001 100__ $$aPhotolab
@@ -2187,7 +2186,7 @@ class WebSearchSearchEngineWebAPITest(InvenioTestCase):
     def test_search_engine_web_api_textmarc_field_filtered_hidden_admin(self):
         """websearch - search engine Web API for Text MARC output, field-filtered, hidden field, admin access"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=higgs&of=tm&ot=100,595',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=higgs&of=tm&ot=100,595',
                                                username='admin',
                                                expected_text="""\
 000000107 595__ $$aNo authors
@@ -2205,7 +2204,7 @@ class WebSearchSearchEngineWebAPITest(InvenioTestCase):
     def test_search_engine_web_api_textmarc_subfield_values(self):
         """websearch - search engine Web API for Text MARC output, subfield values"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=higgs&of=tm&ot=700__a',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=higgs&of=tm&ot=700__a',
                                                expected_text="""\
 Porrati, Massimo
 Zaffaroni, A
@@ -2215,7 +2214,7 @@ Zaffaroni, A
         """websearch - search engine Web API for XMLMARC output, full"""
         from invenio.legacy.bibrecord import get_fieldvalues
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=higgs&of=xm',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=higgs&of=xm',
                                                expected_text="""\
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Search-Engine-Total-Number-Of-Results: 3 -->
@@ -2645,7 +2644,7 @@ Zaffaroni, A
     <subfield code="a">PICTURE</subfield>
   </datafield>
 </record>
-</collection>""" % {'siteurl': CFG_SITE_URL,
+</collection>""" % {'siteurl': cfg['CFG_SITE_URL'],
                     'rec_1_rev': get_fieldvalues(1, '005__')[0],
                     'rec_85_rev': get_fieldvalues(85, '005__')[0],
                     'rec_107_rev': get_fieldvalues(107, '005__')[0]}))
@@ -2653,7 +2652,7 @@ Zaffaroni, A
     def test_search_engine_web_api_xmlmarc_field_filtered(self):
         """websearch - search engine Web API for XMLMARC output, field-filtered"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=higgs&of=xm&ot=100,700',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=higgs&of=xm&ot=100,700',
                                                expected_text="""\
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Search-Engine-Total-Number-Of-Results: 3 -->
@@ -2687,7 +2686,7 @@ Zaffaroni, A
     def test_search_engine_web_api_xmlmarc_field_filtered_hidden_guest(self):
         """websearch - search engine Web API for XMLMARC output, field-filtered, hidden field, no guest access"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=higgs&of=xm&ot=100,595',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=higgs&of=xm&ot=100,595',
                                                expected_text="""\
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Search-Engine-Total-Number-Of-Results: 3 -->
@@ -2715,7 +2714,7 @@ Zaffaroni, A
     def test_search_engine_web_api_xmlmarc_field_filtered_hidden_admin(self):
         """websearch - search engine Web API for XMLMARC output, field-filtered, hidden field, admin access"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=higgs&of=xm&ot=100,595',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=higgs&of=xm&ot=100,595',
                                                username='admin',
                                                expected_text="""\
 <?xml version="1.0" encoding="UTF-8"?>
@@ -2774,7 +2773,7 @@ class WebSearchRecordWebAPITest(InvenioTestCase):
         """websearch - /record Web API for TextMARC output, full"""
         from invenio.legacy.bibrecord import get_fieldvalues
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/record/85?of=tm',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/record/85?of=tm',
                                                expected_text="""\
 000000085 001__ 85
 000000085 003__ SzGeCERN
@@ -2830,14 +2829,14 @@ class WebSearchRecordWebAPITest(InvenioTestCase):
 000000085 999C5 $$mI. R. Klebanov and E. Witten,$$o[13]$$rhep-th/9905104$$sNucl. Phys. B 556 (1999) 89
 000000085 999C5 $$mW. Heidenreich,$$o[14]$$sJ. Math. Phys. 22 (1981) 1566
 000000085 999C5 $$mD. Anselmi,$$o[15]$$rhep-th/0210123
-""" % {'siteurl': CFG_SITE_URL,
+""" % {'siteurl': cfg['CFG_SITE_URL'],
        'rec_85_rev': get_fieldvalues(85, '005__')[0]}))
 
     def test_record_web_api_xmlmarc_full(self):
         """websearch - /record Web API for XMLMARC output, full"""
         from invenio.legacy.bibrecord import get_fieldvalues
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/record/85?of=xm',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/record/85?of=xm',
                                                expected_text="""\
 <?xml version="1.0" encoding="UTF-8"?>
 <collection xmlns="http://www.loc.gov/MARC21/slim">
@@ -3078,13 +3077,13 @@ class WebSearchRecordWebAPITest(InvenioTestCase):
     <subfield code="r">hep-th/0210123</subfield>
   </datafield>
 </record>
-</collection>""" % {'siteurl': CFG_SITE_URL,
+</collection>""" % {'siteurl': cfg['CFG_SITE_URL'],
                     'rec_85_rev': get_fieldvalues(85, '005__')[0]}))
 
     def test_record_web_api_textmarc_field_filtered(self):
         """websearch - /record Web API for TextMARC output, field-filtered"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/record/85?of=tm&ot=100,700',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/record/85?of=tm&ot=100,700',
                                                expected_text="""\
 000000085 100__ $$aGirardello, L$$uINFN$$uUniversita di Milano-Bicocca
 000000085 700__ $$aPorrati, Massimo
@@ -3094,7 +3093,7 @@ class WebSearchRecordWebAPITest(InvenioTestCase):
     def test_record_web_api_textmarc_field_filtered_hidden_guest(self):
         """websearch - /record Web API for TextMARC output, field-filtered, hidden field, no guest access"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/record/85?of=tm&ot=100,595',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/record/85?of=tm&ot=100,595',
                                                expected_text="""\
 000000085 100__ $$aGirardello, L$$uINFN$$uUniversita di Milano-Bicocca
 """))
@@ -3102,7 +3101,7 @@ class WebSearchRecordWebAPITest(InvenioTestCase):
     def test_record_web_api_textmarc_field_filtered_hidden_admin(self):
         """websearch - /record Web API for TextMARC output, field-filtered, hidden field, admin access"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/record/85?of=tm&ot=100,595',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/record/85?of=tm&ot=100,595',
                                                username='admin',
                                                expected_text="""\
 000000085 100__ $$aGirardello, L$$uINFN$$uUniversita di Milano-Bicocca
@@ -3114,7 +3113,7 @@ class WebSearchRecordWebAPITest(InvenioTestCase):
     def test_record_web_api_xmlmarc_field_filtered(self):
         """websearch - /record Web API for XMLMARC output, field-filtered"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/record/85?of=xm&ot=100,700',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/record/85?of=xm&ot=100,700',
                                                expected_text="""\
 <?xml version="1.0" encoding="UTF-8"?>
 <collection xmlns="http://www.loc.gov/MARC21/slim">
@@ -3138,7 +3137,7 @@ class WebSearchRecordWebAPITest(InvenioTestCase):
     def test_record_web_api_xmlmarc_field_filtered_hidden_guest(self):
         """websearch - /record Web API for XMLMARC output, field-filtered, hidden field, no guest access"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/record/85?of=xm&ot=100,595',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/record/85?of=xm&ot=100,595',
                                                expected_text="""\
 <?xml version="1.0" encoding="UTF-8"?>
 <collection xmlns="http://www.loc.gov/MARC21/slim">
@@ -3156,7 +3155,7 @@ class WebSearchRecordWebAPITest(InvenioTestCase):
     def test_record_web_api_xmlmarc_field_filtered_hidden_admin(self):
         """websearch - /record Web API for XMLMARC output, field-filtered, hidden field, admin access"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/record/85?of=xm&ot=100,595',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/record/85?of=xm&ot=100,595',
                                                username='admin',
                                                expected_text="""\
 <?xml version="1.0" encoding="UTF-8"?>
@@ -3184,7 +3183,7 @@ class WebSearchRecordWebAPITest(InvenioTestCase):
     def test_record_web_api_textmarc_subfield_values(self):
         """websearch - /record Web API for TextMARC output, subfield values"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/record/85?of=tm&ot=700__a',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/record/85?of=tm&ot=700__a',
                                                expected_text="""\
 Porrati, Massimo
 Zaffaroni, A
@@ -3198,13 +3197,13 @@ class WebSearchRestrictedCollectionTest(InvenioTestCase):
         """websearch - restricted collection interface page body"""
         # there should be no Latest additions box for restricted collections
         self.assertNotEqual([],
-                            test_web_page_content(CFG_SITE_URL + '/collection/Theses',
+                            test_web_page_content(cfg['CFG_SITE_URL'] + '/collection/Theses',
                                                   expected_text="Latest additions"))
 
     def test_restricted_search_as_anonymous_guest(self):
         """websearch - restricted collection not searchable by anonymous guest"""
         browser = Browser()
-        browser.open(CFG_SITE_URL + '/search?c=Theses')
+        browser.open(cfg['CFG_SITE_URL'] + '/search?c=Theses')
         response = browser.response().read()
         if response.find("This collection is restricted.") > -1:
             pass
@@ -3215,7 +3214,7 @@ class WebSearchRestrictedCollectionTest(InvenioTestCase):
     def test_restricted_search_as_authorized_person(self):
         """websearch - restricted collection searchable by authorized person"""
         browser = Browser()
-        browser.open(CFG_SITE_URL + '/search?cc=Theses')
+        browser.open(cfg['CFG_SITE_URL'] + '/search?cc=Theses')
         browser.select_form(nr=0)
         browser['nickname'] = 'jekyll'
         browser['password'] = 'j123ekyll'
@@ -3228,7 +3227,7 @@ class WebSearchRestrictedCollectionTest(InvenioTestCase):
     def test_restricted_search_as_unauthorized_person(self):
         """websearch - restricted collection not searchable by unauthorized person"""
         browser = Browser()
-        browser.open(CFG_SITE_URL + '/search?cc=Theses')
+        browser.open(cfg['CFG_SITE_URL'] + '/search?cc=Theses')
         browser.select_form(nr=0)
         browser['nickname'] = 'hyde'
         browser['password'] = 'h123yde'
@@ -3238,7 +3237,7 @@ class WebSearchRestrictedCollectionTest(InvenioTestCase):
     def test_restricted_detailed_record_page_as_anonymous_guest(self):
         """websearch - restricted detailed record page not accessible to guests"""
         browser = Browser()
-        browser.open(CFG_SITE_URL + '/%s/35' % CFG_SITE_RECORD)
+        browser.open(cfg['CFG_SITE_URL'] + '/%s/35' % cfg['CFG_SITE_RECORD'])
         if browser.response().read().find("You can use your nickname or your email address to login.") > -1:
             pass
         else:
@@ -3248,14 +3247,14 @@ class WebSearchRestrictedCollectionTest(InvenioTestCase):
     def test_restricted_detailed_record_page_as_authorized_person(self):
         """websearch - restricted detailed record page accessible to authorized person"""
         browser = Browser()
-        browser.open(CFG_SITE_URL + '/youraccount/login')
+        browser.open(cfg['CFG_SITE_URL'] + '/youraccount/login')
         browser.select_form(nr=0)
         browser['nickname'] = 'jekyll'
         browser['password'] = 'j123ekyll'
         browser.submit()
-        browser.open(CFG_SITE_URL + '/%s/35' % CFG_SITE_RECORD)
+        browser.open(cfg['CFG_SITE_URL'] + '/%s/35' % cfg['CFG_SITE_RECORD'])
         # Dr. Jekyll should be able to connect
-        # (add the pw to the whole CFG_SITE_URL because we shall be
+        # (add the pw to the whole cfg['CFG_SITE_URL'] because we shall be
         # redirected to '/reordrestricted/'):
         if browser.response().read().find("A High-performance Video Browsing System") > -1:
             pass
@@ -3265,14 +3264,14 @@ class WebSearchRestrictedCollectionTest(InvenioTestCase):
     def test_restricted_detailed_record_page_as_unauthorized_person(self):
         """websearch - restricted detailed record page not accessible to unauthorized person"""
         browser = Browser()
-        browser.open(CFG_SITE_URL + '/youraccount/login')
+        browser.open(cfg['CFG_SITE_URL'] + '/youraccount/login')
         browser.select_form(nr=0)
         browser['nickname'] = 'hyde'
         browser['password'] = 'h123yde'
         browser.submit()
         # Mr. Hyde should not be able to connect:
         self.assertRaises(HTTPError, browser.open,
-            CFG_SITE_URL + '/%s/35' % CFG_SITE_RECORD)
+            cfg['CFG_SITE_URL'] + '/%s/35' % cfg['CFG_SITE_RECORD'])
 
     def test_collection_restricted_p(self):
         """websearch - collection_restricted_p"""
@@ -3292,7 +3291,7 @@ class WebSearchRestrictedCollectionTest(InvenioTestCase):
     def test_restricted_record_has_restriction_flag(self):
         """websearch - restricted record displays a restriction flag"""
         browser = Browser()
-        browser.open(CFG_SITE_URL + '/%s/42/files/' % CFG_SITE_RECORD)
+        browser.open(cfg['CFG_SITE_URL'] + '/%s/42/files/' % cfg['CFG_SITE_RECORD'])
         browser.select_form(nr=0)
         browser['nickname'] = 'jekyll'
         browser['password'] = 'j123ekyll'
@@ -3302,7 +3301,7 @@ class WebSearchRestrictedCollectionTest(InvenioTestCase):
         else:
             self.fail("Oops, a 'Restricted' flag should appear on restricted records.")
 
-        browser.open(CFG_SITE_URL + '/%s/42/files/comments' % CFG_SITE_RECORD)
+        browser.open(cfg['CFG_SITE_URL'] + '/%s/42/files/comments' % cfg['CFG_SITE_RECORD'])
         if browser.response().read().find("Restricted") > -1:
             pass
         else:
@@ -3310,7 +3309,7 @@ class WebSearchRestrictedCollectionTest(InvenioTestCase):
 
         # Flag also appear on records that exist both in a public and
         # restricted collection:
-        error_messages = test_web_page_content(CFG_SITE_URL + '/%s/109' % CFG_SITE_RECORD,
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/%s/109' % cfg['CFG_SITE_RECORD'],
                                                username='admin',
                                                password='',
                                                expected_text=['Restricted'])
@@ -3355,7 +3354,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_show_public_colls_in_warning_as_unauthorizad_user(self):
         """websearch - show public daugther collections in warning to unauthorized user"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?ln=en&cc=Articles+%26+Preprints&sc=1&p=recid:20',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&cc=Articles+%26+Preprints&sc=1&p=recid:20',
                                                username='hyde',
                                                password='h123yde',
                                                expected_text=['No match found in collection <em>Articles, Preprints, Notes</em>.'])
@@ -3365,7 +3364,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_show_public_and_restricted_colls_in_warning_as_authorized_user(self):
         """websearch - show public and restricted daugther collections in warning to authorized user"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?ln=en&cc=Articles+%26+Preprints&sc=1&p=recid:20',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&cc=Articles+%26+Preprints&sc=1&p=recid:20',
                                                username='jekyll',
                                                password='j123ekyll',
                                                expected_text=['No match found in collection <em>Articles, Preprints, Notes, Drafts</em>.'])
@@ -3374,7 +3373,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_restricted_record_in_different_colls_as_unauthorized_user(self):
         """websearch - record belongs to different restricted collections with different rights, user not has rights"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?p=105&f=recid',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=105&f=recid',
                                                username='hyde',
                                                password='h123yde',
                                                expected_text=['No public collection matched your query.'],
@@ -3387,13 +3386,13 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
         from invenio.config import CFG_WEBSEARCH_VIEWRESTRCOLL_POLICY
         policy = CFG_WEBSEARCH_VIEWRESTRCOLL_POLICY.strip().upper()
         if policy == 'ANY':
-            error_messages = test_web_page_content(CFG_SITE_URL + '/search?&sc=1&p=recid:105&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts',
+            error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?&sc=1&p=recid:105&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts',
                                                    username='balthasar',
                                                    password='b123althasar',
                                                    expected_text=['[CERN-THESIS-99-074]'],
                                                    unexpected_text=['No public collection matched your query.'])
         else:
-            error_messages = test_web_page_content(CFG_SITE_URL + '/search?&sc=1&p=recid:105&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts',
+            error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?&sc=1&p=recid:105&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts',
                                                    username='balthasar',
                                                    password='b123althasar',
                                                    expected_text=['No public collection matched your query.'],
@@ -3404,7 +3403,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_restricted_record_in_different_colls_as_authorized_user_of_two_colls(self):
         """websearch - record belongs to different restricted collections with different rights, jekyll has rights to two of them"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?&sc=1&p=recid:105&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?&sc=1&p=recid:105&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts',
                                                username='jekyll',
                                                password='j123ekyll',
                                                expected_text=['Articles &amp; Preprints', 'Books &amp; Reports'])
@@ -3413,7 +3412,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_restricted_record_in_different_colls_as_authorized_user_of_all_colls(self):
         """websearch - record belongs to different restricted collections with different rights, admin has rights to all of them"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?&sc=1&p=recid:105&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?&sc=1&p=recid:105&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts',
                                                username='admin',
                                                expected_text=['Articles &amp; Preprints', 'Books &amp; Reports', 'ALEPH Theses'])
         if error_messages:
@@ -3421,7 +3420,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_search_restricted_record_from_not_dad_coll(self):
         """websearch - record belongs to different restricted collections with different rights, search from a not dad collection"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?ln=en&cc=Multimedia+%26+Arts&sc=1&p=recid%3A105&f=&action_search=Search&c=Pictures&c=Poetry&c=Atlantis+Times',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&cc=Multimedia+%26+Arts&sc=1&p=recid%3A105&f=&action_search=Search&c=Pictures&c=Poetry&c=Atlantis+Times',
                                                username='admin',
                                                expected_text='No match found in collection',
                                                expected_link_label='1 hits')
@@ -3430,7 +3429,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_public_and_restricted_record_as_unauthorized_user(self):
         """websearch - record belongs to different public and restricted collections, user not has rights"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?&sc=1&p=geometry&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts&of=id',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?&sc=1&p=geometry&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts&of=id',
                                                username='guest',
                                                expected_text='[80, 86]',
                                                unexpected_text='[40, 80, 86]')
@@ -3439,7 +3438,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_public_and_restricted_record_as_authorized_user(self):
         """websearch - record belongs to different public and restricted collections, admin has rights"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?&sc=1&p=geometry&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts&of=id',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?&sc=1&p=geometry&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts&of=id',
                                                username='admin',
                                                password='',
                                                expected_text='[40, 80, 86]')
@@ -3448,7 +3447,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_public_and_restricted_record_of_focus_as_unauthorized_user(self):
         """websearch - record belongs to both a public and a restricted collection of "focus on", user not has rights"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?ln=en&cc=Articles+%26+Preprints&sc=1&p=109&f=recid',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&cc=Articles+%26+Preprints&sc=1&p=109&f=recid',
                                                username='hyde',
                                                password='h123yde',
                                                expected_text=['No public collection matched your query'],
@@ -3458,7 +3457,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_public_and_restricted_record_of_focus_as_authorized_user(self):
         """websearch - record belongs to both a public and a restricted collection of "focus on", user has rights"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?&sc=1&p=109&f=recid&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?&sc=1&p=109&f=recid&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts',
                                                username='balthasar',
                                                password='b123althasar',
                                                expected_text=['Articles &amp; Preprints', 'ALEPH Internal Notes', 'LEP Center-of-Mass Energies in Presence of Opposite'])
@@ -3467,7 +3466,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_search_public_and_restricted_record_from_not_dad_coll_as_authorized_user(self):
         """websearch - record belongs to both a public and a restricted collection, search from a not dad collection, admin has rights"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?ln=en&cc=Books+%26+Reports&sc=1&p=recid%3A98&f=&action_search=Search&c=Books&c=Reports',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&cc=Books+%26+Reports&sc=1&p=recid%3A98&f=&action_search=Search&c=Books&c=Reports',
                                                username='admin',
                                                password='',
                                                expected_text='No match found in collection <em>Books, Theses, Reports</em>',
@@ -3477,7 +3476,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_search_public_and_restricted_record_from_not_dad_coll_as_unauthorized_user(self):
         """websearch - record belongs to both a public and a restricted collection, search from a not dad collection, hyde not has rights"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?ln=en&cc=Books+%26+Reports&sc=1&p=recid%3A98&f=&action_search=Search&c=Books&c=Reports',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&cc=Books+%26+Reports&sc=1&p=recid%3A98&f=&action_search=Search&c=Books&c=Reports',
                                                username='hyde',
                                                password='h123yde',
                                                expected_text='No public collection matched your query',
@@ -3487,7 +3486,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_restricted_record_of_focus_as_authorized_user(self):
         """websearch - record belongs to a restricted collection of "focus on", balthasar has rights"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?&sc=1&p=106&f=recid&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts&of=id',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?&sc=1&p=106&f=recid&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts&of=id',
                                                username='balthasar',
                                                password='b123althasar',
                                                expected_text='[106]',
@@ -3497,7 +3496,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_display_dad_coll_of_restricted_coll_as_unauthorized_user(self):
         """websearch - unauthorized user displays a collection that contains a restricted collection"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?ln=en&cc=Articles+%26+Preprints&sc=1&p=&f=&action_search=Search&c=Articles&c=Drafts&c=Preprints',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&cc=Articles+%26+Preprints&sc=1&p=&f=&action_search=Search&c=Articles&c=Drafts&c=Preprints',
                                                username='guest',
                                                expected_text=['This collection is restricted.'])
         if error_messages:
@@ -3505,7 +3504,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_display_dad_coll_of_restricted_coll_as_authorized_user(self):
         """websearch - authorized user displays a collection that contains a restricted collection"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?ln=en&cc=Articles+%26+Preprints&sc=1&p=&f=&action_search=Search&c=Articles&c=Drafts&c=Notes&c=Preprints',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&cc=Articles+%26+Preprints&sc=1&p=&f=&action_search=Search&c=Articles&c=Drafts&c=Notes&c=Preprints',
                                                username='jekyll',
                                                password='j123ekyll',
                                                expected_text=['Articles', 'Drafts', 'Notes', 'Preprints'],
@@ -3515,7 +3514,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_search_restricted_record_from_coll_of_focus_as_unauthorized_user(self):
         """websearch - search for a record that belongs to a restricted collection from a collection of "focus on" , jekyll not has rights"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?ln=en&cc=CERN+Divisions&sc=1&p=recid%3A106&f=&action_search=Search&c=Experimental+Physics+(EP)&c=Theoretical+Physics+(TH)',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&cc=CERN+Divisions&sc=1&p=recid%3A106&f=&action_search=Search&c=Experimental+Physics+(EP)&c=Theoretical+Physics+(TH)',
                                                username='jekyll',
                                                password='j123ekyll',
                                                expected_text=['No public collection matched your query.'])
@@ -3524,7 +3523,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_search_restricted_record_from_coll_of_focus_as_authorized_user(self):
         """websearch - search for a record that belongs to a restricted collection from a collection of "focus on" , admin has rights"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?ln=en&cc=CERN+Divisions&sc=1&p=recid%3A106&f=&action_search=Search&c=Experimental+Physics+(EP)&c=Theoretical+Physics+(TH)',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&cc=CERN+Divisions&sc=1&p=recid%3A106&f=&action_search=Search&c=Experimental+Physics+(EP)&c=Theoretical+Physics+(TH)',
                                                username='admin',
                                                password='',
                                                expected_text='No match found in collection <em>Experimental Physics (EP), Theoretical Physics (TH)</em>.',
@@ -3534,7 +3533,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_search_restricted_record_from_not_direct_dad_coll_and_display_in_right_position_in_tree(self):
         """websearch - search for a restricted record from not direct dad collection and display it on its right position in the tree"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?ln=en&sc=1&p=recid%3A40&f=&action_search=Search&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&sc=1&p=recid%3A40&f=&action_search=Search&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts',
                                                username='admin',
                                                password='',
                                                expected_text=['Books &amp; Reports','[LBL-22304]'])
@@ -3543,7 +3542,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_search_restricted_record_from_direct_dad_coll_and_display_in_right_position_in_tree(self):
         """websearch - search for a restricted record from the direct dad collection and display it on its right position in the tree"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?ln=en&cc=Books+%26+Reports&sc=1&p=recid%3A40&f=&action_search=Search&c=Books&c=Reports',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&cc=Books+%26+Reports&sc=1&p=recid%3A40&f=&action_search=Search&c=Books&c=Reports',
                                                username='admin',
                                                password='',
                                                expected_text=['Theses',  '[LBL-22304]'])
@@ -3552,7 +3551,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_restricted_and_hidden_record_as_unauthorized_user(self):
         """websearch - search for a "hidden" record, user not has rights"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?ln=en&sc=1&p=recid%3A110&f=&action_search=Search&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&sc=1&p=recid%3A110&f=&action_search=Search&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts',
                                                username='guest',
                                                expected_text=['If you were looking for a non-public document'],
                                                unexpected_text=['If you were looking for a hidden document'])
@@ -3561,7 +3560,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_restricted_and_hidden_record_as_authorized_user(self):
         """websearch - search for a "hidden" record, admin has rights"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?ln=en&sc=1&p=recid%3A110&f=&action_search=Search&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&sc=1&p=recid%3A110&f=&action_search=Search&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts',
                                                username='admin',
                                                password='',
                                                expected_text=['If you were looking for a hidden document, please type the correct URL for this record.'])
@@ -3570,7 +3569,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_enter_url_of_restricted_and_hidden_coll_as_unauthorized_user(self):
         """websearch - unauthorized user types the concret URL of a "hidden" collection"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?ln=en&cc=ISOLDE+Internal+Notes&sc=1&p=&f=&action_search=Search',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&cc=ISOLDE+Internal+Notes&sc=1&p=&f=&action_search=Search',
                                                username='guest',
                                                expected_text=['This collection is restricted.'])
         if error_messages:
@@ -3578,7 +3577,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_enter_url_of_restricted_and_hidden_coll_as_authorized_user(self):
         """websearch - authorized user types the concret URL of a "hidden" collection"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?ln=en&cc=ISOLDE+Internal+Notes&sc=1&p=&f=&action_search=Search',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&cc=ISOLDE+Internal+Notes&sc=1&p=&f=&action_search=Search',
                                                username='dorian',
                                                password='d123orian',
                                                expected_text=['ISOLDE Internal Notes', '[CERN-PS-PA-Note-93-04]'],
@@ -3588,7 +3587,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_search_for_pattern_from_the_top_as_unauthorized_user(self):
         """websearch - unauthorized user searches for a pattern from the top"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?ln=en&sc=1&p=of&f=&action_search=Search&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&sc=1&p=of&f=&action_search=Search&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts',
                                                username='guest',
                                                expected_text=['Articles &amp; Preprints', '61', 'records found',
                                                               'Books &amp; Reports', '2', 'records found',
@@ -3598,7 +3597,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_search_for_pattern_from_the_top_as_authorized_user(self):
         """websearch - authorized user searches for a pattern from the top"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?ln=en&sc=1&p=of&f=&action_search=Search&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&sc=1&p=of&f=&action_search=Search&c=Articles+%26+Preprints&c=Books+%26+Reports&c=Multimedia+%26+Arts',
                                                username='admin',
                                                password='',
                                                expected_text=['Articles &amp; Preprints', '61', 'records found',
@@ -3611,7 +3610,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_search_for_pattern_from_an_specific_coll_as_unauthorized_user(self):
         """websearch - unauthorized user searches for a pattern from one specific collection"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?ln=en&cc=Books+%26+Reports&sc=1&p=of&f=&action_search=Search&c=Books&c=Reports',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&cc=Books+%26+Reports&sc=1&p=of&f=&action_search=Search&c=Books&c=Reports',
                                                username='guest',
                                                expected_text=['Books', '1', 'records found',
                                                               'Reports', '1', 'records found'])
@@ -3620,7 +3619,7 @@ class WebSearchRestrictedCollectionHandlingTest(InvenioTestCase):
 
     def test_search_for_pattern_from_an_specific_coll_as_authorized_user(self):
         """websearch - authorized user searches for a pattern from one specific collection"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/search?ln=en&cc=Books+%26+Reports&sc=1&p=of&f=&action_search=Search&c=Books&c=Reports',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&cc=Books+%26+Reports&sc=1&p=of&f=&action_search=Search&c=Books&c=Reports',
                                                username='admin',
                                                password='',
                                                expected_text=['Books', '1', 'records found',
@@ -3638,14 +3637,14 @@ class WebSearchRestrictedPicturesTest(InvenioTestCase):
 
     def test_restricted_pictures_guest(self):
         """websearch - restricted pictures not available to guest"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/%s/1/files/0106015_01.jpg' % CFG_SITE_RECORD,
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/%s/1/files/0106015_01.jpg' % cfg['CFG_SITE_RECORD'],
                                                expected_text=['This file is restricted'])
         if error_messages:
             self.failUnless("HTTP Error 401: UNAUTHORIZED" in merge_error_messages(error_messages))
 
     def test_restricted_pictures_romeo(self):
         """websearch - restricted pictures available to Romeo"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/%s/1/files/0106015_01.jpg' % CFG_SITE_RECORD,
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/%s/1/files/0106015_01.jpg' % cfg['CFG_SITE_RECORD'],
                                                username='romeo',
                                                password='r123omeo',
                                                expected_text=[],
@@ -3657,7 +3656,7 @@ class WebSearchRestrictedPicturesTest(InvenioTestCase):
     def test_restricted_pictures_hyde(self):
         """websearch - restricted pictures not available to Mr. Hyde"""
 
-        error_messages = test_web_page_content(CFG_SITE_URL + '/%s/1/files/0106015_01.jpg' % CFG_SITE_RECORD,
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/%s/1/files/0106015_01.jpg' % cfg['CFG_SITE_RECORD'],
                                                username='hyde',
                                                password='h123yde',
                                                expected_text=['This file is restricted',
@@ -3677,7 +3676,7 @@ class WebSearchRestrictedWebJournalFilesTest(InvenioTestCase):
         self.assertEqual(record_public_p(112), False)
 
         # ... and guest cannot access attached files
-        error_messages = test_web_page_content(CFG_SITE_URL + '/%s/112/files/journal_galapagos_archipelago.jpg' % CFG_SITE_RECORD,
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/%s/112/files/journal_galapagos_archipelago.jpg' % cfg['CFG_SITE_RECORD'],
                                                expected_text=['This file is restricted.  If you think you have right to access it, please authenticate yourself.'])
         if error_messages:
             self.fail(merge_error_messages(error_messages))
@@ -3689,7 +3688,7 @@ class WebSearchRestrictedWebJournalFilesTest(InvenioTestCase):
         self.assertEqual(record_public_p(112), False)
 
         # ... but editor can access attached files
-        error_messages = test_web_page_content(CFG_SITE_URL + '/%s/112/files/journal_galapagos_archipelago.jpg' % CFG_SITE_RECORD,
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/%s/112/files/journal_galapagos_archipelago.jpg' % cfg['CFG_SITE_RECORD'],
                                                username='balthasar',
                                                password='b123althasar',
                                                expected_text=[],
@@ -3705,7 +3704,7 @@ class WebSearchRestrictedWebJournalFilesTest(InvenioTestCase):
         self.assertEqual(record_public_p(111), False)
 
         # ... but user can access attached files, as article is released
-        error_messages = test_web_page_content(CFG_SITE_URL + '/%s/111/files/journal_scissor_beak.jpg' % CFG_SITE_RECORD,
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/%s/111/files/journal_scissor_beak.jpg' % cfg['CFG_SITE_RECORD'],
                                                expected_text=[],
                                                 unexpected_text=['This file is restricted',
                                                                  'You are not authorized'])
@@ -3720,14 +3719,14 @@ class WebSearchRestrictedWebJournalFilesTest(InvenioTestCase):
 
         # ... and user cannot access restricted attachements, even if
         # article is released
-        error_messages = test_web_page_content(CFG_SITE_URL + '/%s/111/files/restricted-journal_scissor_beak.jpg' % CFG_SITE_RECORD,
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/%s/111/files/restricted-journal_scissor_beak.jpg' % cfg['CFG_SITE_RECORD'],
                                                expected_text=['This file is restricted.  If you think you have right to access it, please authenticate yourself.'])
         if error_messages:
             self.fail(merge_error_messages(error_messages))
 
     def test_restricted_picture_has_restriction_flag(self):
         """websearch - restricted files displays a restriction flag"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/%s/1/files/' % CFG_SITE_RECORD,
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/%s/1/files/' % cfg['CFG_SITE_RECORD'],
                                                   expected_text="Restricted")
         if error_messages:
             self.fail(merge_error_messages(error_messages))
@@ -3738,7 +3737,7 @@ class WebSearchRSSFeedServiceTest(InvenioTestCase):
     def test_rss_feed_service(self):
         """websearch - RSS feed service"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/rss',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/rss',
                                                expected_text='<rss version="2.0"'))
 
 class WebSearchXSSVulnerabilityTest(InvenioTestCase):
@@ -3747,38 +3746,38 @@ class WebSearchXSSVulnerabilityTest(InvenioTestCase):
     def test_xss_in_collection_interface_page(self):
         """websearch - no XSS vulnerability in collection interface pages"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/?c=%3CSCRIPT%3Ealert%28%22XSS%22%29%3B%3C%2FSCRIPT%3E',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/?c=%3CSCRIPT%3Ealert%28%22XSS%22%29%3B%3C%2FSCRIPT%3E',
                                                expected_text='Collection &lt;SCRIPT&gt;alert("XSS");&lt;/SCRIPT&gt; Not Found'))
 
     def test_xss_in_collection_search_page(self):
         """websearch - no XSS vulnerability in collection search pages"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?c=%3CSCRIPT%3Ealert%28%22XSS%22%29%3B%3C%2FSCRIPT%3E',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?c=%3CSCRIPT%3Ealert%28%22XSS%22%29%3B%3C%2FSCRIPT%3E',
                                                expected_text='Collection &lt;SCRIPT&gt;alert("XSS");&lt;/SCRIPT&gt; Not Found'))
 
     def test_xss_in_simple_search(self):
         """websearch - no XSS vulnerability in simple search"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=%3CSCRIPT%3Ealert%28%22XSS%22%29%3B%3C%2FSCRIPT%3E',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=%3CSCRIPT%3Ealert%28%22XSS%22%29%3B%3C%2FSCRIPT%3E',
                                                expected_text='Search term <em>&lt;SCRIPT&gt;alert("XSS");&lt;/SCRIPT&gt;</em> did not match any record.'))
 
     def test_xss_in_structured_search(self):
         """websearch - no XSS vulnerability in structured search"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=%3CSCRIPT%3Ealert%28%22XSS%22%29%3B%3C%2FSCRIPT%3E&f=%3CSCRIPT%3Ealert%28%22XSS%22%29%3B%3C%2FSCRIPT%3E',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=%3CSCRIPT%3Ealert%28%22XSS%22%29%3B%3C%2FSCRIPT%3E&f=%3CSCRIPT%3Ealert%28%22XSS%22%29%3B%3C%2FSCRIPT%3E',
                                                expected_text='<em>&lt;script&gt;alert("xss");&lt;/script&gt;</em>'))
 
     @nottest
     def test_xss_in_advanced_search(self):
         """websearch - no XSS vulnerability in advanced search"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?as=1&p1=ellis&f1=author&op1=a&p2=%3CSCRIPT%3Ealert%28%22XSS%22%29%3B%3C%2FSCRIPT%3E&f2=%3CSCRIPT%3Ealert%28%22XSS%22%29%3B%3C%2FSCRIPT%3E&m2=e',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?as=1&p1=ellis&f1=author&op1=a&p2=%3CSCRIPT%3Ealert%28%22XSS%22%29%3B%3C%2FSCRIPT%3E&f2=%3CSCRIPT%3Ealert%28%22XSS%22%29%3B%3C%2FSCRIPT%3E&m2=e',
                                                expected_text='Search term <em>&lt;SCRIPT&gt;alert("XSS");&lt;/SCRIPT&gt;</em> inside index <em>&lt;script&gt;alert("xss");&lt;/script&gt;</em> did not match any record.'))
 
     def test_xss_in_browse(self):
         """websearch - no XSS vulnerability in browse"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=%3CSCRIPT%3Ealert%28%22XSS%22%29%3B%3C%2FSCRIPT%3E&f=%3CSCRIPT%3Ealert%28%22XSS%22%29%3B%3C%2FSCRIPT%3E&action_browse=Browse',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=%3CSCRIPT%3Ealert%28%22XSS%22%29%3B%3C%2FSCRIPT%3E&f=%3CSCRIPT%3Ealert%28%22XSS%22%29%3B%3C%2FSCRIPT%3E&action_browse=Browse',
                                                expected_text='&lt;script&gt;alert("xss");&lt;/script&gt;'))
 
 class WebSearchResultsOverview(InvenioTestCase):
@@ -3790,7 +3789,7 @@ class WebSearchResultsOverview(InvenioTestCase):
     def test_results_overview_split_off(self):
         """websearch - results overview box when split by collection is off"""
         browser = Browser()
-        browser.open(CFG_SITE_URL + '/search?p=of&sc=0')
+        browser.open(cfg['CFG_SITE_URL'] + '/search?p=of&sc=0')
         body = browser.response().read()
         if body.find("Results overview") > -1:
             self.fail("Oops, when split by collection is off, "
@@ -3812,7 +3811,7 @@ class WebSearchResultsOverview(InvenioTestCase):
     def test_results_overview_split_on(self):
         """websearch - results overview box when split by collection is on"""
         browser = Browser()
-        browser.open(CFG_SITE_URL + '/search?p=of&sc=1')
+        browser.open(cfg['CFG_SITE_URL'] + '/search?p=of&sc=1')
         body = browser.response().read()
         if body.find("Results overview") == -1:
             self.fail("Oops, when split by collection is on, "
@@ -3835,25 +3834,25 @@ class WebSearchSortResultsTest(InvenioTestCase):
     def test_sort_results_default(self):
         """websearch - search results sorting, default method"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=of&f=title&rg=3',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=of&f=title&rg=3',
                                                expected_text="CMS animation of the high-energy collisions"))
 
     def test_sort_results_ascending(self):
         """websearch - search results sorting, ascending field"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=of&f=title&rg=2&sf=reportnumber&so=a',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=of&f=title&rg=2&sf=reportnumber&so=a',
                                                expected_text="astro-ph/0104076"))
 
     def test_sort_results_descending(self):
         """websearch - search results sorting, descending field"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=of&f=title&rg=1&sf=reportnumber&so=d',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=of&f=title&rg=1&sf=reportnumber&so=d',
                                                expected_text=" TESLA-FEL-99-07"))
 
     def test_sort_results_sort_pattern(self):
         """websearch - search results sorting, preferential sort pattern"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=of&f=title&rg=1&sf=reportnumber&so=d&sp=cern',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=of&f=title&rg=1&sf=reportnumber&so=d&sp=cern',
                                                expected_text="CERN-TH-2002-069"))
 
 class WebSearchSearchResultsXML(InvenioTestCase):
@@ -3862,7 +3861,7 @@ class WebSearchSearchResultsXML(InvenioTestCase):
     def test_search_results_xm_output_split_on(self):
         """ websearch - check document element of search results in xm output (split by collection on)"""
         browser = Browser()
-        browser.open(CFG_SITE_URL + '/search?sc=1&of=xm')
+        browser.open(cfg['CFG_SITE_URL'] + '/search?sc=1&of=xm')
         body = browser.response().read()
 
         num_doc_element = body.count("<collection "
@@ -3887,7 +3886,7 @@ class WebSearchSearchResultsXML(InvenioTestCase):
     def test_search_results_xm_output_split_off(self):
         """ websearch - check document element of search results in xm output (split by collection off)"""
         browser = Browser()
-        browser.open(CFG_SITE_URL + '/search?sc=0&of=xm')
+        browser.open(cfg['CFG_SITE_URL'] + '/search?sc=0&of=xm')
         body = browser.response().read()
 
         num_doc_element = body.count("<collection "
@@ -3911,7 +3910,7 @@ class WebSearchSearchResultsXML(InvenioTestCase):
     def test_search_results_xd_output_split_on(self):
         """ websearch - check document element of search results in xd output (split by collection on)"""
         browser = Browser()
-        browser.open(CFG_SITE_URL + '/search?sc=1&of=xd')
+        browser.open(cfg['CFG_SITE_URL'] + '/search?sc=1&of=xd')
         body = browser.response().read()
 
         num_doc_element = body.count("<collection")
@@ -3935,7 +3934,7 @@ class WebSearchSearchResultsXML(InvenioTestCase):
     def test_search_results_xd_output_split_off(self):
         """ websearch - check document element of search results in xd output (split by collection off)"""
         browser = Browser()
-        browser.open(CFG_SITE_URL + '/search?sc=0&of=xd')
+        browser.open(cfg['CFG_SITE_URL'] + '/search?sc=0&of=xd')
         body = browser.response().read()
 
         num_doc_element = body.count("<collection")
@@ -3961,19 +3960,19 @@ class WebSearchUnicodeQueryTest(InvenioTestCase):
     def test_unicode_word_query(self):
         """websearch - Unicode word query"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=title%3A%CE%99%CE%B8%CE%AC%CE%BA%CE%B7',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=title%3A%CE%99%CE%B8%CE%AC%CE%BA%CE%B7',
                                                expected_text="[76]"))
 
     def test_unicode_word_query_not_found_term(self):
         """websearch - Unicode word query, not found term"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=title%3A%CE%99%CE%B8',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=title%3A%CE%99%CE%B8',
                                                expected_text="ιθάκη"))
 
     def test_unicode_exact_phrase_query(self):
         """websearch - Unicode exact phrase query"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=title%3A%22%CE%99%CE%B8%CE%AC%CE%BA%CE%B7%22',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=title%3A%22%CE%99%CE%B8%CE%AC%CE%BA%CE%B7%22',
                                                expected_text="[76]"))
 
     def test_unicode_partial_phrase_query(self):
@@ -3982,13 +3981,13 @@ class WebSearchUnicodeQueryTest(InvenioTestCase):
         # removed difference between double-quoted and single-quoted
         # search:
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=title%3A%27%CE%B7%27',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=title%3A%27%CE%B7%27',
                                                expected_text="[]"))
 
     def test_unicode_regexp_query(self):
         """websearch - Unicode regexp query"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=title%3A%2F%CE%B7%2F',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=title%3A%2F%CE%B7%2F',
                                                expected_text="[76]"))
 
 class WebSearchMARCQueryTest(InvenioTestCase):
@@ -3997,25 +3996,25 @@ class WebSearchMARCQueryTest(InvenioTestCase):
     def test_single_marc_tag_exact_phrase_query(self):
         """websearch - single MARC tag, exact phrase query (100__a)"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=100__a%3A%22Ellis%2C+J%22',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=100__a%3A%22Ellis%2C+J%22',
                                                expected_text="[9, 14, 18]"))
 
     def test_single_marc_tag_partial_phrase_query(self):
         """websearch - single MARC tag, partial phrase query (245__b)"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=245__b%3A%27and%27',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=245__b%3A%27and%27',
                                                expected_text="[28]"))
 
     def test_many_marc_tags_partial_phrase_query(self):
         """websearch - many MARC tags, partial phrase query (245)"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=245%3A%27and%27&rg=100',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=245%3A%27and%27&rg=100',
                                                expected_text="[1, 8, 9, 14, 15, 20, 22, 24, 28, 33, 47, 48, 49, 51, 53, 64, 69, 71, 79, 82, 83, 85, 91, 96, 108]"))
 
     def test_single_marc_tag_regexp_query(self):
         """websearch - single MARC tag, regexp query"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=245%3A%2Fand%2F&rg=100',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=245%3A%2Fand%2F&rg=100',
                                                expected_text="[1, 8, 9, 14, 15, 20, 22, 24, 28, 33, 47, 48, 49, 51, 53, 64, 69, 71, 79, 82, 83, 85, 91, 96, 108]"))
 
 class WebSearchExtSysnoQueryTest(InvenioTestCase):
@@ -4024,25 +4023,25 @@ class WebSearchExtSysnoQueryTest(InvenioTestCase):
     def test_existing_sysno_html_output(self):
         """websearch - external sysno query, existing sysno, HTML output"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?sysno=000289446CER',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?sysno=000289446CER',
                                                expected_text="The wall of the cave"))
 
     def test_existing_sysno_id_output(self):
         """websearch - external sysno query, existing sysno, ID output"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?sysno=000289446CER&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?sysno=000289446CER&of=id',
                                                expected_text="[95]"))
 
     def test_nonexisting_sysno_html_output(self):
         """websearch - external sysno query, non-existing sysno, HTML output"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?sysno=000289446CERRRR',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?sysno=000289446CERRRR',
                                                expected_text="Requested record does not seem to exist."))
 
     def test_nonexisting_sysno_id_output(self):
         """websearch - external sysno query, non-existing sysno, ID output"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?sysno=000289446CERRRR&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?sysno=000289446CERRRR&of=id',
                                                expected_text="[]"))
 
 class WebSearchResultsRecordGroupingTest(InvenioTestCase):
@@ -4051,7 +4050,7 @@ class WebSearchResultsRecordGroupingTest(InvenioTestCase):
     def test_search_results_rg_guest(self):
         """websearch - search results, records in groups of, guest"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?rg=17',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?rg=17',
                                                expected_text="1 to 17"))
 
     def test_search_results_rg_nonguest(self):
@@ -4059,7 +4058,7 @@ class WebSearchResultsRecordGroupingTest(InvenioTestCase):
         # This test used to fail due to saved user preference fetching
         # not overridden by URL rg argument.
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?rg=17',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?rg=17',
                                                username='admin',
                                                expected_text="1 to 17"))
 
@@ -4069,32 +4068,32 @@ class WebSearchSpecialTermsQueryTest(InvenioTestCase):
     def test_special_terms_u1(self):
         """websearch - query for special terms, U(1)"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=U%281%29',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=U%281%29',
                                                expected_text="[57, 79, 80, 88]"))
 
     def test_special_terms_u1_and_sl(self):
         """websearch - query for special terms, U(1) SL(2,Z)"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=U%281%29+SL%282%2CZ%29',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=U%281%29+SL%282%2CZ%29',
                                                expected_text="[88]"))
 
     def test_special_terms_u1_and_sl_or(self):
         """websearch - query for special terms, U(1) OR SL(2,Z)"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=U%281%29+OR+SL%282%2CZ%29',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=U%281%29+OR+SL%282%2CZ%29',
                                                expected_text="[57, 79, 80, 88]"))
 
     @nottest
     def FIXME_TICKET_453_test_special_terms_u1_and_sl_or_parens(self):
         """websearch - query for special terms, (U(1) OR SL(2,Z))"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=%28U%281%29+OR+SL%282%2CZ%29%29',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=%28U%281%29+OR+SL%282%2CZ%29%29',
                                                expected_text="[57, 79, 80, 88]"))
 
     def test_special_terms_u1_and_sl_in_quotes(self):
         """websearch - query for special terms, ('SL(2,Z)' OR 'U(1)')"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + "/search?of=id&p=%28%27SL%282%2CZ%29%27+OR+%27U%281%29%27%29",
+                         test_web_page_content(cfg['CFG_SITE_URL'] + "/search?of=id&p=%28%27SL%282%2CZ%29%27+OR+%27U%281%29%27%29",
                                                expected_text="[57, 79, 80, 88, 96]"))
 
 
@@ -4104,17 +4103,17 @@ class WebSearchJournalQueryTest(InvenioTestCase):
     def test_query_journal_title_only(self):
         """websearch - journal publication info query, title only"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&f=journal&p=Phys.+Lett.+B',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&f=journal&p=Phys.+Lett.+B',
                                                expected_text="[78, 85, 87]"))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&f=journal&p=Phys.+Lett.+B',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&f=journal&p=Phys.+Lett.+B',
                                                username='admin',
                                                expected_text="[77, 78, 85, 87]"))
 
     def test_query_journal_full_pubinfo(self):
         """websearch - journal publication info query, full reference"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&f=journal&p=Phys.+Lett.+B+531+%282002%29+301',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&f=journal&p=Phys.+Lett.+B+531+%282002%29+301',
                                                expected_text="[78]"))
 
 class WebSearchStemmedIndexQueryTest(InvenioTestCase):
@@ -4124,7 +4123,7 @@ class WebSearchStemmedIndexQueryTest(InvenioTestCase):
         """websearch - stemmed index query, lowercase"""
         # note that dasse/Dasse is stemmed into dass/Dass, as expected
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=dasse',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=dasse',
                                                expected_text="[25, 26]"))
 
     def test_query_stemmed_uppercase(self):
@@ -4134,7 +4133,7 @@ class WebSearchStemmedIndexQueryTest(InvenioTestCase):
         # query term.  (Something that is not necessary for
         # non-stemmed indexes.)
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=DASSE',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=DASSE',
                                                expected_text="[25, 26]"))
 
 class WebSearchSummarizerTest(InvenioTestCase):
@@ -4178,26 +4177,26 @@ class WebSearchSummarizerTest(InvenioTestCase):
     def test_ellis_citation_summary(self):
         """websearch - query ellis, citation summary output format"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=ellis&of=hcs',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=ellis&of=hcs',
                                                expected_text="Less known papers (1-9)",
-                                               expected_link_target=CFG_SITE_URL+"/search?p=ellis%20AND%20cited%3A1-%3E9",
+                                               expected_link_target=cfg['CFG_SITE_URL']+"/search?p=ellis%20AND%20cited%3A1-%3E9",
                                                expected_link_label='1'))
 
     @nottest
     def test_ellis_not_quark_citation_summary_advanced(self):
         """websearch - ellis and not quark, citation summary format advanced"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?ln=en&as=1&m1=a&p1=ellis&f1=author&op1=n&m2=a&p2=quark&f2=&op2=a&m3=a&p3=&f3=&action_search=Search&sf=&so=a&rm=&rg=10&sc=1&of=hcs',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&as=1&m1=a&p1=ellis&f1=author&op1=n&m2=a&p2=quark&f2=&op2=a&m3=a&p3=&f3=&action_search=Search&sf=&so=a&rm=&rg=10&sc=1&of=hcs',
                                                expected_text="Less known papers (1-9)",
-                                               expected_link_target=CFG_SITE_URL+'/search?p=author%3Aellis%20and%20not%20quark%20AND%20cited%3A1-%3E9',
+                                               expected_link_target=cfg['CFG_SITE_URL']+'/search?p=author%3Aellis%20and%20not%20quark%20AND%20cited%3A1-%3E9',
                                                expected_link_label='1'))
 
     def test_ellis_not_quark_citation_summary_regular(self):
         """websearch - ellis and not quark, citation summary format regular"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?ln=en&p=author%3Aellis+and+not+quark&f=&action_search=Search&sf=&so=d&rm=&rg=10&sc=0&of=hcs',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&p=author%3Aellis+and+not+quark&f=&action_search=Search&sf=&so=d&rm=&rg=10&sc=0&of=hcs',
                                                expected_text="Less known papers (1-9)",
-                                               expected_link_target=CFG_SITE_URL+'/search?p=author%3Aellis%20and%20not%20quark%20AND%20cited%3A1-%3E9',
+                                               expected_link_target=cfg['CFG_SITE_URL']+'/search?p=author%3Aellis%20and%20not%20quark%20AND%20cited%3A1-%3E9',
                                                expected_link_label='1'))
 
 
@@ -4213,9 +4212,9 @@ class WebSearchRecordCollectionGuessTest(InvenioTestCase):
         """websearch - guess_collection_of_a_record"""
         from invenio.legacy.search_engine import guess_collection_of_a_record
         self.assertEqual(guess_collection_of_a_record(96), 'Articles')
-        self.assertEqual(guess_collection_of_a_record(96, '%s/collection/Theoretical Physics (TH)?ln=en' % CFG_SITE_URL), 'Articles')
-        self.assertEqual(guess_collection_of_a_record(12, '%s/collection/Theoretical Physics (TH)?ln=en' % CFG_SITE_URL), 'Theoretical Physics (TH)')
-        self.assertEqual(guess_collection_of_a_record(12, '%s/collection/Theoretical%%20Physics%%20%%28TH%%29?ln=en' % CFG_SITE_URL), 'Theoretical Physics (TH)')
+        self.assertEqual(guess_collection_of_a_record(96, '%s/collection/Theoretical Physics (TH)?ln=en' % cfg['CFG_SITE_URL']), 'Articles')
+        self.assertEqual(guess_collection_of_a_record(12, '%s/collection/Theoretical Physics (TH)?ln=en' % cfg['CFG_SITE_URL']), 'Theoretical Physics (TH)')
+        self.assertEqual(guess_collection_of_a_record(12, '%s/collection/Theoretical%%20Physics%%20%%28TH%%29?ln=en' % cfg['CFG_SITE_URL']), 'Theoretical Physics (TH)')
 
 class WebSearchGetFieldValuesTest(InvenioTestCase):
     """Testing get_fieldvalues() function."""
@@ -4264,21 +4263,21 @@ class WebSearchAddToBasketTest(InvenioTestCase):
     def test_add_to_basket_guest(self):
         """websearch - add-to-basket facility not allowed for guests"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=recid%3A10',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=recid%3A10',
                                                unexpected_text='Add to basket'))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=recid%3A10',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=recid%3A10',
                                                expected_text='<input name="recid" type="checkbox" value="10" />'))
 
     def test_add_to_basket_jekyll(self):
         """websearch - add-to-basket facility allowed for Dr. Jekyll"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=recid%3A10',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=recid%3A10',
                                                expected_text='Add to basket',
                                                username='jekyll',
                                                password='j123ekyll'))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=recid%3A10',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=recid%3A10',
                                                expected_text='<input name="recid" type="checkbox" value="10" />',
                                                username='jekyll',
                                                password='j123ekyll'))
@@ -4286,12 +4285,12 @@ class WebSearchAddToBasketTest(InvenioTestCase):
     def test_add_to_basket_hyde(self):
         """websearch - add-to-basket facility denied to Mr. Hyde"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=recid%3A10',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=recid%3A10',
                                                unexpected_text='Add to basket',
                                                username='hyde',
                                                password='h123yde'))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=recid%3A10',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=recid%3A10',
                                                # we allow export of selected records
                                                expected_text='<input name="recid" type="checkbox" value="10" />',
                                                username='hyde',
@@ -4303,21 +4302,21 @@ class WebSearchAlertTeaserTest(InvenioTestCase):
     def test_alert_teaser_guest(self):
         """websearch - alert teaser allowed for guests"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=ellis',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=ellis',
                                                expected_link_label='email alert'))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=ellis',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=ellis',
                                                expected_text='RSS feed'))
 
     def test_alert_teaser_jekyll(self):
         """websearch - alert teaser allowed for Dr. Jekyll"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=ellis',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=ellis',
                                                expected_text='email alert',
                                                username='jekyll',
                                                password='j123ekyll'))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=ellis',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=ellis',
                                                expected_text='RSS feed',
                                                username='jekyll',
                                                password='j123ekyll'))
@@ -4325,12 +4324,12 @@ class WebSearchAlertTeaserTest(InvenioTestCase):
     def test_alert_teaser_hyde(self):
         """websearch - alert teaser allowed for Mr. Hyde"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=ellis',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=ellis',
                                                expected_text='email alert',
                                                username='hyde',
                                                password='h123yde'))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=ellis',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=ellis',
                                                expected_text='RSS feed',
                                                username='hyde',
                                                password='h123yde'))
@@ -4342,35 +4341,35 @@ class WebSearchSpanQueryTest(InvenioTestCase):
     def test_span_in_word_index(self):
         """websearch - span query in a word index"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=year%3A1992-%3E1996&of=id&ap=0',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=year%3A1992-%3E1996&of=id&ap=0',
                                                expected_text='[17, 66, 69, 71]'))
 
     def test_span_in_phrase_index(self):
         """websearch - span query in a phrase index"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=year%3A%221992%22-%3E%221996%22&of=id&ap=0',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=year%3A%221992%22-%3E%221996%22&of=id&ap=0',
                                                expected_text='[17, 66, 69, 71]'))
 
     def test_span_in_bibxxx(self):
         """websearch - span query in MARC tables"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=909C0y%3A%221992%22-%3E%221996%22&of=id&ap=0',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=909C0y%3A%221992%22-%3E%221996%22&of=id&ap=0',
                                                expected_text='[17, 66, 69, 71]'))
 
     def test_span_with_spaces(self):
         """websearch - no span query when a space is around"""
         # useful for reaction search
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=title%3A%27mu%20--%3E%20e%27&of=id&ap=0',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=title%3A%27mu%20--%3E%20e%27&of=id&ap=0',
                                                expected_text='[67]'))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=245%3A%27mu%20--%3E%20e%27&of=id&ap=0',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=245%3A%27mu%20--%3E%20e%27&of=id&ap=0',
                                                expected_text='[67]'))
 
     def test_span_in_author(self):
         """websearch - span query in special author index"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=author%3A%22Ellis,%20K%22-%3E%22Ellis,%20RZ%22&of=id&ap=0',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=author%3A%22Ellis,%20K%22-%3E%22Ellis,%20RZ%22&of=id&ap=0',
                                                expected_text='[8, 9, 11, 12, 13, 14, 17, 18, 47]'))
 
 
@@ -4380,81 +4379,81 @@ class WebSearchReferstoCitedbyTest(InvenioTestCase):
     def test_refersto_recid(self):
         'websearch - refersto:recid:84'
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=refersto%3Arecid%3A84&of=id&ap=0',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=refersto%3Arecid%3A84&of=id&ap=0',
                                                expected_text='[85, 88, 91]'))
 
     def test_refersto_repno(self):
         'websearch - refersto:reportnumber:hep-th/0205061'
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=refersto%3Areportnumber%3Ahep-th/0205061&of=id&ap=0',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=refersto%3Areportnumber%3Ahep-th/0205061&of=id&ap=0',
                                                expected_text='[91]'))
 
     def test_refersto_author_word(self):
         'websearch - refersto:author:klebanov'
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=refersto%3Aauthor%3Aklebanov&of=id&ap=0',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=refersto%3Aauthor%3Aklebanov&of=id&ap=0',
                                                expected_text='[85, 86, 88, 91]'))
 
     def test_refersto_author_phrase(self):
         'websearch - refersto:author:"Klebanov, I"'
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=refersto%3Aauthor%3A%22Klebanov,%20I%22&of=id&ap=0',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=refersto%3Aauthor%3A%22Klebanov,%20I%22&of=id&ap=0',
                                                expected_text='[85, 86, 88, 91]'))
 
     def test_citedby_recid(self):
         'websearch - citedby:recid:92'
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=citedby%3Arecid%3A92&of=id&ap=0',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=citedby%3Arecid%3A92&of=id&ap=0',
                                                expected_text='[74, 91]'))
 
     def test_citedby_repno(self):
         'websearch - citedby:reportnumber:hep-th/0205061'
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=citedby%3Areportnumber%3Ahep-th/0205061&of=id&ap=0',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=citedby%3Areportnumber%3Ahep-th/0205061&of=id&ap=0',
                                                expected_text='[78]'))
 
     def test_citedby_author_word(self):
         'websearch - citedby:author:klebanov'
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=citedby%3Aauthor%3Aklebanov&of=id&ap=0',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=citedby%3Aauthor%3Aklebanov&of=id&ap=0',
                                                expected_text='[95]'))
 
     def test_citedby_author_phrase(self):
         'websearch - citedby:author:"Klebanov, I"'
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=citedby%3Aauthor%3A%22Klebanov,%20I%22&of=id&ap=0',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=citedby%3Aauthor%3A%22Klebanov,%20I%22&of=id&ap=0',
                                                expected_text='[95]'))
 
     def test_refersto_bad_query(self):
         'websearch - refersto:title:'
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=refersto%3Atitle%3A',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=refersto%3Atitle%3A',
                                                expected_text='There are no records referring to title:.'))
 
     def test_citedby_bad_query(self):
         'websearch - citedby:title:'
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=citedby%3Atitle%3A',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=citedby%3Atitle%3A',
                                                expected_text='There are no records cited by title:.'))
 
 
 class WebSearchSPIRESSyntaxTest(InvenioTestCase):
     """Test of SPIRES syntax issues"""
 
-    if CFG_WEBSEARCH_SPIRES_SYNTAX > 0:
+    if False: #FIXME cfg['CFG_WEBSEARCH_SPIRES_SYNTAX'] > 0:
         def test_and_not_parens(self):
             'websearch - find a ellis, j and not a enqvist'
             self.assertEqual([],
-                             test_web_page_content(CFG_SITE_URL +'/search?p=find+a+ellis%2C+j+and+not+a+enqvist&of=id&ap=0',
+                             test_web_page_content(cfg['CFG_SITE_URL'] +'/search?p=find+a+ellis%2C+j+and+not+a+enqvist&of=id&ap=0',
                                                    expected_text='[9, 12, 14, 47]'))
 
-    if DATEUTIL_AVAILABLE:
+    if GOT_DATEUTIL:
         def test_dadd_search(self):
             'websearch - find da > today - 3650'
             # XXX: assumes we've reinstalled our site in the last 10 years
             # should return every document in the system
             self.assertEqual([],
-                             test_web_page_content(CFG_SITE_URL +'/search?ln=en&p=find+da+%3E+today+-+3650&f=&of=id',
+                             test_web_page_content(cfg['CFG_SITE_URL'] +'/search?ln=en&p=find+da+%3E+today+-+3650&f=&of=id',
                                                   expected_text='[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 99, 100, 101, 102, 103, 104, 107, 108, 113, 127, 128]'))
 
 
@@ -4493,50 +4492,51 @@ class WebSearchSynonymQueryTest(InvenioTestCase):
     def test_journal_phrvd(self):
         """websearch - search-time synonym search, journal title"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=PHRVD&f=journal&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=PHRVD&f=journal&of=id',
                                                expected_text="[66, 72]"))
 
     def test_journal_phrvd_54_1996_4234(self):
         """websearch - search-time synonym search, journal article"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=PHRVD%2054%20%281996%29%204234&f=journal&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=PHRVD%2054%20%281996%29%204234&f=journal&of=id',
                                                expected_text="[66]"))
 
     def test_journal_beta_decay_title(self):
         """websearch - index-time synonym search, beta decay in title"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=beta+decay&f=title&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=beta+decay&f=title&of=id',
                                                expected_text="[59]"))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=%CE%B2+decay&f=title&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=%CE%B2+decay&f=title&of=id',
                                                expected_text="[59]"))
 
     def test_journal_beta_decay_global(self):
         """websearch - index-time synonym search, beta decay in any field"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=beta+decay&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=beta+decay&of=id',
                                                expected_text="[52, 59]"))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=%CE%B2+decay&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=%CE%B2+decay&of=id',
                                                expected_text="[59]"))
 
     def test_journal_beta_title(self):
         """websearch - index-time synonym search, beta in title"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=beta&f=title&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=beta&f=title&of=id',
                                                expected_text="[59]"))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=%CE%B2&f=title&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=%CE%B2&f=title&of=id',
                                                expected_text="[59]"))
 
     def test_journal_beta_global(self):
         """websearch - index-time synonym search, beta in any field"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=beta&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=beta&of=id',
                                                expected_text="[52, 59]"))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=%CE%B2&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=%CE%B2&of=id',
                                                expected_text="[59]"))
+
 
 class WebSearchWashCollectionsTest(InvenioTestCase):
     """Test if the collection argument is washed correctly"""
@@ -4558,25 +4558,25 @@ class WebSearchAuthorCountQueryTest(InvenioTestCase):
     def test_journal_authorcount_word(self):
         """websearch - author count, word query"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=4&f=authorcount&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=4&f=authorcount&of=id',
                                                expected_text="[51, 54, 59, 66, 92, 96]"))
 
     def test_journal_authorcount_phrase(self):
         """websearch - author count, phrase query"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=%224%22&f=authorcount&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=%224%22&f=authorcount&of=id',
                                                expected_text="[51, 54, 59, 66, 92, 96]"))
 
     def test_journal_authorcount_span(self):
         """websearch - author count, span query"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=authorcount%3A9-%3E16&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=authorcount%3A9-%3E16&of=id',
                                                expected_text="[69, 71, 127]"))
 
     def test_journal_authorcount_plus(self):
         """websearch - author count, plus query"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=50%2B&f=authorcount&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=50%2B&f=authorcount&of=id',
                                                expected_text="[10, 17]"))
 
 
@@ -4586,25 +4586,25 @@ class WebSearchItemCountQueryTest(InvenioTestCase):
     def test_itemcount_plus(self):
         """websearch - item count, search for more than one item, using 'plus'"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=2%2B&f=itemcount&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=2%2B&f=itemcount&of=id',
                                                expected_text="[31, 32, 34]"))
 
     def test_itemcount_span(self):
         """websearch - item count, search for more than one item, using 'span'"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=2->10&f=itemcount&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=2->10&f=itemcount&of=id',
                                                expected_text="[31, 32, 34]"))
 
     def test_itemcount_phrase(self):
         """websearch - item count, search for records with exactly two items, phrase"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=%222%22&f=itemcount&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=%222%22&f=itemcount&of=id',
                                                expected_text="[31, 34]"))
 
     def test_itemcount_records_with_two_items(self):
         """websearch - item count, search for records with exactly two items"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?p=2&f=itemcount&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=2&f=itemcount&of=id',
                                                expected_text="[31, 34]"))
 
 
@@ -4614,19 +4614,19 @@ class WebSearchFiletypeQueryTest(InvenioTestCase):
     def test_mpg_filetype(self):
         """websearch - file type, query for tif extension"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?ln=en&p=mpg&f=filetype&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&p=mpg&f=filetype&of=id',
                                                expected_text="[113]"))
 
     def test_tif_filetype_and_word_study(self):
         """websearch - file type, query for tif extension and word 'study'"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?ln=en&p=study+filetype%3Atif&of=id',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&p=study+filetype%3Atif&of=id',
                                                expected_text="[71]"))
 
     def test_pdf_filetype_and_phrase(self):
         """websearch - file type, query for pdf extension and phrase 'parameter test'"""
         self.assertEqual([],
-                  test_web_page_content(CFG_SITE_URL + '/search?ln=en&p=filetype%3Apdf+parameter+test&of=id',
+                  test_web_page_content(cfg['CFG_SITE_URL'] + '/search?ln=en&p=filetype%3Apdf+parameter+test&of=id',
                                         expected_text="[50, 93]"))
 
 
@@ -4752,7 +4752,7 @@ class WebSearchExactTitleIndexTest(InvenioTestCase):
     def test_exacttitle_query_solves_problems(self):
         """websearch - check exacttitle query solves problems"""
         error_messages = []
-        error_messages.extend(test_web_page_content(CFG_SITE_URL + "/search?ln=en&p=exacttitle%3A'solves+problems'&f=&action_search=Search",
+        error_messages.extend(test_web_page_content(cfg['CFG_SITE_URL'] + "/search?ln=en&p=exacttitle%3A'solves+problems'&f=&action_search=Search",
                                                     expected_text = "Non-compact supergravity solves problems"))
         if error_messages:
             self.fail(merge_error_messages(error_messages))
@@ -4760,7 +4760,7 @@ class WebSearchExactTitleIndexTest(InvenioTestCase):
     def test_exacttitle_query_solve_problems(self):
         """websearch - check exacttitle query solve problems"""
         error_messages = []
-        error_messages.extend(test_web_page_content(CFG_SITE_URL + "/search?ln=en&p=exacttitle%3A'solve+problems'&f=&action_search=Search",
+        error_messages.extend(test_web_page_content(cfg['CFG_SITE_URL'] + "/search?ln=en&p=exacttitle%3A'solve+problems'&f=&action_search=Search",
                                                     expected_text = ['Search term', 'solve problems', 'did not match']))
         if error_messages:
             self.fail(merge_error_messages(error_messages))
@@ -4768,7 +4768,7 @@ class WebSearchExactTitleIndexTest(InvenioTestCase):
     def test_exacttitle_query_photon_beam(self):
         """websearch - check exacttitle search photon beam"""
         error_messages = []
-        error_messages.extend(test_web_page_content(CFG_SITE_URL + "/search?ln=en&p=exacttitle%3A'photon+beam'&f=&action_search=Search",
+        error_messages.extend(test_web_page_content(cfg['CFG_SITE_URL'] + "/search?ln=en&p=exacttitle%3A'photon+beam'&f=&action_search=Search",
                                                     expected_text = "Development of photon beam diagnostics"))
         if error_messages:
             self.fail(merge_error_messages(error_messages))
@@ -4776,7 +4776,7 @@ class WebSearchExactTitleIndexTest(InvenioTestCase):
     def test_exacttitle_query_photons_beam(self):
         """websearch - check exacttitle search photons beam"""
         error_messages = []
-        error_messages.extend(test_web_page_content(CFG_SITE_URL + "/search?ln=en&p=exacttitle%3A'photons+beam'&f=&action_search=Search",
+        error_messages.extend(test_web_page_content(cfg['CFG_SITE_URL'] + "/search?ln=en&p=exacttitle%3A'photons+beam'&f=&action_search=Search",
                                                     expected_text = ['Search term', 'photons beam', 'did not match']))
         if error_messages:
             self.fail(merge_error_messages(error_messages))

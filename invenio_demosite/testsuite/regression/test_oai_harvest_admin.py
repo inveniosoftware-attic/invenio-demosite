@@ -23,9 +23,10 @@ __revision__ = "$Id$"
 
 from invenio.testsuite import InvenioTestCase
 
-from invenio.config import CFG_SITE_URL
+from invenio.base.globals import cfg
 from invenio.testsuite import make_test_suite, run_test_suite, \
                               test_web_page_content, merge_error_messages
+
 
 class OAIHarvestAdminWebPagesAvailabilityTest(InvenioTestCase):
     """Check OAIHarvest Admin web pages whether they are up or not."""
@@ -33,7 +34,7 @@ class OAIHarvestAdminWebPagesAvailabilityTest(InvenioTestCase):
     def test_oaiharvestadmin_interface_pages_availability(self):
         """oaiharvestadmin - availability of OAI Harvest Admin interface pages"""
 
-        baseurl = CFG_SITE_URL + '/admin/oaiharvest/oaiharvestadmin.py/'
+        baseurl = cfg['CFG_SITE_URL'] + '/admin/oaiharvest/oaiharvestadmin.py/'
 
         _exports = ['', 'editsource', 'addsource', 'delsource']
 
@@ -54,7 +55,7 @@ class OAIHarvestAdminWebPagesAvailabilityTest(InvenioTestCase):
     def test_oai_admin_guide_availability(self):
         """oaiharvestadmin - availability of OAIHarvest Admin Guide"""
 
-        url = CFG_SITE_URL + '/help/admin/oaiharvest-admin-guide'
+        url = cfg['CFG_SITE_URL'] + '/help/admin/oaiharvest-admin-guide'
         error_messages = test_web_page_content(url,
                                                expected_text="OAIHarvest Admin Guide")
         if error_messages:

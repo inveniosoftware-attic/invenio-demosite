@@ -24,11 +24,7 @@ __revision__ = "$Id$"
 import datetime
 import urllib
 
-from invenio.config import CFG_SITE_URL, \
-                           CFG_SITE_LANG, \
-                           CFG_SITE_SUPPORT_EMAIL, \
-                           CFG_PREFIX, \
-                           CFG_DEVEL_SITE
+from invenio.base.globals import cfg
 from invenio.base.wrappers import lazy_import
 from invenio.testsuite import make_test_suite, run_test_suite, \
      test_web_page_content, merge_error_messages, InvenioTestCase
@@ -91,7 +87,7 @@ class JournalConfigVars(InvenioTestCase):
 
     def test_get_journal_css_url(self):
         """webjournal - returns URL to this journal's CSS """
-        self.assertEqual(wju.get_journal_css_url('AtlantisTimes', type='screen'), CFG_SITE_URL + '/css/AtlantisTimes.css')
+        self.assertEqual(wju.get_journal_css_url('AtlantisTimes', type='screen'), cfg['CFG_SITE_URL'] + '/css/AtlantisTimes.css')
 
     def test_get_journal_submission_params(self):
         """webjournal - returns params for the submission of articles """
@@ -106,23 +102,23 @@ class JournalConfigVars(InvenioTestCase):
 
     def test_get_journal_alert_sender_email(self):
         """webjournal - returns the email address used to send of the alert email. """
-        self.assertEqual(wju.get_journal_alert_sender_email('AtlantisTimes'), CFG_SITE_SUPPORT_EMAIL)
+        self.assertEqual(wju.get_journal_alert_sender_email('AtlantisTimes'), cfg['CFG_SITE_SUPPORT_EMAIL'])
 
     def test_get_journal_alert_recipient_email(self):
         """webjournal - returns the default email address of the recipients of the email"""
-        if CFG_DEVEL_SITE:
+        if cfg['CFG_DEVEL_SITE']:
             self.assertEqual(wju.get_journal_alert_recipient_email('AtlantisTimes'), '')
         else:
             self.assertEqual(wju.get_journal_alert_recipient_email('AtlantisTimes'), 'recipients@atlantis.atl')
 
     def test_get_journal_template(self):
         """webjournal - returns the journal templates name for the given template type"""
-        value = wju.get_journal_template('index', 'AtlantisTimes', ln=CFG_SITE_LANG)
+        value = wju.get_journal_template('index', 'AtlantisTimes', ln=cfg['CFG_SITE_LANG'])
         self.assertEqual(value, 'webjournal/AtlantisTimes_Index.bft')
 
     def test_get_journal_name_intl(self):
         """webjournal - returns the nice name of the journal """
-        name = wju.get_journal_name_intl('AtlantisTimes', ln=CFG_SITE_LANG)
+        name = wju.get_journal_name_intl('AtlantisTimes', ln=cfg['CFG_SITE_LANG'])
         self.assertEqual(name, 'Atlantis Times')
 
     def test_get_journal_languages(self):
@@ -192,7 +188,7 @@ class TimeIssueFunctions(InvenioTestCase):
 
     def test_get_issue_number_display(self):
         """webjournal - returns the display string for a given issue number"""
-        issue_nb = wju.get_issue_number_display('03/2009', 'AtlantisTimes', ln=CFG_SITE_LANG)
+        issue_nb = wju.get_issue_number_display('03/2009', 'AtlantisTimes', ln=cfg['CFG_SITE_LANG'])
         self.assertEqual(issue_nb, '02-03/2009')
 
     def test_make_issue_number(self):
@@ -206,13 +202,13 @@ class TimeIssueFunctions(InvenioTestCase):
 
     def test_get_release_datetime(self):
         """webjournal - gets the date at which an issue was released from the DB"""
-        value = wju.get_release_datetime('03/2009', 'AtlantisTimes', ln=CFG_SITE_LANG)
+        value = wju.get_release_datetime('03/2009', 'AtlantisTimes', ln=cfg['CFG_SITE_LANG'])
         self.assertEqual(value, datetime.datetime(2009, 1, 16, 0, 0))
 
     def test_get_announcement_datetime(self):
         """webjournal - get the date at which an issue was announced through
         the alert system"""
-        value = wju.get_announcement_datetime('03/2009', 'AtlantisTimes', ln=CFG_SITE_LANG)
+        value = wju.get_announcement_datetime('03/2009', 'AtlantisTimes', ln=cfg['CFG_SITE_LANG'])
         self.assertEqual(value, None)
 
     def test_datetime_to_issue(self):
@@ -229,7 +225,7 @@ class TimeIssueFunctions(InvenioTestCase):
     def test_get_number_of_articles_for_issue(self):
         """webjournal - returns a dictionary with all categories and number of
         articles in each category"""
-        value = wju.get_number_of_articles_for_issue('03/2009', 'AtlantisTimes', ln=CFG_SITE_LANG)
+        value = wju.get_number_of_articles_for_issue('03/2009', 'AtlantisTimes', ln=cfg['CFG_SITE_LANG'])
         self.assertEqual(value.values()[0], 3)
         self.assertEqual(value.values()[1], 2)
         self.assertEqual(value.keys()[0], 'News')
@@ -260,14 +256,14 @@ class TimeIssueFunctions(InvenioTestCase):
         self.assertEqual(record_public_p(112), False)
 
         # Unreleased article is not visible to guest
-        error_messages = test_web_page_content(CFG_SITE_URL + '/journal/AtlantisTimes/2009/06/News/112' ,
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/journal/AtlantisTimes/2009/06/News/112' ,
                                                expected_text=["A naturalist's voyage around the world"],
                                                unexpected_text=['Galapagos Archipelago'])
         if error_messages:
             self.fail(merge_error_messages(error_messages))
 
         # Unreleased article is visible to editor
-        error_messages = test_web_page_content(CFG_SITE_URL + '/journal/AtlantisTimes/2009/06/News/112',
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/journal/AtlantisTimes/2009/06/News/112',
                                                username='balthasar',
                                                password='b123althasar',
                                                expected_text=['Galapagos Archipelago'],
@@ -284,7 +280,7 @@ class TimeIssueFunctions(InvenioTestCase):
         self.assertEqual(record_public_p(112), False)
 
         # Released article (even if restricted) is visible to guest
-        error_messages = test_web_page_content(CFG_SITE_URL + '/journal/AtlantisTimes/2009/03/Science/111' ,
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/journal/AtlantisTimes/2009/03/Science/111' ,
                                                expected_text=["Scissor-beak"],
                                                unexpected_text=["A naturalist's voyage around the world"])
         if error_messages:
@@ -296,18 +292,18 @@ class JournalRelated(InvenioTestCase):
     def test_get_journal_info_path(self):
         """webjournal - returns the path to the info file of the given journal"""
         info = wju.get_journal_info_path('AtlantisTimes')
-        path = CFG_PREFIX + '/var/cache/webjournal/AtlantisTimes/info.dat'
+        path = cfg['CFG_PREFIX'] + '/var/cache/webjournal/AtlantisTimes/info.dat'
         self.assertEqual(info, path)
 
     def test_get_journal_article_cache_path(self):
         """webjournal - returns the path to cache file of the articles of a given issue"""
         info = wju.get_journal_article_cache_path('AtlantisTimes', '03/2009')
-        path = CFG_PREFIX + '/var/cache/webjournal/AtlantisTimes/2009/03/articles_cache.dat'
+        path = cfg['CFG_PREFIX'] + '/var/cache/webjournal/AtlantisTimes/2009/03/articles_cache.dat'
         self.assertEqual(info, path)
 
     def test_get_journal_id(self):
         """webjournal - get the id for this journal from the DB"""
-        jrnid = wju.get_journal_id('AtlantisTimes', ln=CFG_SITE_LANG)
+        jrnid = wju.get_journal_id('AtlantisTimes', ln=cfg['CFG_SITE_LANG'])
         self.assertEqual(jrnid, 1)
 
     def test_guess_journal_name(self):
@@ -362,8 +358,8 @@ class HtmlCachingFunction(InvenioTestCase):
 
     def setUp(self):
         "Access some URL for cache to be generated"
-        urllib.urlopen(CFG_SITE_URL + '/journal/AtlantisTimes/2009/03/News')
-        urllib.urlopen(CFG_SITE_URL + '/journal/AtlantisTimes/2009/03/News/103')
+        urllib.urlopen(cfg['CFG_SITE_URL'] + '/journal/AtlantisTimes/2009/03/News')
+        urllib.urlopen(cfg['CFG_SITE_URL'] + '/journal/AtlantisTimes/2009/03/News/103')
 
     def test_get_index_page_from_cache(self):
         """webjournal - function to get an index page from the cache"""
@@ -385,7 +381,7 @@ class FormattingElements(InvenioTestCase):
 
     def test_language_handling_in_journal(self):
         """webjournal - check washing of ln parameter in /journal handler"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/journal/AtlantisTimes/2009/03/News/103?verbose=9&ln=hello' ,
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/journal/AtlantisTimes/2009/03/News/103?verbose=9&ln=hello' ,
                                                expected_text=["we rode to another estate",
                                                               "The forest abounded with beautiful objects"],
                                                unexpected_text=["Error when evaluating format element WEBJOURNAL_"])
@@ -394,7 +390,7 @@ class FormattingElements(InvenioTestCase):
 
     def test_language_handling_in_record(self):
         """webjournal - check washing of ln parameter in /record handler"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/record/103?verbose=9&ln=hello' ,
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/record/103?verbose=9&ln=hello' ,
                                                expected_text=["we rode to another estate",
                                                               "The forest abounded with beautiful objects"],
                                                unexpected_text=["Error when evaluating format element WEBJOURNAL_"])
@@ -403,9 +399,9 @@ class FormattingElements(InvenioTestCase):
 
     def test_language_handling_in_whatsnew_widget(self):
         """webjournal - check handling of ln parameter in "what's new" widget"""
-        error_messages = test_web_page_content(CFG_SITE_URL + '/journal/AtlantisTimes/2009/03/News?ln=fr' ,
+        error_messages = test_web_page_content(cfg['CFG_SITE_URL'] + '/journal/AtlantisTimes/2009/03/News?ln=fr' ,
                                                expected_link_label="Scissor-beak",
-                                               expected_link_target=CFG_SITE_URL + "/journal/AtlantisTimes/2009/03/Science/111?ln=fr")
+                                               expected_link_target=cfg['CFG_SITE_URL'] + "/journal/AtlantisTimes/2009/03/Science/111?ln=fr")
         if error_messages:
             self.fail(merge_error_messages(error_messages))
 

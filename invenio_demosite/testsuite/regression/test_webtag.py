@@ -19,6 +19,7 @@
 
 """WebTag Regression Tests"""
 
+from invenio.base.globals import cfg
 from invenio.base.wrappers import lazy_import
 from invenio.testsuite import \
     InvenioTestCase, \
@@ -26,10 +27,8 @@ from invenio.testsuite import \
     run_test_suite
 from mechanize import Browser
 
-from invenio.config import CFG_SITE_SECURE_URL
-
-cfg = lazy_import('invenio.webtag_config')
-webtag_model = lazy_import('invenio.webtag_model')
+models = lazy_import('invenio.modules.tags:models')
+#FIXME unknown import
 db = lazy_import('invenio.sqlalchemyutils:db')
 
 
@@ -39,7 +38,7 @@ class WebTagDeletionTest(InvenioTestCase):
         """webtag - are WtgTAGRecord rows deleted when WtgTAG is deleted?"""
 
         # (1) Create a new tag
-        new_tag = webtag_model.WtgTAG()
+        new_tag = models.WtgTAG()
         new_tag.id_user = 1
         new_tag.name = 'test record association deletion'
         db.session.add(new_tag)
@@ -50,7 +49,7 @@ class WebTagDeletionTest(InvenioTestCase):
 
         # (2) Create the associations
         for recid in range(1, 5):
-            new_association = webtag_model.WtgTAGRecord()
+            new_association = models.WtgTAGRecord()
             new_association.tag = new_tag
             new_association.id_bibrec = recid
             db.session.add(new_association)
@@ -62,7 +61,7 @@ class WebTagDeletionTest(InvenioTestCase):
         db.session.commit()
 
         # (4) Are there any associations left?
-        associations_left = webtag_model.WtgTAGRecord.query\
+        associations_left = models.WtgTAGRecord.query\
             .filter_by(id_tag=new_tag_id)\
             .count()
 
@@ -74,7 +73,7 @@ class WebTagUserSettingsTest(InvenioTestCase):
 
     def login(self, username, password):
         browser = Browser()
-        browser.open(CFG_SITE_SECURE_URL + "/youraccount/login/")
+        browser.open(cfg['CFG_SITE_SECURE_URL'] + "/youraccount/login/")
         browser.select_form(nr=0)
         browser['nickname'] = username
         browser['password'] = password
@@ -90,12 +89,12 @@ class WebTagUserSettingsTest(InvenioTestCase):
     def test_preferences_edition(self):
         browser = self.login('admin', '')
 
-        browser.open(CFG_SITE_SECURE_URL + "/youraccount/edit/WebTagSettings")
+        browser.open(cfg['CFG_SITE_SECURE_URL'] + "/youraccount/edit/WebTagSettings")
         browser.select_form(nr=0)
         browser['display_tags_private'] = '0'
         browser.submit()
 
-        browser.open(CFG_SITE_SECURE_URL + "/youraccount/edit/WebTagSettings")
+        browser.open(cfg['CFG_SITE_SECURE_URL'] + "/youraccount/edit/WebTagSettings")
         browser.select_form(nr=0)
 
         if browser['display_tags_private'] != '0':

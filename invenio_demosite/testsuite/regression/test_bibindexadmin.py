@@ -23,7 +23,7 @@ __revision__ = "$Id$"
 
 import re
 
-from invenio.config import CFG_SITE_URL
+from invenio.base.globals import cfg
 from invenio.testsuite import make_test_suite, run_test_suite, \
                               test_web_page_content, merge_error_messages, \
                               get_authenticated_mechanize_browser, make_url, \
@@ -36,7 +36,7 @@ class BibIndexAdminWebPagesAvailabilityTest(InvenioTestCase):
     def test_bibindex_admin_interface_pages_availability(self):
         """bibindexadmin - availability of BibIndex Admin interface pages"""
 
-        baseurl = CFG_SITE_URL + '/admin/bibindex/bibindexadmin.py/'
+        baseurl = cfg['CFG_SITE_URL'] + '/admin/bibindex/bibindexadmin.py/'
 
         _exports = ['',
                     'index',
@@ -74,7 +74,7 @@ class BibIndexAdminWebPagesAvailabilityTest(InvenioTestCase):
     def test_bibindex_admin_guide_availability(self):
         """bibindexadmin - availability of BibIndex Admin guide pages"""
 
-        url = CFG_SITE_URL + '/help/admin/bibindex-admin-guide'
+        url = cfg['CFG_SITE_URL'] + '/help/admin/bibindex-admin-guide'
         error_messages = test_web_page_content(url,
                                                expected_text="BibIndex Admin Guide")
         if error_messages:

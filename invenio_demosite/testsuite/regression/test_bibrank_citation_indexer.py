@@ -22,16 +22,19 @@
 import ConfigParser
 
 from invenio.testsuite import make_test_suite, run_test_suite, InvenioTestCase
-from invenio.config import CFG_ETCDIR
-from invenio.legacy.dbquery import run_sql
+from invenio.base.globals import cfg
+from invenio.base.wrappers import lazy_import
+
+run_sql = lazy_import('invenio.legacy.dbquery:run_sql')
 
 
 def load_config():
-    config_path = CFG_ETCDIR + "/bibrank/citation.cfg"
+    config_path = cfg['CFG_ETCDIR'] + "/bibrank/citation.cfg"
     config = ConfigParser.ConfigParser()
     config.readfp(open(config_path))
     return config
 
+#FIXME
 CONFIG = load_config()
 
 EXPECTED_DICTS = {

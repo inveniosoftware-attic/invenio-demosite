@@ -21,9 +21,12 @@
 
 __revision__ = "$Id$"
 
-from invenio.legacy import dbquery
-from invenio.config import CFG_SITE_NAME
+from invenio.base.globals import cfg
+from invenio.base.wrappers import lazy_import
 from invenio.testsuite import InvenioTestCase, make_test_suite, run_test_suite
+
+dbquery = lazy_import('invenio.legacy:dbquery')
+
 
 class RunSqlReturnListOfDictionaries(InvenioTestCase):
     """Test run_sql behavior when with_dict parameter is provided"""
@@ -31,7 +34,7 @@ class RunSqlReturnListOfDictionaries(InvenioTestCase):
     def test_select_simple_columns_query(self):
         """dbquery - select simple columns query"""
         res = dbquery.run_sql("SELECT id,name,dbquery FROM collection WHERE id<3", with_dict=True)
-        self.assertEqual(res, ([{'dbquery': None, 'id': 1, 'name': CFG_SITE_NAME},
+        self.assertEqual(res, ([{'dbquery': None, 'id': 1, 'name': cfg['CFG_SITE_NAME']},
                                 {'dbquery': '980:"PREPRINT"', 'id': 2, 'name': 'Preprints'}]))
 
     def test_select_date_format_column_query(self):

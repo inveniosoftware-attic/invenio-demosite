@@ -16,19 +16,23 @@
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
 from invenio.testsuite import InvenioTestCase
-from invenio.config import CFG_SOLR_URL, CFG_SITE_URL, CFG_SITE_NAME
+from invenio.base.globals import cfg
+from invenio.base.wrappers import lazy_import
 from invenio.testsuite import make_test_suite, \
                               run_test_suite, \
                               test_web_page_content, \
                               nottest
 import intbitset
-from invenio.legacy.miscutil.solrutils_bibindex_searcher import solr_get_bitset
-from invenio.solrutils_bibrank_searcher import solr_get_ranked, solr_get_similar_ranked
-from invenio.legacy.search_engine import get_collection_reclist
-from invenio.legacy.bibrank.bridge_utils import get_external_word_similarity_ranker, \
-                                         get_logical_fields, \
-                                         get_tags, \
-                                         get_field_content_in_utf8
+
+solr_get_ranked = lazy_import('invenio.legacy.miscutil.solrutils_bibrank_searcher:solr_get_ranked')
+solr_get_similar_ranked = lazy_import('invenio.legacy.miscutil.solrutils_bibrank_searcher:solr_get_similar_ranked')
+solr_get_bitset = lazy_import('invenio.legacy.miscutil.solrutils_bibindex_searcher:solr_get_bitset')
+get_collection_reclist = lazy_import('invenio.legacy.search_engine:get_collection_reclist')
+get_external_word_similarity_ranker = lazy_import('invenio.legacy.bibrank.bridge_utils:get_external_word_similarity_ranker')
+get_logical_fields = lazy_import('invenio.legacy.bibrank.bridge_utils:get_logical_fields')
+get_tags = lazy_import('invenio.legacy.bibrank.bridge_utils:get_tags')
+get_field_content_in_utf8 = lazy_import('invenio.legacy.bibrank.bridge_utils:get_field_content_in_utf8')
+
 
 ROWS = 100
 
@@ -53,7 +57,7 @@ def get_topN(n, data):
 class TestSolrSearch(InvenioTestCase):
     """Test for Solr search. Requires:
     make install-solrutils
-    CFG_SOLR_URL set
+    cfg['CFG_SOLR_URL'] set
     fulltext index in idxINDEX containing 'SOLR' in indexer column
     AND EITHER
       Solr index built: ./bibindex -w fulltext for all records
@@ -77,7 +81,7 @@ class TestSolrSearch(InvenioTestCase):
 class TestSolrRanking(InvenioTestCase):
     """Test for Solr ranking. Requires:
     make install-solrutils
-    CFG_SOLR_URL set
+    cfg['CFG_SOLR_URL'] set
     fulltext index in idxINDEX containing 'SOLR' in indexer column
     AND EITHER
       Solr index built: ./bibindex -w fulltext for all records
@@ -169,7 +173,7 @@ class TestSolrRanking(InvenioTestCase):
 class TestSolrSimilarToRecid(InvenioTestCase):
     """Test for Solr similar ranking. Requires:
     make install-solrutils
-    CFG_SOLR_URL set
+    cfg['CFG_SOLR_URL'] set
     fulltext index in idxINDEX containing 'SOLR' in indexer column
     WRD method referring to Solr: <invenio installation>/etc/bibrank$ cp template_word_similarity_solr.cfg wrd.cfg
     ./bibrank -w wrd for all records
@@ -213,8 +217,8 @@ class TestSolrSimilarToRecid(InvenioTestCase):
                 'mlt_boost': 'false'
                 }
             }
-
-    _all_records = get_collection_reclist(CFG_SITE_NAME)
+      #FIXME
+    _all_records = get_collection_reclist(cfg['CFG_SITE_NAME'])
 
     @nottest
     def test_get_similar_ranked(self):
@@ -240,7 +244,7 @@ class TestSolrSimilarToRecid(InvenioTestCase):
 class TestSolrWebSearch(InvenioTestCase):
     """Test for webbased Solr search. Requires:
     make install-solrutils
-    CFG_SOLR_URL set
+    cfg['CFG_SOLR_URL'] set
     fulltext index in idxINDEX containing 'SOLR' in indexer column
     AND EITHER
       Solr index built: ./bibindex -w fulltext for all records
@@ -253,26 +257,26 @@ class TestSolrWebSearch(InvenioTestCase):
     def test_get_result(self):
         """solrutils - web search results"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=fulltext%3AWillnotfind&rg=100',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=fulltext%3AWillnotfind&rg=100',
                                                expected_text="[]"))
 
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=fulltext%3Ahiggs&rg=100',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=fulltext%3Ahiggs&rg=100',
                                                expected_text="[12, 47, 48, 51, 52, 55, 56, 58, 68, 79, 80, 81, 85, 89, 96]"))
 
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=fulltext%3Aof&rg=100',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=fulltext%3Aof&rg=100',
                                                expected_text="[8, 10, 11, 12, 15, 43, 44, 45, 46, 47, 48, 49, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 64, 68, 74, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97]"))
 
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=fulltext%3A%22higgs+boson%22&rg=100',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=fulltext%3A%22higgs+boson%22&rg=100',
                                                expected_text="[12, 47, 51, 55, 56, 68, 81, 85]"))
 
 
 class TestSolrWebRanking(InvenioTestCase):
     """Test for webbased Solr ranking. Requires:
     make install-solrutils
-    CFG_SOLR_URL set
+    cfg['CFG_SOLR_URL'] set
     fulltext index in idxINDEX containing 'SOLR' in indexer column
     AND EITHER
       Solr index built: ./bibindex -w fulltext for all records
@@ -285,37 +289,37 @@ class TestSolrWebRanking(InvenioTestCase):
     def test_get_ranked(self):
         """solrutils - web ranking results"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=fulltext%3AWillnotfind&rg=100&rm=wrd',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=fulltext%3AWillnotfind&rg=100&rm=wrd',
                                                expected_text="[]"))
 
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=fulltext%3Ahiggs&rm=wrd',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=fulltext%3Ahiggs&rm=wrd',
                                                expected_text="[12, 51, 79, 80, 81, 55, 47, 56, 96, 58, 68, 52, 48, 89, 85]"))
 
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=fulltext%3Ahiggs&rg=100&rm=wrd',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=fulltext%3Ahiggs&rg=100&rm=wrd',
                                                expected_text="[12, 80, 81, 79, 51, 55, 47, 56, 96, 58, 68, 52, 48, 89, 85]"))
 
         # Record 77 is restricted
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=fulltext%3Aof&rm=wrd',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=fulltext%3Aof&rm=wrd',
                                                expected_text="[8, 10, 15, 43, 44, 45, 46, 48, 49, 51, 52, 53, 54, 55, 56, 57, 58, 60, 61, 62, 64, 68, 74, 78, 79, 81, 82, 83, 84, 85, 88, 89, 90, 91, 92, 95, 96, 97, 86, 11, 80, 93, 77, 12, 59, 87, 47, 94]",
                                                username='admin'))
 
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=fulltext%3Aof&rg=100&rm=wrd',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=fulltext%3Aof&rg=100&rm=wrd',
                                                expected_text="[61, 60, 54, 56, 53, 10, 68, 44, 57, 83, 95, 92, 91, 74, 45, 48, 62, 82, 49, 51, 89, 90, 96, 43, 8, 64, 97, 15, 85, 78, 46, 55, 79, 84, 88, 81, 52, 58, 86, 11, 80, 93, 77, 12, 59, 87, 47, 94]",
                                                username='admin'))
 
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=fulltext%3A%22higgs+boson%22&rg=100&rm=wrd',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=fulltext%3A%22higgs+boson%22&rg=100&rm=wrd',
                                                expected_text="[12, 47, 51, 68, 81, 85, 55, 56]"))
 
 
 class TestSolrWebSimilarToRecid(InvenioTestCase):
     """Test for webbased Solr similar ranking. Requires:
     make install-solrutils
-    CFG_SOLR_URL set
+    cfg['CFG_SOLR_URL'] set
     fulltext index in idxINDEX containing 'SOLR' in indexer column
     WRD method referring to Solr: <invenio installation>/etc/bibrank$ cp template_word_similarity_solr.cfg wrd.cfg
     ./bibrank -w wrd for all records
@@ -325,18 +329,18 @@ class TestSolrWebSimilarToRecid(InvenioTestCase):
     def test_get_similar_ranked(self):
         """solrutils - web similar results"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=recid%3A30&rm=wrd',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=recid%3A30&rm=wrd',
                                                expected_text="[1, 3, 4, 8, 9, 12, 13, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 31, 34, 43, 44, 49, 50, 56, 58, 61, 64, 66, 67, 69, 71, 73, 75, 76, 77, 78, 82, 85, 86, 87, 89, 90, 95, 96, 98, 104, 107, 109, 113, 65, 62, 60, 47, 46, 100, 99, 102, 91, 80, 7, 5, 92, 88, 74, 57, 55, 108, 84, 81, 79, 54, 101, 11, 103, 94, 48, 83, 72, 63, 2, 68, 51, 53, 97, 93, 70, 45, 52, 14, 59, 6, 10, 32, 33, 29, 30]"))
 
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/search?of=id&p=recid%3A30&rg=100&rm=wrd',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?of=id&p=recid%3A30&rg=100&rm=wrd',
                                                expected_text="[3, 4, 8, 9, 13, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 31, 34, 43, 49, 56, 66, 67, 69, 71, 73, 75, 76, 87, 90, 98, 104, 107, 109, 113, 12, 95, 85, 82, 44, 1, 89, 64, 58, 15, 96, 61, 50, 86, 78, 77, 65, 62, 60, 47, 46, 100, 99, 102, 91, 80, 7, 5, 92, 88, 74, 57, 55, 108, 84, 81, 79, 54, 101, 11, 103, 94, 48, 83, 72, 63, 2, 68, 51, 53, 97, 93, 70, 45, 52, 14, 59, 6, 10, 32, 33, 29, 30]"))
 
 
 class TestSolrLoadLogicalFieldSettings(InvenioTestCase):
     """Test for loading Solr logical field settings. Requires:
     make install-solrutils
-    CFG_SOLR_URL set
+    cfg['CFG_SOLR_URL'] set
     WRD method referring to Solr: <invenio installation>/etc/bibrank$ cp template_word_similarity_solr.cfg wrd.cfg
     """
 
@@ -356,7 +360,7 @@ class TestSolrLoadLogicalFieldSettings(InvenioTestCase):
 class TestSolrBuildFieldContent(InvenioTestCase):
     """Test for building Solr field content. Requires:
     make install-solrutils
-    CFG_SOLR_URL set
+    cfg['CFG_SOLR_URL'] set
     WRD method referring to Solr: <invenio installation>/etc/bibrank$ cp template_word_similarity_solr.cfg wrd.cfg
     """
 
@@ -386,7 +390,7 @@ class TestSolrBuildFieldContent(InvenioTestCase):
 TESTS = []
 
 
-if CFG_SOLR_URL:
+if cfg['CFG_SOLR_URL']:
     TESTS.extend((TestSolrSearch, TestSolrWebSearch))
     if get_external_word_similarity_ranker() == 'solr':
         TESTS.extend((TestSolrRanking,

@@ -23,15 +23,18 @@ __revision__ = "$Id$"
 
 from invenio.testsuite import InvenioTestCase
 
-from invenio.config import CFG_SITE_URL
+from invenio.base.globals import cfg
+from invenio.base.wrappers import lazy_import
+
 from invenio.testsuite import make_test_suite, run_test_suite, \
-                              test_web_page_content, merge_error_messages
-from invenio.legacy.websubmit.admincli import \
-     dump_submission, \
-     load_submission, \
-     remove_submission, \
-     diff_submission
-from invenio.legacy.dbquery import run_sql
+    test_web_page_content, merge_error_messages
+
+dump_submission = lazy_import('invenio.legacy.websubmit.admincli:dump_submission')
+load_submission = lazy_import('invenio.legacy.websubmit.admincli:load_submission')
+remove_submission = lazy_import('invenio.legacy.websubmit.admincli:remove_submission')
+diff_submission = lazy_import('invenio.legacy.websubmit.admincli:diff_submission')
+run_sql = lazy_import('invenio.legacy.dbquery:run_sql')
+
 
 class WebSubmitAdminWebPagesAvailabilityTest(InvenioTestCase):
     """Check WebSubmit Admin web pages whether they are up or not."""
@@ -39,7 +42,7 @@ class WebSubmitAdminWebPagesAvailabilityTest(InvenioTestCase):
     def test_websubmit_admin_interface_pages_availability(self):
         """websubmitadmin - availability of WebSubmit Admin interface pages"""
 
-        baseurl = CFG_SITE_URL + '/admin/websubmit/websubmitadmin.py/'
+        baseurl = cfg['CFG_SITE_URL'] + '/admin/websubmit/websubmitadmin.py/'
 
         _exports = ['', 'showall', 'doctypelist', 'doctypeadd',
                     'doctyperemove', 'actionlist', 'jschecklist',
@@ -62,7 +65,7 @@ class WebSubmitAdminWebPagesAvailabilityTest(InvenioTestCase):
     def test_websubmit_admin_guide_availability(self):
         """websubmitadmin - availability of WebSubmit Admin guide pages"""
 
-        url = CFG_SITE_URL + '/help/admin/websubmit-admin-guide'
+        url = cfg['CFG_SITE_URL'] + '/help/admin/websubmit-admin-guide'
         error_messages = test_web_page_content(url,
                                                expected_text="WebSubmit Admin Guide")
         if error_messages:
@@ -118,6 +121,7 @@ INSERT INTO sbmPARAMETERS VALUES ('DUMMY1','yeargen','AUTO');"""
 
     def test_load_submission(self):
         """websubmitadmin - test loading submission dump"""
+        #FIXME
         load_submission('DUMMY1', self.dummy_submission_dump_1, method="NAMES")
         dumped_submission = dump_submission("DUMMY1", 'NAMES', True)
 

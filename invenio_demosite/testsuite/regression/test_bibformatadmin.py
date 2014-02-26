@@ -23,9 +23,10 @@ __revision__ = "$Id$"
 
 from invenio.testsuite import InvenioTestCase
 
-from invenio.config import CFG_SITE_URL
+from invenio.base.globals import cfg
 from invenio.testsuite import make_test_suite, run_test_suite, \
                               test_web_page_content, merge_error_messages
+
 
 class BibFormatAdminWebPagesAvailabilityTest(InvenioTestCase):
     """Check BibFormat Admin web pages whether they are up or not."""
@@ -33,7 +34,7 @@ class BibFormatAdminWebPagesAvailabilityTest(InvenioTestCase):
     def test_bibformat_admin_interface_availability(self):
         """bibformatadmin - availability of BibFormat Admin interface pages"""
 
-        baseurl = CFG_SITE_URL + '/admin/bibformat/'
+        baseurl = cfg['CFG_SITE_URL'] + '/admin/bibformat/'
 
         _exports = ['bibformatadmin.py/format_templates_manage',
                     'bibformatadmin.py/output_formats_manage',
@@ -56,7 +57,7 @@ class BibFormatAdminWebPagesAvailabilityTest(InvenioTestCase):
     def test_bibformat_admin_guide_availability(self):
         """bibformatadmin - availability of BibFormat Admin guide pages"""
 
-        url = CFG_SITE_URL + '/help/admin/bibformat-admin-guide'
+        url = cfg['CFG_SITE_URL'] + '/help/admin/bibformat-admin-guide'
         error_messages = test_web_page_content(url,
                                                expected_text="BibFormat Admin Guide")
         if error_messages:

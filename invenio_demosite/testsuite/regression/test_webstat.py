@@ -22,11 +22,9 @@
 __revision__ = "$Id$"
 
 from invenio.testsuite import InvenioTestCase
-
-from invenio.config import CFG_SITE_URL, \
-     CFG_WEBSESSION_DIFFERENTIATE_BETWEEN_GUESTS
 from invenio.testsuite import make_test_suite, run_test_suite, \
      test_web_page_content, merge_error_messages
+from invenio.base.globals import cfg
 
 
 class WebStatWebPagesAvailabilityTest(InvenioTestCase):
@@ -35,13 +33,13 @@ class WebStatWebPagesAvailabilityTest(InvenioTestCase):
     def test_stats_pages_availability(self):
         """webstat - availability of /stats pages"""
 
-        baseurl = CFG_SITE_URL + '/stats/'
+        baseurl = cfg['CFG_SITE_URL'] + '/stats/'
 
         _exports = ['', 'collection_population', 'search_frequency',
                     'search_type_distribution', 'download_frequency']
 
         error_messages = []
-        if CFG_WEBSESSION_DIFFERENTIATE_BETWEEN_GUESTS:
+        if cfg['CFG_WEBSESSION_DIFFERENTIATE_BETWEEN_GUESTS']:
             for url in [baseurl + page for page in _exports]:
                 error_messages.extend(test_web_page_content(url))
         for url in [baseurl + page for page in _exports]:

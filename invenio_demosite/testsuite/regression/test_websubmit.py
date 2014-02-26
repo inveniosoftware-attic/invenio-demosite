@@ -25,14 +25,16 @@ import os
 from logging import StreamHandler, DEBUG
 from cStringIO import StringIO
 
-from invenio.ext.logging import register_exception
-from invenio.config import CFG_SITE_URL, CFG_PREFIX, CFG_TMPDIR, CFG_PATH_PDFTK
+#from invenio.ext.logging import register_exception
+#from invenio.config import CFG_SITE_URL, CFG_PREFIX, CFG_TMPDIR, CFG_PATH_PDFTK
+from invenio.base.globals import cfg
 from invenio.base.wrappers import lazy_import
 from invenio.testsuite import make_test_suite, run_test_suite, \
                               test_web_page_content, merge_error_messages, \
                               InvenioTestCase
 from invenio.base.factory import with_app_context
 
+register_exception = lazy_import('invenio.ext.logging:register_exception')
 websubmit_file_stamper = lazy_import('invenio.legacy.websubmit.file_stamper')
 
 class WebSubmitWebPagesAvailabilityTest(InvenioTestCase):
@@ -41,7 +43,7 @@ class WebSubmitWebPagesAvailabilityTest(InvenioTestCase):
     def test_submission_pages_availability(self):
         """websubmit - availability of submission pages"""
 
-        baseurl = CFG_SITE_URL + '/submit/'
+        baseurl = cfg['CFG_SITE_URL'] + '/submit/'
 
         _exports = ['', 'direct']
 
@@ -55,7 +57,7 @@ class WebSubmitWebPagesAvailabilityTest(InvenioTestCase):
     def test_publiline_pages_availability(self):
         """websubmit - availability of approval pages"""
 
-        baseurl = CFG_SITE_URL
+        baseurl = cfg['CFG_SITE_URL']
 
         _exports = ['/approve.py', '/publiline.py',
                     '/yourapprovals.py']
@@ -70,7 +72,7 @@ class WebSubmitWebPagesAvailabilityTest(InvenioTestCase):
     def test_your_submissions_pages_availability(self):
         """websubmit - availability of Your Submissions pages"""
 
-        baseurl = CFG_SITE_URL
+        baseurl = cfg['CFG_SITE_URL']
 
         _exports = ['/yoursubmissions.py']
 
@@ -84,7 +86,7 @@ class WebSubmitWebPagesAvailabilityTest(InvenioTestCase):
     def test_help_page_availability(self):
         """websubmit - availability of WebSubmit help page"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/help/submit-guide',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/help/submit-guide',
                                                expected_text="Submit Guide"))
 
 class WebSubmitLegacyURLsTest(InvenioTestCase):
@@ -93,16 +95,16 @@ class WebSubmitLegacyURLsTest(InvenioTestCase):
     def test_legacy_help_page_link(self):
         """websubmit - legacy Submit Guide page link"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/help/submit',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/help/submit',
                                                expected_text="Submit Guide"))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/help/submit/',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/help/submit/',
                                                expected_text="Submit Guide"))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/help/submit/index.en.html',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/help/submit/index.en.html',
                                               expected_text="Submit Guide"))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/help/submit/access.en.html',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/help/submit/access.en.html',
                                               expected_text="Submit Guide"))
 
 class WebSubmitXSSVulnerabilityTest(InvenioTestCase):
@@ -111,25 +113,25 @@ class WebSubmitXSSVulnerabilityTest(InvenioTestCase):
     def test_xss_in_submission_doctype(self):
         """websubmit - no XSS vulnerability in doctype parameter"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/submit?doctype=%3CSCRIPT%3Ealert%28%22XSS%22%29%3B%3C%2FSCRIPT%3E',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/submit?doctype=%3CSCRIPT%3Ealert%28%22XSS%22%29%3B%3C%2FSCRIPT%3E',
                                                expected_text='Unable to find document type: &lt;SCRIPT&gt;alert("XSS")', username="jekyll",
                           password="j123ekyll"))
 
     def test_xss_in_submission_act(self):
         """websubmit - no XSS vulnerability in act parameter"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/submit?doctype=DEMOTHE&access=1_1&act=%3CSCRIPT%3Ealert%28%22XSS%22%29%3B%3C%2FSCRIPT%3E',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/submit?doctype=DEMOTHE&access=1_1&act=%3CSCRIPT%3Ealert%28%22XSS%22%29%3B%3C%2FSCRIPT%3E',
                                                expected_text='Invalid doctype and act parameters', username="jekyll",
                           password="j123ekyll"))
 
     def test_xss_in_submission_page(self):
         """websubmit - no XSS vulnerability in access parameter"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL +
+                         test_web_page_content(cfg['CFG_SITE_URL'] +
                           '/submit?doctype=DEMOTHE&access=/../../../etc/passwd&act=SBI&startPg=1&ln=en&ln=en',                                               expected_text='Invalid parameters', username="jekyll",
                           password="j123ekyll"))
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL +
+                         test_web_page_content(cfg['CFG_SITE_URL'] +
                           '/submit?doctype=DEMOTHE&access=%3CSCRIPT%3Ealert%28%22XSS%22%29%3B%3C%2FSCRIPT%3E&act=SBI',                                               expected_text='Invalid parameters', username="jekyll",
                           password="j123ekyll"))
 
@@ -137,14 +139,15 @@ class WebSubmitXSSVulnerabilityTest(InvenioTestCase):
 @with_app_context()
 def WebSubmitFileConverterTestGenerator():
     from invenio.legacy.websubmit.file_converter import get_conversion_map, can_convert
+    #FIXME
     if can_convert('.odt', '.txt'):
         ## Special test for unoconv/LibreOffice
-        yield WebSubmitFileConverterTest(os.path.join(CFG_PREFIX, 'lib', 'webtest', 'invenio', 'test.odt'), '.odt', '.txt')
+        yield WebSubmitFileConverterTest(os.path.join(cfg['CFG_PREFIX'], 'lib', 'webtest', 'invenio', 'test.odt'), '.odt', '.txt')
     if can_convert('.doc', '.txt'):
         ## Special test for unoconv/LibreOffice
-        yield WebSubmitFileConverterTest(os.path.join(CFG_PREFIX, 'lib', 'webtest', 'invenio', 'test.doc'), '.doc', '.txt')
+        yield WebSubmitFileConverterTest(os.path.join(cfg['CFG_PREFIX'], 'lib', 'webtest', 'invenio', 'test.doc'), '.doc', '.txt')
     for from_format in get_conversion_map().keys():
-        input_file = os.path.join(CFG_PREFIX, 'lib', 'webtest', 'invenio', 'test%s' % from_format)
+        input_file = os.path.join(cfg['CFG_PREFIX'], 'lib', 'webtest', 'invenio', 'test%s' % from_format)
         if not os.path.exists(input_file):
             ## Can't run such a test because there is no test example
             continue
@@ -185,9 +188,9 @@ class WebSubmitFileConverterTest(InvenioTestCase):
     def _run_test(self):
         from invenio.legacy.websubmit.file_converter import InvenioWebSubmitFileConverterError, convert_file
         try:
-            tmpdir_snapshot1 = set(os.listdir(CFG_TMPDIR))
+            tmpdir_snapshot1 = set(os.listdir(cfg['CFG_TMPDIR']))
             output_file = convert_file(self.input_file, output_format=self.to_format)
-            tmpdir_snapshot2 = set(os.listdir(CFG_TMPDIR))
+            tmpdir_snapshot2 = set(os.listdir(cfg['CFG_TMPDIR']))
             tmpdir_snapshot2.discard(os.path.basename(output_file))
             if not os.path.exists(output_file):
                 raise InvenioWebSubmitFileConverterError("output_file %s was not correctly created" % output_file)
@@ -197,7 +200,7 @@ class WebSubmitFileConverterTest(InvenioTestCase):
             register_exception(alert_admin=True)
             self.fail("ERROR: when converting from %s to %s: %s, the log contained: %s" % (self.from_format, self.to_format, err, self.log.getvalue()))
 
-if CFG_PATH_PDFTK:
+if False: #FIXME cfg['CFG_PATH_PDFTK']:
     class WebSubmitStampingTest(InvenioTestCase):
         """Test WebSubmit file stamping tool"""
 
@@ -205,7 +208,7 @@ if CFG_PATH_PDFTK:
             """websubmit - creation of a PDF cover page stamp (APIs)"""
             file_stamper_options = { 'latex-template'      : "demo-stamp-left.tex",
                                     'latex-template-var'  : {'REPORTNUMBER':'TEST-2010','DATE':'10/10/2000'},
-                                    'input-file'          : CFG_PREFIX + "/lib/webtest/invenio/test.pdf",
+                                    'input-file'          : cfg['CFG_PREFIX'] + "/lib/webtest/invenio/test.pdf",
                                     'output-file'         : "test-stamp-coverpage.pdf",
                                     'stamp'               : "coverpage",
                                     'layer'               : "foreground",
@@ -225,7 +228,7 @@ if CFG_PATH_PDFTK:
             """websubmit - stamping first page of a PDF (APIs)"""
             file_stamper_options = { 'latex-template'      : "demo-stamp-left.tex",
                                     'latex-template-var'  : {'REPORTNUMBER':'TEST-2010','DATE':'10/10/2000'},
-                                    'input-file'          : CFG_PREFIX + "/lib/webtest/invenio/test.pdf",
+                                    'input-file'          : cfg['CFG_PREFIX'] + "/lib/webtest/invenio/test.pdf",
                                     'output-file'         : "test-stamp-firstpage.pdf",
                                     'stamp'               : "first",
                                     'layer'               : "background",
@@ -245,7 +248,7 @@ if CFG_PATH_PDFTK:
             """websubmit - stamping all pages of a PDF (APIs)"""
             file_stamper_options = { 'latex-template'      : "demo-stamp-left.tex",
                                     'latex-template-var'  : {'REPORTNUMBER':'TEST-2010','DATE':'10/10/2000'},
-                                    'input-file'          : CFG_PREFIX + "/lib/webtest/invenio/test.pdf",
+                                    'input-file'          : cfg['CFG_PREFIX'] + "/lib/webtest/invenio/test.pdf",
                                     'output-file'         : "test-stamp-allpages.pdf",
                                     'stamp'               : "all",
                                     'layer'               : "foreground",

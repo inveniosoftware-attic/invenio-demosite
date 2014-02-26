@@ -25,18 +25,14 @@ from invenio.testsuite import InvenioTestCase
 import shutil
 from flask import url_for
 from mechanize import Browser, HTTPError
-
-from invenio.config import \
-     CFG_SITE_URL, \
-     CFG_SITE_SECURE_URL, \
-     CFG_WEBDIR, \
-     CFG_TMPDIR, \
-     CFG_SITE_RECORD
+from invenio.base.globals import cfg
+from invenio.base.wrappers import lazy_import
 from invenio.testsuite import make_test_suite, run_test_suite, \
                               test_web_page_content, merge_error_messages, \
                               InvenioTestCase
-from invenio.legacy.dbquery import run_sql
 from invenio.utils.htmlwasher import EmailWasher
+
+run_sql = lazy_import('invenio.legacy.dbquery:run_sql')
 
 
 def prepare_attachments():
@@ -45,8 +41,8 @@ def prepare_attachments():
     attach files to a comment, these files get moved, so this function
     must be called again.
     """
-    shutil.copy(CFG_WEBDIR + '/img/journal_water_dog.gif', CFG_TMPDIR)
-    shutil.copy(CFG_WEBDIR + '/css/invenio.css', CFG_TMPDIR)
+    shutil.copy(cfg['CFG_WEBDIR'] + '/img/journal_water_dog.gif', cfg['CFG_TMPDIR'])
+    shutil.copy(cfg['CFG_WEBDIR'] + '/css/invenio.css', cfg['CFG_TMPDIR'])
 
 
 class WebCommentWebPagesAvailabilityTest(InvenioTestCase):
@@ -55,8 +51,8 @@ class WebCommentWebPagesAvailabilityTest(InvenioTestCase):
     def test_your_baskets_pages_availability(self):
         """webcomment - availability of comments pages"""
 
-        baseurl = CFG_SITE_URL + '/%s/10/comments/' % CFG_SITE_RECORD
-        basesecureurl = CFG_SITE_SECURE_URL + '/%s/10/comments/' % CFG_SITE_RECORD
+        baseurl = cfg['CFG_SITE_URL'] + '/%s/10/comments/' % cfg['CFG_SITE_RECORD']
+        basesecureurl = cfg['CFG_SITE_SECURE_URL'] + '/%s/10/comments/' % cfg['CFG_SITE_RECORD']
 
         _exports = ['', 'display', 'vote', 'report']
         _auth_exports = ['add']
@@ -73,7 +69,7 @@ class WebCommentWebPagesAvailabilityTest(InvenioTestCase):
     def test_webcomment_admin_interface_availability(self):
         """webcomment - availability of WebComment Admin interface pages"""
 
-        baseurl = CFG_SITE_URL + '/admin/webcomment/webcommentadmin.py/'
+        baseurl = cfg['CFG_SITE_URL'] + '/admin/webcomment/webcommentadmin.py/'
 
         _exports = ['', 'comments', 'delete', 'users']
 
@@ -94,13 +90,13 @@ class WebCommentWebPagesAvailabilityTest(InvenioTestCase):
     def test_webcomment_admin_guide_availability(self):
         """webcomment - availability of WebComment Admin Guide"""
         self.assertEqual([],
-                         test_web_page_content(CFG_SITE_URL + '/help/admin/webcomment-admin-guide',
+                         test_web_page_content(cfg['CFG_SITE_URL'] + '/help/admin/webcomment-admin-guide',
                                                expected_text="WebComment Admin Guide"))
         return
 
     def test_webcomment_mini_review_availability(self):
         """webcomment - availability of mini-review panel on detailed record page"""
-        url = CFG_SITE_URL + '/%s/12' % CFG_SITE_RECORD
+        url = cfg['CFG_SITE_URL'] + '/%s/12' % cfg['CFG_SITE_RECORD']
         error_messages = test_web_page_content(url,
                                                expected_text="(Not yet reviewed)")
 
@@ -128,8 +124,8 @@ class WebCommentRestrictionsTest(InvenioTestCase):
 
         self.romeo_uid = 5
         self.jekyll_uid = 2
-        self.attached_files = {'file1': CFG_TMPDIR + '/journal_water_dog.gif',
-                               'file2': CFG_TMPDIR + '/invenio.css'}
+        self.attached_files = {'file1': cfg['CFG_TMPDIR'] + '/journal_water_dog.gif',
+                               'file2': cfg['CFG_TMPDIR'] + '/invenio.css'}
 
         # Load content of texual file2
         prepare_attachments()
@@ -206,19 +202,19 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         """webcomment - accessing "public" comment in a "public" discussion of a restricted record"""
         # Guest user should not be able to access it
         self.assertNotEqual([],
-                         test_web_page_content("%s/%s/%i/comments/" % (CFG_SITE_URL, CFG_SITE_RECORD, self.restr_record),
+                         test_web_page_content("%s/%s/%i/comments/" % (cfg['CFG_SITE_URL'], cfg['CFG_SITE_RECORD'], self.restr_record),
                                                expected_text=self.msg2))
 
         # Accessing a non existing file for a restricted comment should also ask to login
         self.assertEqual([],
                          test_web_page_content("%s/%s/%i/comments/attachments/get/%i/not_existing_file" % \
-                                               (CFG_SITE_URL, CFG_SITE_RECORD, self.restr_record, self.restr_comid_1),
+                                               (cfg['CFG_SITE_URL'], cfg['CFG_SITE_RECORD'], self.restr_record, self.restr_comid_1),
                                                expected_text='You are not authorized to perform this action'))
 
         # Check accessing file of a restricted comment
         self.assertEqual([],
                          test_web_page_content("%s/%s/%i/comments/attachments/get/%i/file2" % \
-                                               (CFG_SITE_URL, CFG_SITE_RECORD, self.restr_record, self.restr_comid_1),
+                                               (cfg['CFG_SITE_URL'], cfg['CFG_SITE_RECORD'], self.restr_record, self.restr_comid_1),
                                                expected_text='You are not authorized to perform this action'))
 
 
@@ -226,24 +222,24 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         """webcomment - accessing "public" comment in a "public" discussion of a restricted record"""
         # Guest user should not be able to access it
         self.assertNotEqual([],
-                         test_web_page_content("%s/%s/%i/comments/" % (CFG_SITE_URL, CFG_SITE_RECORD, self.restr_record),
+                         test_web_page_content("%s/%s/%i/comments/" % (cfg['CFG_SITE_URL'], cfg['CFG_SITE_RECORD'], self.restr_record),
                                                expected_text=self.msg2))
 
         # Accessing a non existing file for a restricted comment should also ask to login
         self.assertEqual([],
                          test_web_page_content("%s/%s/%i/comments/attachments/get/%i/not_existing_file" % \
-                                               (CFG_SITE_URL, CFG_SITE_RECORD, self.restr_record, self.restr_comid_1),
+                                               (cfg['CFG_SITE_URL'], cfg['CFG_SITE_RECORD'], self.restr_record, self.restr_comid_1),
                                                expected_text='You are not authorized to perform this action'))
 
         # Check accessing file of a restricted comment
         self.assertEqual([],
                          test_web_page_content("%s/%s/%i/comments/attachments/get/%i/file2" % \
-                                               (CFG_SITE_URL, CFG_SITE_RECORD, self.restr_record, self.restr_comid_1),
+                                               (cfg['CFG_SITE_URL'], cfg['CFG_SITE_RECORD'], self.restr_record, self.restr_comid_1),
                                                expected_text='You are not authorized to perform this action'))
 
         # Juliet should not be able to access the comment
         self.login('juliet', 'j123uliet')
-        response = self.client.get("%s/%s/%i/comments/" % (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.restr_record))
+        response = self.client.get("%s/%s/%i/comments/" % (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.restr_record))
         response = response.data
         if not self.msg2 in response:
             pass
@@ -252,7 +248,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
 
         # Juliet should not be able to access the attached files
         response = self.client.get("%s/%s/%i/comments/attachments/get/%i/file2" % \
-                     (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.restr_record, self.restr_comid_1))
+                     (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.restr_record, self.restr_comid_1))
         response = response.data
         if "You are not authorized" in response:
             pass
@@ -261,14 +257,14 @@ class WebCommentRestrictionsTest(InvenioTestCase):
 
         # Jekyll should be able to access the comment
         self.login('jekyll', 'j123ekyll')
-        response = self.client.get("%s/%s/%i/comments/" % (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.restr_record))
+        response = self.client.get("%s/%s/%i/comments/" % (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.restr_record))
         response = response.data
         if not self.msg2 in response:
             self.fail("Oops, this user should have access to this comment")
 
         # Jekyll should be able to access the attached files
         response = self.client.get("%s/%s/%i/comments/attachments/get/%i/file2" % \
-                     (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.restr_record, self.restr_comid_1))
+                     (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.restr_record, self.restr_comid_1))
         response = response.data
         self.assertEqual(self.attached_file2_content, response)
 
@@ -276,19 +272,19 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         """webcomment - accessing "public" comment in a restricted discussion of a public record"""
         # Guest user should not be able to access it
         self.assertNotEqual([],
-                         test_web_page_content("%s/%s/%i/comments/" % (CFG_SITE_URL, CFG_SITE_RECORD, self.restricted_discussion),
+                         test_web_page_content("%s/%s/%i/comments/" % (cfg['CFG_SITE_URL'], cfg['CFG_SITE_RECORD'], self.restricted_discussion),
                                                expected_text=self.msg2))
 
         # Accessing a non existing file for a restricted comment should also ask to login
         self.assertEqual([],
                          test_web_page_content("%s/%s/%i/comments/attachments/get/%i/not_existing_file" % \
-                                               (CFG_SITE_URL, CFG_SITE_RECORD, self.restricted_discussion, self.restr_comid_5),
+                                               (cfg['CFG_SITE_URL'], cfg['CFG_SITE_RECORD'], self.restricted_discussion, self.restr_comid_5),
                                                expected_text='You are not authorized to perform this action'))
 
         # Check accessing file of a restricted comment
         self.assertEqual([],
                          test_web_page_content("%s/%s/%i/comments/attachments/get/%i/file2" % \
-                                               (CFG_SITE_URL, CFG_SITE_RECORD, self.restricted_discussion, self.restr_comid_5),
+                                               (cfg['CFG_SITE_URL'], cfg['CFG_SITE_RECORD'], self.restricted_discussion, self.restr_comid_5),
                                                expected_text='You are not authorized to perform this action'))
 
         # Juliet should not be able to access the comment
@@ -298,7 +294,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
 
         # Juliet should not be able to access the attached files
         response = self.client.get("%s/%s/%i/comments/attachments/get/%i/file2" % \
-                     (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.restricted_discussion, self.restr_comid_5))
+                     (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.restricted_discussion, self.restr_comid_5))
         self.assertIn("You are not authorized", response.data)
 
         # Romeo should be able to access the comment
@@ -308,7 +304,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
 
         # Romeo should be able to access the attached files
         response = self.client.get("/%s/%i/comments/attachments/get/%i/file2" % \
-                     (CFG_SITE_RECORD, self.restricted_discussion, self.restr_comid_5))
+                     (cfg['CFG_SITE_RECORD'], self.restricted_discussion, self.restr_comid_5))
         self.assertEqual(self.attached_file2_content, response.data)
 
     def test_comment_replies_inherit_restrictions(self):
@@ -351,7 +347,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         # Juliet should not be able to reply to the comment, even through a public record
         self.login('juliet', 'j123uliet')
         response = self.client.get("%s/%s/%i/comments/add?in_reply=%s&ln=en" % \
-                (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.public_record, self.restr_comid_1))
+                (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.public_record, self.restr_comid_1))
         response = response.data
         if not self.msg2 in response and \
                "Authorization failure" in response:
@@ -362,7 +358,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         # Jekyll should also not be able to reply the comment using the wrong recid
         self.login('jekyll', 'j123ekyll')
         response = self.client.get("%s/%s/%i/comments/add?in_reply=%s&ln=en" % \
-                (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.public_record, self.restr_comid_1))
+                (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.public_record, self.restr_comid_1))
         response = response.data
         if not self.msg2 in response and \
                "Authorization failure" in response:
@@ -376,7 +372,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         self.login('juliet', 'j123uliet')
         try:
             response = self.client.get("%s/%s/%i/comments/attachments/get/%i/file2" % \
-                     (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.public_record, self.restr_comid_1))
+                     (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.public_record, self.restr_comid_1))
             response = response.data
         except HTTPError:
             pass
@@ -387,7 +383,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         self.login('jekyll', 'j123ekyll')
         try:
             response = self.client.get("%s/%s/%i/comments/attachments/get/%i/file2" % \
-                     (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.public_record, self.restr_comid_1))
+                     (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.public_record, self.restr_comid_1))
             response = response.data
         except HTTPError:
             pass
@@ -399,7 +395,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         # Juliet should not be able to reply to the deleted comment
         self.login('juliet', 'j123uliet')
         response = self.client.get("%s/%s/%i/comments/add?in_reply=%s&ln=en" % \
-                (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.public_record, self.deleted_comid))
+                (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.public_record, self.deleted_comid))
         response = response.data
         if not self.msg7 in response:
             # There should be no authorization failure, in case the
@@ -412,7 +408,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         # Jekyll should also not be able to reply the deleted comment
         self.login('jekyll', 'j123ekyll')
         response = self.client.get("%s/%s/%i/comments/add?in_reply=%s&ln=en" % \
-                (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.public_record, self.deleted_comid))
+                (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.public_record, self.deleted_comid))
         response = response.data
         if not self.msg7 in response:
             # There should be no authorization failure, in case the
@@ -427,7 +423,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         # Juliet should not be able to access the files
         self.login('juliet', 'j123uliet')
         response = self.client.get("%s/%s/%i/comments/attachments/get/%i/file2" % \
-                     (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.public_record, self.deleted_comid))
+                     (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.public_record, self.deleted_comid))
         response = response.data
         if "You cannot access files of a deleted comment" in response:
             pass
@@ -437,7 +433,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         # Jekyll should also not be able to access the files
         self.login('jekyll', 'j123ekyll')
         response = self.client.get("%s/%s/%i/comments/attachments/get/%i/file2" % \
-                     (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.public_record, self.deleted_comid))
+                     (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.public_record, self.deleted_comid))
         response = response.data
         if "Authorization failure" in response:
             pass
@@ -449,7 +445,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         # Juliet should not be able to report a the deleted comment
         self.login('juliet', 'j123uliet')
         response = self.client.get("%s/%s/%i/comments/report?comid=%s&ln=en" % \
-                (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.public_record, self.deleted_comid))
+                (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.public_record, self.deleted_comid))
         response = response.data
         if not "Authorization failure" in response:
             self.fail("Oops, users should not be able to report a deleted comment")
@@ -459,7 +455,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         # Juliet should not be able to vote for a the deleted comment/review
         self.login('juliet', 'j123uliet')
         response = self.client.get("%s/%s/%i/comments/vote?comid=%s&com_value=1&ln=en" % \
-                (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.public_record, self.deleted_comid))
+                (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.public_record, self.deleted_comid))
         response = response.data
         if not "Authorization failure" in response:
             self.fail("Oops, users should not be able to vote for a deleted comment")
@@ -469,7 +465,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         # Juliet should not be able to report a comment she cannot access, even through public recid
         self.login('juliet', 'j123uliet')
         response = self.client.get("%s/%s/%i/comments/report?comid=%s&ln=en" % \
-                (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.public_record, self.restr_comid_1))
+                (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.public_record, self.restr_comid_1))
         response = response.data
         if not "Authorization failure" in response:
             self.fail("Oops, users should not be able to report using mismatching recid")
@@ -477,7 +473,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         # Jekyll should also not be able to report the comment using the wrong recid
         self.login('jekyll', 'j123ekyll')
         response = self.client.get("%s/%s/%i/comments/report?comid=%s&ln=en" % \
-                (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.public_record, self.restr_comid_1))
+                (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.public_record, self.restr_comid_1))
         response = response.data
         if not "Authorization failure" in response:
             self.fail("Oops, users should not be able to report using mismatching recid")
@@ -487,7 +483,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         # Juliet should not be able to vote for a comment she cannot access, especially through public recid
         self.login('juliet', 'j123uliet')
         response = self.client.get("%s/%s/%i/comments/vote?comid=%s&com_value=1&ln=en" % \
-                (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.public_record, self.restr_comid_1))
+                (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.public_record, self.restr_comid_1))
         response = response.data
         if not "Authorization failure" in response:
             self.fail("Oops, this user should not be able to report a deleted comment")
@@ -495,7 +491,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         # Jekyll should also not be able to vote for the comment using the wrong recid
         self.login('jekyll', 'j123ekyll')
         response = self.client.get("%s/%s/%i/comments/vote?comid=%s&com_value=1&ln=en" % \
-                (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.public_record, self.restr_comid_1))
+                (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.public_record, self.restr_comid_1))
         response = response.data
         if not "Authorization failure" in response:
             self.fail("Oops, users should not be able to report using mismatching recid")
@@ -505,7 +501,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         # Juliet should not be able to report the comment
         self.login('juliet', 'j123uliet')
         response = self.client.get("%s/%s/%i/comments/report?comid=%s&ln=en" % \
-                (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.restr_record, self.restr_comid_1))
+                (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.restr_record, self.restr_comid_1))
         response = response.data
         if not "Authorization failure" in response:
             self.fail("Oops, this user should not be able to report this comment")
@@ -515,7 +511,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         # Juliet should not be able to report the comment
         self.login('juliet', 'j123uliet')
         response = self.client.get("%s/%s/%i/comments/report?comid=%s&ln=en" % \
-                (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.restricted_discussion, self.restr_comid_5))
+                (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.restricted_discussion, self.restr_comid_5))
         response = response.data
         if not "Authorization failure" in response:
             self.fail("Oops, this user should not be able to report this comment")
@@ -525,7 +521,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         # Juliet should not be able to report the comment
         self.login('juliet', 'j123uliet')
         response = self.client.get("%s/%s/%i/comments/report?comid=%s&ln=en" % \
-                (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.public_record_restr_comment, self.restr_comid_2))
+                (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.public_record_restr_comment, self.restr_comid_2))
         response = response.data
         if not "Authorization failure" in response:
             self.fail("Oops, this user should not be able to report this comment")
@@ -535,7 +531,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         # Juliet should not be able to vote for the comment
         self.login('juliet', 'j123uliet')
         response = self.client.get("%s/%s/%i/comments/vote?comid=%s&com_value=1&ln=en" % \
-                (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.restr_record, self.restr_comid_1))
+                (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.restr_record, self.restr_comid_1))
         response = response.data
         if not "Authorization failure" in response:
             self.fail("Oops, this user should not be able to report this comment")
@@ -545,7 +541,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         # Juliet should not be able to vote for the comment
         self.login('juliet', 'j123uliet')
         response = self.client.get("%s/%s/%i/comments/vote?comid=%s&com_value=1&ln=en" % \
-                (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.restricted_discussion, self.restr_comid_5))
+                (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.restricted_discussion, self.restr_comid_5))
         response = response.data
         if not "Authorization failure" in response:
             self.fail("Oops, this user should not be able to report this comment")
@@ -555,7 +551,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         # Juliet should not be able to vote for the comment
         self.login('juliet', 'j123uliet')
         response = self.client.get("%s/%s/%i/comments/vote?comid=%s&com_value=1&ln=en" % \
-                (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.public_record_restr_comment, self.restr_comid_2))
+                (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.public_record_restr_comment, self.restr_comid_2))
         response = response.data
         if not "Authorization failure" in response:
             self.fail("Oops, this user should not be able to report this comment")
@@ -565,7 +561,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         # Juliet should not be able to subscribe to the discussion
         self.login('juliet', 'j123uliet')
         response = self.client.get("%s/%s/%i/comments/subscribe?ln=en" % \
-                (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.restr_record))
+                (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.restr_record))
         response = response.data
         if not "Authorization failure" in response:
             self.fail("Oops, this user should not be able to subscribe to this discussion")
@@ -573,7 +569,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         # Jekyll should be able to subscribe
         self.login('jekyll', 'j123ekyll')
         response = self.client.get("%s/%s/%i/comments/subscribe?ln=en" % \
-                (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.restr_record))
+                (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.restr_record))
         response = response.data
         if not "You have been subscribed" in response or \
                "Authorization failure" in response:
@@ -584,7 +580,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         # Juliet should not be able to subscribe to the discussion
         self.login('juliet', 'j123uliet')
         response = self.client.get("%s/%s/%i/comments/subscribe?ln=en" % \
-                (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.restricted_discussion))
+                (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.restricted_discussion))
         response = response.data
         if not "Authorization failure" in response:
             self.fail("Oops, this user should not be able to subscribe to this discussion")
@@ -592,7 +588,7 @@ class WebCommentRestrictionsTest(InvenioTestCase):
         # Romeo should be able to subscribe
         self.login('romeo', 'r123omeo')
         response = self.client.get("%s/%s/%i/comments/subscribe?ln=en" % \
-                (CFG_SITE_SECURE_URL, CFG_SITE_RECORD, self.restricted_discussion))
+                (cfg['CFG_SITE_SECURE_URL'], cfg['CFG_SITE_RECORD'], self.restricted_discussion))
         response = response.data
         if not "You have been subscribed" in response or \
                "Authorization failure" in response:
