@@ -19,7 +19,7 @@
 
 from invenio.config import CFG_SITE_NAME
 from fixture import DataSet
-from invenio.modules.search.fixtures import FormatData
+from invenio.modules.search.fixtures import FormatData, FieldData
 
 
 class ExternalcollectionData(DataSet):
@@ -2962,3 +2962,853 @@ class CollectionFormatData(DataSet):
         score = 93
         id_format = FormatData.Format_7.ref('id')
         id_collection = CollectionData.pictures.ref('id')
+
+
+class CollectionFieldFieldvalueData(DataSet):
+    class CollectionFieldFieldvalue_2_7_7:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_7.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 18
+
+    class CollectionFieldFieldvalue_2_7_6:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_6.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 19
+
+    class CollectionFieldFieldvalue_2_7_5:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_5.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 20
+
+    class CollectionFieldFieldvalue_2_7_4:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_4.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 21
+
+    class CollectionFieldFieldvalue_6_7_1:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_1.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 24
+
+    class CollectionFieldFieldvalue_6_7_2:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_2.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 23
+
+    class CollectionFieldFieldvalue_6_7_3:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_3.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 22
+
+    class CollectionFieldFieldvalue_6_7_4:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_4.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 21
+
+    class CollectionFieldFieldvalue_6_7_5:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_5.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 20
+
+    class CollectionFieldFieldvalue_6_7_6:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_6.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 19
+
+    class CollectionFieldFieldvalue_6_7_7:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_7.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 18
+
+    class CollectionFieldFieldvalue_6_7_8:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_8.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 17
+
+    class CollectionFieldFieldvalue_6_7_9:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_9.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 16
+
+    class CollectionFieldFieldvalue_6_7_10:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_10.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 15
+
+    class CollectionFieldFieldvalue_6_7_11:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_11.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 14
+
+    class CollectionFieldFieldvalue_6_7_12:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_12.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 13
+
+    class CollectionFieldFieldvalue_6_7_13:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_13.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 12
+
+    class CollectionFieldFieldvalue_6_7_14:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_14.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 11
+
+    class CollectionFieldFieldvalue_6_7_15:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_15.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 10
+
+    class CollectionFieldFieldvalue_6_7_16:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_16.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 9
+
+    class CollectionFieldFieldvalue_6_7_17:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_17.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 8
+
+    class CollectionFieldFieldvalue_6_7_18:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_18.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 7
+
+    class CollectionFieldFieldvalue_6_7_19:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_19.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 6
+
+    class CollectionFieldFieldvalue_6_7_20:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_20.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 5
+
+    class CollectionFieldFieldvalue_6_7_21:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_21.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 4
+
+    class CollectionFieldFieldvalue_6_7_22:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_22.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 3
+
+    class CollectionFieldFieldvalue_6_7_23:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_23.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 2
+
+    class CollectionFieldFieldvalue_6_7_24:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_24.ref('id')
+        type = 'seo'
+        score = 2
+        score_fieldvalue = 1
+
+    class CollectionFieldFieldvalue_2_7_3:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_3.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 22
+
+    class CollectionFieldFieldvalue_2_7_2:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_2.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 23
+
+    class CollectionFieldFieldvalue_6_8_None:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_8.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 2
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_2_7_1:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_1.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 24
+
+    class CollectionFieldFieldvalue_6_4_None:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_4.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 4
+        score_fieldvalue = 70
+
+    class CollectionFieldFieldvalue_6_2_None:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_2.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 3
+        score_fieldvalue = 70
+
+    class CollectionFieldFieldvalue_6_19_None:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_19.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 3
+        score_fieldvalue = 65
+
+    class CollectionFieldFieldvalue_6_5_None:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_5.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 1
+        score_fieldvalue = 70
+
+    class CollectionFieldFieldvalue_6_11_25:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_11.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_25.ref('id')
+        type = 'seo'
+        score = 1
+        score_fieldvalue = 1
+
+    class CollectionFieldFieldvalue_6_11_26:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_11.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_26.ref('id')
+        type = 'seo'
+        score = 1
+        score_fieldvalue = 2
+
+    class CollectionFieldFieldvalue_8_7_27:
+        id_collection = CollectionData.pictures.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_27.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 3
+
+    class CollectionFieldFieldvalue_8_7_28:
+        id_collection = CollectionData.pictures.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_28.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 1
+
+    class CollectionFieldFieldvalue_8_7_29:
+        id_collection = CollectionData.pictures.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_29.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 4
+
+    class CollectionFieldFieldvalue_8_7_30:
+        id_collection = CollectionData.pictures.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_30.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 2
+
+    class CollectionFieldFieldvalue_6_3_None:
+        id_collection = CollectionData.articles.ref('id')
+        id_field = FieldData.Field_3.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 5
+        score_fieldvalue = 70
+
+    class CollectionFieldFieldvalue_2_7_8:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_8.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 17
+
+    class CollectionFieldFieldvalue_2_7_9:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_9.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 16
+
+    class CollectionFieldFieldvalue_2_7_10:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_10.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 15
+
+    class CollectionFieldFieldvalue_2_7_11:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_11.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 14
+
+    class CollectionFieldFieldvalue_2_7_12:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_12.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 13
+
+    class CollectionFieldFieldvalue_2_7_13:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_13.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 12
+
+    class CollectionFieldFieldvalue_2_7_14:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_14.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 11
+
+    class CollectionFieldFieldvalue_2_7_15:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_15.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 10
+
+    class CollectionFieldFieldvalue_2_7_16:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_16.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 9
+
+    class CollectionFieldFieldvalue_2_7_17:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_17.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 8
+
+    class CollectionFieldFieldvalue_2_7_18:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_18.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 7
+
+    class CollectionFieldFieldvalue_2_7_19:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_19.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 6
+
+    class CollectionFieldFieldvalue_2_7_20:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_20.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 5
+
+    class CollectionFieldFieldvalue_2_7_21:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_21.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 4
+
+    class CollectionFieldFieldvalue_2_7_22:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_22.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 3
+
+    class CollectionFieldFieldvalue_2_7_23:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_23.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 2
+
+    class CollectionFieldFieldvalue_2_7_24:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_24.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 1
+
+    class CollectionFieldFieldvalue_2_8_None:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_8.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 20
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_2_4_None:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_4.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 40
+        score_fieldvalue = 70
+
+    class CollectionFieldFieldvalue_2_2_None:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_2.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 60
+        score_fieldvalue = 70
+
+    class CollectionFieldFieldvalue_2_5_None:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_5.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 30
+        score_fieldvalue = 70
+
+    class CollectionFieldFieldvalue_2_11_26:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_11.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_26.ref('id')
+        type = 'seo'
+        score = 5
+        score_fieldvalue = 1
+
+    class CollectionFieldFieldvalue_2_3_None:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_3.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 50
+        score_fieldvalue = 70
+
+    class CollectionFieldFieldvalue_2_11_25:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_11.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_25.ref('id')
+        type = 'seo'
+        score = 5
+        score_fieldvalue = 2
+
+    class CollectionFieldFieldvalue_2_11_32:
+        id_collection = CollectionData.preprints.ref('id')
+        id_field = FieldData.Field_11.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_32.ref('id')
+        type = 'seo'
+        score = 5
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_3_2_None:
+        id_collection = CollectionData.books.ref('id')
+        id_field = FieldData.Field_2.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 10
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_3_3_None:
+        id_collection = CollectionData.books.ref('id')
+        id_field = FieldData.Field_3.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 20
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_3_12_None:
+        id_collection = CollectionData.books.ref('id')
+        id_field = FieldData.Field_12.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 30
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_4_4_None:
+        id_collection = CollectionData.theses.ref('id')
+        id_field = FieldData.Field_4.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 30
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_4_3_None:
+        id_collection = CollectionData.theses.ref('id')
+        id_field = FieldData.Field_3.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 40
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_4_12_None:
+        id_collection = CollectionData.theses.ref('id')
+        id_field = FieldData.Field_12.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 10
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_4_2_None:
+        id_collection = CollectionData.theses.ref('id')
+        id_field = FieldData.Field_2.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 50
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_4_6_None:
+        id_collection = CollectionData.theses.ref('id')
+        id_field = FieldData.Field_6.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 20
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_4_7_None:
+        id_collection = CollectionData.theses.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = None
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_4_7_12:
+        id_collection = CollectionData.theses.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_12.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 2
+
+    class CollectionFieldFieldvalue_4_7_8:
+        id_collection = CollectionData.theses.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_8.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 3
+
+    class CollectionFieldFieldvalue_4_7_10:
+        id_collection = CollectionData.theses.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_10.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 1
+
+    class CollectionFieldFieldvalue_5_6_None:
+        id_collection = CollectionData.reports.ref('id')
+        id_field = FieldData.Field_6.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 20
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_5_12_None:
+        id_collection = CollectionData.reports.ref('id')
+        id_field = FieldData.Field_12.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 10
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_5_4_None:
+        id_collection = CollectionData.reports.ref('id')
+        id_field = FieldData.Field_4.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 30
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_5_3_None:
+        id_collection = CollectionData.reports.ref('id')
+        id_field = FieldData.Field_3.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 40
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_5_2_None:
+        id_collection = CollectionData.reports.ref('id')
+        id_field = FieldData.Field_2.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 50
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_5_7_None:
+        id_collection = CollectionData.reports.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = None
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_5_7_9:
+        id_collection = CollectionData.reports.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_9.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 3
+
+    class CollectionFieldFieldvalue_5_7_12:
+        id_collection = CollectionData.reports.ref('id')
+        id_field = FieldData.Field_7.ref('id')
+        id_fieldvalue = FieldvalueData.Fieldvalue_12.ref('id')
+        type = 'seo'
+        score = 10
+        score_fieldvalue = 2
+
+    class CollectionFieldFieldvalue_8_6_None:
+        id_collection = CollectionData.pictures.ref('id')
+        id_field = FieldData.Field_6.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 10
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_8_2_None:
+        id_collection = CollectionData.pictures.ref('id')
+        id_field = FieldData.Field_2.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 50
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_8_3_None:
+        id_collection = CollectionData.pictures.ref('id')
+        id_field = FieldData.Field_3.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 40
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_8_5_None:
+        id_collection = CollectionData.pictures.ref('id')
+        id_field = FieldData.Field_5.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 20
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_8_4_None:
+        id_collection = CollectionData.pictures.ref('id')
+        id_field = FieldData.Field_4.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 30
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_1_2_None:
+        id_collection = CollectionData.siteCollection.ref('id')
+        id_field = FieldData.Field_2.ref('id')
+        id_fieldvalue = None
+        type = 'soo'
+        score = 40
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_1_3_None:
+        id_collection = CollectionData.siteCollection.ref('id')
+        id_field = FieldData.Field_3.ref('id')
+        id_fieldvalue = None
+        type = 'soo'
+        score = 30
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_1_6_None:
+        id_collection = CollectionData.siteCollection.ref('id')
+        id_field = FieldData.Field_6.ref('id')
+        id_fieldvalue = None
+        type = 'soo'
+        score = 20
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_1_12_None:
+        id_collection = CollectionData.siteCollection.ref('id')
+        id_field = FieldData.Field_12.ref('id')
+        id_fieldvalue = None
+        type = 'soo'
+        score = 10
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_3_15_None:
+        id_collection = CollectionData.books.ref('id')
+        id_field = FieldData.Field_15.ref('id')
+        id_fieldvalue = None
+        type = 'soo'
+        score = 20
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_34_33_None:
+        id_collection = None
+        id_field = FieldData.Field_33.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 4
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_34_34_None:
+        id_collection = None
+        id_field = FieldData.Field_34.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 3
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_34_35_None:
+        id_collection = None
+        id_field = FieldData.Field_35.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 2
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_34_36_None:
+        id_collection = None
+        id_field = FieldData.Field_36.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 1
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_35_33_None:
+        id_collection = None
+        id_field = FieldData.Field_33.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 1
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_36_34_None:
+        id_collection = None
+        id_field = FieldData.Field_34.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 1
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_37_35_None:
+        id_collection = None
+        id_field = FieldData.Field_35.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 1
+        score_fieldvalue = 0
+
+    class CollectionFieldFieldvalue_38_36_None:
+        id_collection = None
+        id_field = FieldData.Field_36.ref('id')
+        id_fieldvalue = None
+        type = 'sew'
+        score = 1
+        score_fieldvalue = 0
