@@ -851,6 +851,56 @@ class CollectionData(DataSet):
         }
         name = u'Videos'
 
+    class Collection_34:
+        id = 34
+        dbquery = u'collection:AUTHORITY'
+        names = {
+            ('en','ln'): u'Authority Records',
+            ('fr','ln'): u'Notices d\'autorité',
+            ('pl','ln'): u'Rekordy kontrolne',
+        }
+        name = u'Authority Records'
+
+    class Collection_35:
+        id = 35
+        dbquery = u'collection:AUTHOR'
+        names = {
+            ('en','ln'): u'Authors',
+            ('fr','ln'): u'Auteurs',
+            ('pl','ln'): u'Autorzy',
+        }
+        name = u'Authority Author'
+
+    class Collection_36:
+        id = 36
+        dbquery = u'collection:INSTITUTION'
+        names = {
+            ('en','ln'): u'Institutions',
+            ('fr','ln'): u'Institutions',
+            ('pl','ln'): u'Instytucje',
+        }
+        name = u'Authority Institution'
+
+    class Collection_37:
+        id = 37
+        dbquery = u'collection:JOURNAL'
+        names = {
+            ('en','ln'): u'Journals',
+            ('fr','ln'): u'Journals',
+            ('pl','ln'): u'Czasopisma',
+        }
+        name = u'Authority Journal'
+
+    class Collection_38:
+        id = 38
+        dbquery = u'collection:SUBJECT'
+        names = {
+            ('en','ln'): u'Subjects',
+            ('fr','ln'): u'Sujets',
+            ('pl','ln'): u'Tematy',
+        }
+        name = u'Authority Subject'
+
 
 class CollectionCollectionData(DataSet):
 
@@ -3208,7 +3258,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_6_8_None:
         id_collection = CollectionData.articles.ref('id')
         id_field = FieldData.Field_8.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 2
         score_fieldvalue = 0
@@ -3224,7 +3274,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_6_4_None:
         id_collection = CollectionData.articles.ref('id')
         id_field = FieldData.Field_4.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 4
         score_fieldvalue = 70
@@ -3232,7 +3282,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_6_2_None:
         id_collection = CollectionData.articles.ref('id')
         id_field = FieldData.Field_2.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 3
         score_fieldvalue = 70
@@ -3240,7 +3290,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_6_19_None:
         id_collection = CollectionData.articles.ref('id')
         id_field = FieldData.Field_19.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 3
         score_fieldvalue = 65
@@ -3248,7 +3298,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_6_5_None:
         id_collection = CollectionData.articles.ref('id')
         id_field = FieldData.Field_5.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 1
         score_fieldvalue = 70
@@ -3304,7 +3354,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_6_3_None:
         id_collection = CollectionData.articles.ref('id')
         id_field = FieldData.Field_3.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 5
         score_fieldvalue = 70
@@ -3448,7 +3498,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_2_8_None:
         id_collection = CollectionData.preprints.ref('id')
         id_field = FieldData.Field_8.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 20
         score_fieldvalue = 0
@@ -3456,7 +3506,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_2_4_None:
         id_collection = CollectionData.preprints.ref('id')
         id_field = FieldData.Field_4.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 40
         score_fieldvalue = 70
@@ -3464,7 +3514,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_2_2_None:
         id_collection = CollectionData.preprints.ref('id')
         id_field = FieldData.Field_2.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 60
         score_fieldvalue = 70
@@ -3472,7 +3522,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_2_5_None:
         id_collection = CollectionData.preprints.ref('id')
         id_field = FieldData.Field_5.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 30
         score_fieldvalue = 70
@@ -3488,7 +3538,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_2_3_None:
         id_collection = CollectionData.preprints.ref('id')
         id_field = FieldData.Field_3.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 50
         score_fieldvalue = 70
@@ -3512,7 +3562,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_3_2_None:
         id_collection = CollectionData.books.ref('id')
         id_field = FieldData.Field_2.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 10
         score_fieldvalue = 0
@@ -3520,7 +3570,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_3_3_None:
         id_collection = CollectionData.books.ref('id')
         id_field = FieldData.Field_3.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 20
         score_fieldvalue = 0
@@ -3528,7 +3578,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_3_12_None:
         id_collection = CollectionData.books.ref('id')
         id_field = FieldData.Field_12.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 30
         score_fieldvalue = 0
@@ -3536,7 +3586,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_4_4_None:
         id_collection = CollectionData.theses.ref('id')
         id_field = FieldData.Field_4.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 30
         score_fieldvalue = 0
@@ -3544,7 +3594,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_4_3_None:
         id_collection = CollectionData.theses.ref('id')
         id_field = FieldData.Field_3.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 40
         score_fieldvalue = 0
@@ -3552,7 +3602,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_4_12_None:
         id_collection = CollectionData.theses.ref('id')
         id_field = FieldData.Field_12.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 10
         score_fieldvalue = 0
@@ -3560,7 +3610,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_4_2_None:
         id_collection = CollectionData.theses.ref('id')
         id_field = FieldData.Field_2.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 50
         score_fieldvalue = 0
@@ -3568,7 +3618,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_4_6_None:
         id_collection = CollectionData.theses.ref('id')
         id_field = FieldData.Field_6.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 20
         score_fieldvalue = 0
@@ -3576,7 +3626,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_4_7_None:
         id_collection = CollectionData.theses.ref('id')
         id_field = FieldData.Field_7.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'seo'
         score = 10
         score_fieldvalue = 0
@@ -3608,7 +3658,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_5_6_None:
         id_collection = CollectionData.reports.ref('id')
         id_field = FieldData.Field_6.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 20
         score_fieldvalue = 0
@@ -3616,7 +3666,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_5_12_None:
         id_collection = CollectionData.reports.ref('id')
         id_field = FieldData.Field_12.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 10
         score_fieldvalue = 0
@@ -3624,7 +3674,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_5_4_None:
         id_collection = CollectionData.reports.ref('id')
         id_field = FieldData.Field_4.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 30
         score_fieldvalue = 0
@@ -3632,7 +3682,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_5_3_None:
         id_collection = CollectionData.reports.ref('id')
         id_field = FieldData.Field_3.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 40
         score_fieldvalue = 0
@@ -3640,7 +3690,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_5_2_None:
         id_collection = CollectionData.reports.ref('id')
         id_field = FieldData.Field_2.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 50
         score_fieldvalue = 0
@@ -3648,7 +3698,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_5_7_None:
         id_collection = CollectionData.reports.ref('id')
         id_field = FieldData.Field_7.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'seo'
         score = 10
         score_fieldvalue = 0
@@ -3672,7 +3722,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_8_6_None:
         id_collection = CollectionData.pictures.ref('id')
         id_field = FieldData.Field_6.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 10
         score_fieldvalue = 0
@@ -3680,7 +3730,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_8_2_None:
         id_collection = CollectionData.pictures.ref('id')
         id_field = FieldData.Field_2.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 50
         score_fieldvalue = 0
@@ -3688,7 +3738,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_8_3_None:
         id_collection = CollectionData.pictures.ref('id')
         id_field = FieldData.Field_3.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 40
         score_fieldvalue = 0
@@ -3696,7 +3746,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_8_5_None:
         id_collection = CollectionData.pictures.ref('id')
         id_field = FieldData.Field_5.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 20
         score_fieldvalue = 0
@@ -3704,7 +3754,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_8_4_None:
         id_collection = CollectionData.pictures.ref('id')
         id_field = FieldData.Field_4.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 30
         score_fieldvalue = 0
@@ -3712,7 +3762,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_1_2_None:
         id_collection = CollectionData.siteCollection.ref('id')
         id_field = FieldData.Field_2.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'soo'
         score = 40
         score_fieldvalue = 0
@@ -3720,7 +3770,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_1_3_None:
         id_collection = CollectionData.siteCollection.ref('id')
         id_field = FieldData.Field_3.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'soo'
         score = 30
         score_fieldvalue = 0
@@ -3728,7 +3778,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_1_6_None:
         id_collection = CollectionData.siteCollection.ref('id')
         id_field = FieldData.Field_6.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'soo'
         score = 20
         score_fieldvalue = 0
@@ -3736,7 +3786,7 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_1_12_None:
         id_collection = CollectionData.siteCollection.ref('id')
         id_field = FieldData.Field_12.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'soo'
         score = 10
         score_fieldvalue = 0
@@ -3744,71 +3794,71 @@ class CollectionFieldFieldvalueData(DataSet):
     class CollectionFieldFieldvalue_3_15_None:
         id_collection = CollectionData.books.ref('id')
         id_field = FieldData.Field_15.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'soo'
         score = 20
         score_fieldvalue = 0
 
     class CollectionFieldFieldvalue_34_33_None:
-        id_collection = None
+        id_collection = CollectionData.Collection_34.ref('id')
         id_field = FieldData.Field_33.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 4
         score_fieldvalue = 0
 
     class CollectionFieldFieldvalue_34_34_None:
-        id_collection = None
+        id_collection = CollectionData.Collection_34.ref('id')
         id_field = FieldData.Field_34.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 3
         score_fieldvalue = 0
 
     class CollectionFieldFieldvalue_34_35_None:
-        id_collection = None
+        id_collection = CollectionData.Collection_34.ref('id')
         id_field = FieldData.Field_35.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 2
         score_fieldvalue = 0
 
     class CollectionFieldFieldvalue_34_36_None:
-        id_collection = None
+        id_collection = CollectionData.Collection_34.ref('id')
         id_field = FieldData.Field_36.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 1
         score_fieldvalue = 0
 
     class CollectionFieldFieldvalue_35_33_None:
-        id_collection = None
+        id_collection = CollectionData.Collection_35.ref('id')
         id_field = FieldData.Field_33.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 1
         score_fieldvalue = 0
 
     class CollectionFieldFieldvalue_36_34_None:
-        id_collection = None
+        id_collection = CollectionData.Collection_36.ref('id')
         id_field = FieldData.Field_34.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 1
         score_fieldvalue = 0
 
     class CollectionFieldFieldvalue_37_35_None:
-        id_collection = None
+        id_collection = CollectionData.Collection_37.ref('id')
         id_field = FieldData.Field_35.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 1
         score_fieldvalue = 0
 
     class CollectionFieldFieldvalue_38_36_None:
-        id_collection = None
+        id_collection = CollectionData.Collection_38.ref('id')
         id_field = FieldData.Field_36.ref('id')
-        id_fieldvalue = None
+        id_fieldvalue = 0
         type = 'sew'
         score = 1
         score_fieldvalue = 0
