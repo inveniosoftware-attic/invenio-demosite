@@ -21,13 +21,13 @@
 
 """Regression tests for the BatchUploader."""
 
-from invenio.testsuite import InvenioTestCase
 import os
 import os.path
 import urllib2
 import urlparse
 import socket
 from urllib import urlencode
+from werkzeug.local import LocalProxy
 
 from invenio.testsuite import make_test_suite, run_test_suite
 from invenio.utils.json import json
@@ -36,10 +36,11 @@ from invenio.base.wrappers import lazy_import
 from invenio.utils.shell import run_shell_command
 from invenio.utils.url import make_user_agent_string
 
+from invenio_demosite.testsuite.regression.test_bibupload import GenericBibUploadTest
+
 run_sql = lazy_import('invenio.legacy.dbquery:run_sql')
 get_last_taskid = lazy_import('invenio.legacy.bibsched.cli:get_last_taskid')
 delete_task = lazy_import('invenio.legacy.bibsched.cli:delete_task')
-GenericBibUploadTest = lazy_import('invenio.legacy.bibupload.engine_regression_tests:GenericBibUploadTest')
 
 CFG_HAS_CURL = os.path.exists("/usr/bin/curl")
 
@@ -49,7 +50,9 @@ CFG_HAS_CURL = os.path.exists("/usr/bin/curl")
 ## fail due to not enough authorizations.
 
 #FIXME
-CFG_LOCALHOST_OK = socket.gethostbyname(urlparse.urlparse(cfg['CFG_SITE_URL'])[1].split(':')[0]) in ('127.0.0.1', '127.0.1.1')
+CFG_LOCALHOST_OK = LocalProxy(lambda: socket.gethostbyname(
+    urlparse.urlparse(cfg['CFG_SITE_URL'])[1].split(':')[0]
+) in ('127.0.0.1', '127.0.1.1'))
 
 
 class BatchUploaderRobotUploadTests(GenericBibUploadTest):
@@ -111,23 +114,23 @@ class BatchUploaderRobotUploadTests(GenericBibUploadTest):
         if current_task != self.last_taskid:
             delete_task(current_task)
 
-    if CFG_LOCALHOST_OK:
-        def test_bad_marcxml(self):
-            """batchuploader - robotupload bad MARCXML"""
+    def test_bad_marcxml(self):
+        """batchuploader - robotupload bad MARCXML"""
+        if CFG_LOCALHOST_OK:
             self.req.add_data("BLABLA")
             result = urllib2.urlopen(self.req).read()
             self.assertEqual(result, "[ERROR] MARCXML is not valid.\n")
 
-    if CFG_LOCALHOST_OK:
-        def test_bad_agent(self):
-            """batchuploader - robotupload bad agent"""
+    def test_bad_agent(self):
+        """batchuploader - robotupload bad agent"""
+        if CFG_LOCALHOST_OK:
             self.req.add_header('User-Agent', 'badagent')
             result = urllib2.urlopen(self.req).read()
             self.assertEqual(result, "[ERROR] Sorry, the badagent useragent cannot use the service.\n")
 
-    if CFG_LOCALHOST_OK:
-        def test_simple_insert(self):
-            """batchuploader - robotupload simple insert"""
+    def test_simple_insert(self):
+        """batchuploader - robotupload simple insert"""
+        if CFG_LOCALHOST_OK:
             from invenio.legacy.search_engine import get_record
             result = urllib2.urlopen(self.req).read()
             self.failUnless("[INFO]" in result)
@@ -138,11 +141,11 @@ class BatchUploaderRobotUploadTests(GenericBibUploadTest):
             record = get_record(current_recid)
             self.assertEqual(record['245'][0][0], [('a', 'The title')])
 
-    if cfg['CFG_DEVEL_SITE'] and CFG_LOCALHOST_OK:
-        ## This expect a particular testing web handler that is available
-        ## only when cfg['CFG_DEVEL_SITE'] is set up correctly
-        def test_insert_with_callback(self):
-            """batchuploader - robotupload insert with callback"""
+    ## This expect a particular testing web handler that is available
+    ## only when cfg['CFG_DEVEL_SITE'] is set up correctly
+    def test_insert_with_callback(self):
+        """batchuploader - robotupload insert with callback"""
+        if cfg['CFG_DEVEL_SITE'] and CFG_LOCALHOST_OK:
             result = urllib2.urlopen(self.req_callback).read()
             self.failUnless("[INFO]" in result, '"%s" did not contained [INFO]' % result)
             current_task = get_last_taskid()
@@ -154,8 +157,9 @@ class BatchUploaderRobotUploadTests(GenericBibUploadTest):
             self.failUnless(results['results'][0]['recid'] > 0)
             self.failUnless("""<subfield code="a">Doe, John</subfield>""" in results['results'][0]['marcxml'], results['results'][0]['marcxml'])
 
-        def test_insert_with_nonce(self):
-            """batchuploader - robotupload insert with nonce"""
+    def test_insert_with_nonce(self):
+        """batchuploader - robotupload insert with nonce"""
+        if cfg['CFG_DEVEL_SITE'] and CFG_LOCALHOST_OK:
             result = urllib2.urlopen(self.req_nonce).read()
             self.failUnless("[INFO]" in result, '"%s" did not contained "[INFO]"' % result)
             current_task = get_last_taskid()
@@ -168,8 +172,9 @@ class BatchUploaderRobotUploadTests(GenericBibUploadTest):
             self.failUnless(results['results'][0]['recid'] > 0)
             self.failUnless("""<subfield code="a">Doe, John</subfield>""" in results['results'][0]['marcxml'], results['results'][0]['marcxml'])
 
-        def test_insert_with_oracle(self):
-            """batchuploader - robotupload insert with oracle special treatment"""
+    def test_insert_with_oracle(self):
+        """batchuploader - robotupload insert with oracle special treatment"""
+        if cfg['CFG_DEVEL_SITE'] and CFG_LOCALHOST_OK:
             import os
             if os.path.exists('/opt/invenio/var/log/invenio.err'):
                 os.remove('/opt/invenio/var/log/invenio.err')
@@ -184,9 +189,10 @@ class BatchUploaderRobotUploadTests(GenericBibUploadTest):
             self.failUnless(results['results'][0]['recid'] > 0)
             self.failUnless("""<subfield code="a">Doe, John</subfield>""" in results['results'][0]['marcxml'], results['results'][0]['marcxml'])
 
-        if CFG_HAS_CURL:
-            def test_insert_via_curl(self):
-                """batchuploader - robotupload insert via CLI curl"""
+    def test_insert_via_curl(self):
+        """batchuploader - robotupload insert via CLI curl"""
+        if cfg['CFG_DEVEL_SITE'] and CFG_LOCALHOST_OK:
+            if CFG_HAS_CURL:
                 curl_input_file = os.path.join(cfg['CFG_TMPDIR'], 'curl_test.xml')
                 open(curl_input_file, "w").write(self.marcxml)
                 try:
@@ -204,8 +210,10 @@ class BatchUploaderRobotUploadTests(GenericBibUploadTest):
                 finally:
                     os.remove(curl_input_file)
 
-            def test_legacy_insert_via_curl(self):
-                """batchuploader - robotupload legacy insert via CLI curl"""
+    def test_legacy_insert_via_curl(self):
+        """batchuploader - robotupload legacy insert via CLI curl"""
+        if cfg['CFG_DEVEL_SITE'] and CFG_LOCALHOST_OK:
+            if CFG_HAS_CURL:
                 curl_input_file = os.path.join(cfg['CFG_TMPDIR'], 'curl_test.xml')
                 open(curl_input_file, "w").write(self.marcxml)
                 try:
