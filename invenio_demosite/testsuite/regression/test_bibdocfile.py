@@ -22,6 +22,7 @@
 __revision__ = "$Id$"
 
 import os
+import pkg_resources
 import shutil
 import time
 from datetime import datetime
@@ -43,7 +44,11 @@ class BibDocFsInfoTest(InvenioTestCase):
         from invenio.legacy.bibdocfile.api import BibRecDocs
         self.my_bibrecdoc = BibRecDocs(2)
         self.unique_name = self.my_bibrecdoc.propose_unique_docname('file')
-        self.my_bibdoc = self.my_bibrecdoc.add_new_file(cfg['CFG_PREFIX'] + '/lib/webtest/invenio/test.jpg', docname=self.unique_name)
+        self.my_bibdoc = self.my_bibrecdoc.add_new_file(
+            pkg_resources.resource_filename(
+                'invenio_demosite.testsuite.regression',
+                'data/test.jpg'),
+            docname=self.unique_name)
         self.my_bibdoc_id = self.my_bibdoc.id
 
     def tearDown(self):
@@ -54,7 +59,10 @@ class BibDocFsInfoTest(InvenioTestCase):
         from invenio.legacy.dbquery import run_sql
         self.assertEqual(run_sql("SELECT MAX(version) FROM bibdocfsinfo WHERE id_bibdoc=%s", (self.my_bibdoc_id, ))[0][0], 1)
         self.assertEqual(run_sql("SELECT last_version FROM bibdocfsinfo WHERE id_bibdoc=%s AND version=1 AND format='.jpg'", (self.my_bibdoc_id, ))[0][0], True)
-        self.my_bibdoc.add_file_new_version(cfg['CFG_PREFIX'] + '/lib/webtest/invenio/test.gif')
+        self.my_bibdoc.add_file_new_version(
+            pkg_resources.resource_filename(
+                'invenio_demosite.testsuite.regression',
+                'data/test.gif'))
         self.assertEqual(run_sql("SELECT MAX(version) FROM bibdocfsinfo WHERE id_bibdoc=%s", (self.my_bibdoc_id, ))[0][0], 2)
         self.assertEqual(run_sql("SELECT last_version FROM bibdocfsinfo WHERE id_bibdoc=%s AND version=2 AND format='.gif'", (self.my_bibdoc_id, ))[0][0], True)
         self.assertEqual(run_sql("SELECT last_version FROM bibdocfsinfo WHERE id_bibdoc=%s AND version=1 AND format='.jpg'", (self.my_bibdoc_id, ))[0][0], False)
@@ -161,13 +169,21 @@ class BibRecDocsTest(InvenioTestCase):
         from invenio.legacy.bibdocfile.api import BibRecDocs
         my_bibrecdoc = BibRecDocs(2)
         #add bibdoc
-        my_bibrecdoc.add_new_file(cfg['CFG_PREFIX'] + '/lib/webtest/invenio/test.jpg', 'Main', 'img_test', False, 'test add new file', 'test', '.jpg')
+        my_bibrecdoc.add_new_file(
+            pkg_resources.resource_filename(
+                'invenio_demosite.testsuite.regression',
+                'data/test.jpg'),
+            'Main', 'img_test', False, 'test add new file', 'test', '.jpg')
         my_bibrecdoc.add_bibdoc(doctype='Main', docname='file', never_fail=False)
         self.assertEqual(len(my_bibrecdoc.list_bibdocs()), 3)
         my_added_bibdoc = my_bibrecdoc.get_bibdoc('file')
         #add bibdocfile in empty bibdoc
-        my_added_bibdoc.add_file_new_version(cfg['CFG_PREFIX'] + '/lib/webtest/invenio/test.gif', \
-        description= 'added in empty bibdoc', comment=None, docformat=None, flags=['PERFORM_HIDE_PREVIOUS'])
+        my_added_bibdoc.add_file_new_version(
+            pkg_resources.resource_filename(
+                'invenio_demosite.testsuite.regression',
+                'data/test.gif'),
+            description= 'added in empty bibdoc', comment=None, docformat=None,
+            flags=['PERFORM_HIDE_PREVIOUS'])
         #propose unique docname
         self.assertEqual(my_bibrecdoc.propose_unique_docname('file'), 'file_2')
         #has docname
@@ -176,7 +192,11 @@ class BibRecDocsTest(InvenioTestCase):
         my_bibrecdoc.merge_bibdocs('img_test', 'file')
         self.assertEqual(len(my_bibrecdoc.get_bibdoc("img_test").list_all_files()), 2)
         #check file exists
-        self.assertEqual(my_bibrecdoc.check_file_exists(cfg['CFG_PREFIX'] + '/lib/webtest/invenio/test.jpg', '.jpg'), True)
+        self.assertEqual(my_bibrecdoc.check_file_exists(
+            pkg_resources.resource_filename(
+                'invenio_demosite.testsuite.regression',
+                'data/test.jpg'),
+            '.jpg'), True)
         #get bibdoc names
         # we can not rely on the order !
         names = set([my_bibrecdoc.get_bibdoc_names('Main')[0], my_bibrecdoc.get_bibdoc_names('Main')[1]])
@@ -213,7 +233,12 @@ class BibDocsTest(InvenioTestCase):
         #add file
         my_bibrecdoc = BibRecDocs(2)
         timestamp1 = datetime(*(time.strptime("2011-10-09 08:07:06", "%Y-%m-%d %H:%M:%S")[:6]))
-        my_bibrecdoc.add_new_file(cfg['CFG_PREFIX'] + '/lib/webtest/invenio/test.jpg', 'Main', 'img_test', False, 'test add new file', 'test', '.jpg', modification_date=timestamp1)
+        my_bibrecdoc.add_new_file(
+            pkg_resources.resource_filename(
+                'invenio_demosite.testsuite.regression',
+                'data/test.jpg'),
+            'Main', 'img_test', False, 'test add new file', 'test', '.jpg',
+            modification_date=timestamp1)
         my_new_bibdoc = my_bibrecdoc.get_bibdoc("img_test")
         value = my_bibrecdoc.list_bibdocs()
         self.assertEqual(len(value), 2)
@@ -240,7 +265,12 @@ class BibDocsTest(InvenioTestCase):
         self.assertEqual(my_new_bibdoc.get_file_number(), 1)
         #add file new version
         timestamp2 = datetime(*(time.strptime("2010-09-08 07:06:05", "%Y-%m-%d %H:%M:%S")[:6]))
-        my_new_bibdoc.add_file_new_version(cfg['CFG_PREFIX'] + '/lib/webtest/invenio/test.jpg', description= 'the new version', comment=None, docformat=None, flags=["PERFORM_HIDE_PREVIOUS"], modification_date=timestamp2)
+        my_new_bibdoc.add_file_new_version(
+            pkg_resources.resource_filename(
+                'invenio_demosite.testsuite.regression',
+                'data/test.jpg'),
+            description= 'the new version', comment=None, docformat=None,
+            flags=["PERFORM_HIDE_PREVIOUS"], modification_date=timestamp2)
         self.assertEqual(my_new_bibdoc.list_versions(), [1, 2])
         #revert
         timestamp3 = datetime.now()
@@ -286,7 +316,12 @@ class BibDocsTest(InvenioTestCase):
         my_new_bibdoc.delete_file('.jpg', 3)
         #add new format
         timestamp4 = datetime(*(time.strptime("2012-11-10 09:08:07", "%Y-%m-%d %H:%M:%S")[:6]))
-        my_new_bibdoc.add_file_new_format(cfg['CFG_PREFIX'] + '/lib/webtest/invenio/test.gif', version=None, description=None, comment=None, docformat=None, modification_date=timestamp4)
+        my_new_bibdoc.add_file_new_format(
+            pkg_resources.resource_filename(
+                'invenio_demosite.testsuite.regression',
+                'data/test.gif'),
+            version=None, description=None, comment=None, docformat=None,
+            modification_date=timestamp4)
         self.assertEqual(len(my_new_bibdoc.list_all_files()), 2)
         #check modification time
         self.assertEqual(my_new_bibdoc.get_file('.jpg', version=1).md, timestamp1)
@@ -309,10 +344,14 @@ class BibDocsTest(InvenioTestCase):
         self.assertEqual(my_new_bibdoc.hidden_p('.jpg', version=1), True)
         #add and get icon
 
-        my_new_bibdoc.add_icon( cfg['CFG_PREFIX'] + '/lib/webtest/invenio/icon-test.gif', modification_date=timestamp4)
+        my_new_bibdoc.add_icon(
+            pkg_resources.resource_filename(
+                'invenio_demosite.testsuite.regression',
+                'data/icon-test.gif'),
+            modification_date=timestamp4)
 
         my_bibrecdoc = BibRecDocs(2)
-        value =  my_bibrecdoc.get_bibdoc("new_name")
+        value = my_bibrecdoc.get_bibdoc("new_name")
         self.assertEqual(value.get_icon().docid, my_new_bibdoc.get_icon().docid)
         self.assertEqual(value.get_icon().version, my_new_bibdoc.get_icon().version)
         self.assertEqual(value.get_icon().format, my_new_bibdoc.get_icon().format)
@@ -405,7 +444,11 @@ class BibDocFilesTest(InvenioTestCase):
         my_bibrecdoc = BibRecDocs(2)
         timestamp = datetime(*(time.strptime("2010-09-08 07:06:05", "%Y-%m-%d %H:%M:%S")[:6]))
         #FIXME InvenioBibDocFileError
-        my_bibrecdoc.add_new_file(cfg['CFG_PREFIX'] + '/lib/webtest/invenio/test.jpg', 'Main', 'img_test', False, 'test add new file', 'test', '.jpg', modification_date=timestamp)
+        my_bibrecdoc.add_new_file(
+            pkg_resources.resource_filename(
+                'invenio_demosite.testsuite.regression',
+                'data/test.jpg'),
+            'Main', 'img_test', False, 'test add new file', 'test', '.jpg', modification_date=timestamp)
 
         my_new_bibdoc = my_bibrecdoc.get_bibdoc("img_test")
         my_new_bibdocfile = my_new_bibdoc.list_all_files()[0]
