@@ -29,7 +29,7 @@ from invenio.base.wrappers import lazy_import
 from invenio.testsuite import make_test_suite, run_test_suite, \
     test_web_page_content
 
-BibClassifyTestCase = lazy_import('invenio.modules.classifier.testsuite.test_classifier:BibClassifyTestCase')
+from invenio.modules.classifier.testsuite.test_classifier import BibClassifyTestCase
 
 bconfig = lazy_import('invenio.legacy.bibclassify.config')
 bibclassify_cli = lazy_import('invenio.legacy.bibclassify.cli')
@@ -95,7 +95,7 @@ class BibClassifyRegressionTest(BibClassifyTestCase):
 
         if not bconfig.STANDALONE:
             from invenio.legacy import dbquery
-            from invenio import bibclassify_daemon
+            from invenio.legacy.bibclassify import daemon as bibclassify_daemon
             bibtask = bibclassify_daemon.bibtask
             #first test if the record exists in the database
             record = dbquery.run_sql("SELECT * FROM bibrec WHERE id=94")
