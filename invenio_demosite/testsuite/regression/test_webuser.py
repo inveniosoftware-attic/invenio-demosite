@@ -250,7 +250,7 @@ class WebSessionYourSettingsTests(MailTestCase):
 
         # Logging out!
         browser.open(cfg['CFG_SITE_SECURE_URL'] + "/youraccount/logout")
-        expected_response = "You are no longer recognized"
+        expected_response = "You have now been signed out"
         logout_response_body = browser.response().read()
         try:
             logout_response_body.index(expected_response)
