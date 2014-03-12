@@ -767,7 +767,6 @@ class BibIndexAuthorityRecordTest(InvenioTestCase):
         run_sql("UPDATE bibrec SET modification_date = now() WHERE id = %s", (authRecID,))
         # run bibindex again
         task_id = reindex_for_type_with_bibsched(index_name, force_all=True)
-
         filename = os.path.join(cfg['CFG_LOGDIR'], 'bibsched_task_' + str(task_id) + '.log')
         _file = open(filename)
         text = _file.read() # small file
@@ -989,30 +988,35 @@ class BibIndexFindingAffectedIndexes(InvenioTestCase):
         """bibindex - checks if affected recids are found correctly for miscellaneous index"""
         records_for_indexes = find_affected_records_for_index(get_all_indexes(virtual=False),
                                                               [[1,20]])
-        self.assertEqual(records_for_indexes['miscellaneous'], [10,12])
+        self.assertEqual(records_for_indexes['miscellaneous'],
+                         [1, 2, 3, 4, 5, 6, 7, 10, 12, 14, 17, 18])
 
     def test_find_proper_records_for_year_index(self):
         """bibindex - checks if affected recids are found correctly for year index"""
         records_for_indexes = find_affected_records_for_index(get_all_indexes(virtual=False),
                                                               [[1,20]])
-        self.assertEqual(records_for_indexes['year'], [10,12])
+        self.assertEqual(records_for_indexes['year'],
+                         [1, 2, 3, 4, 5, 6, 7, 10, 12, 14, 17, 18])
 
     def test_find_proper_records_for_caption_index(self):
         """bibindex - checks if affected recids are found correctly for caption index"""
         records_for_indexes = find_affected_records_for_index(get_all_indexes(virtual=False),
                                                               [[1,100]])
-        self.assertEqual(records_for_indexes['caption'], [10,12, 55, 98])
+        self.assertEqual(records_for_indexes['caption'],
+                         [1, 2, 3, 4, 5, 6, 7, 10, 12, 55, 98])
 
     def test_find_proper_records_for_journal_index(self):
         """bibindex - checks if affected recids are found correctly for journal index"""
         records_for_indexes = find_affected_records_for_index(get_all_indexes(virtual=False),
                                                               [[1,100]])
-        self.assertEqual(records_for_indexes['journal'], [10])
+        self.assertEqual(records_for_indexes['journal'],
+                         [6, 7, 10, 17, 18])
 
     def test_find_proper_records_specified_only_year(self):
         """bibindex - checks if affected recids are found correctly for year index if we specify only year index as input"""
         records_for_indexes = find_affected_records_for_index(["year"], [[1, 100]])
-        self.assertEqual(records_for_indexes["year"], [10, 12, 55])
+        self.assertEqual(records_for_indexes["year"],
+                         [1, 2, 3, 4, 5, 6, 7, 10, 12, 14, 17, 18, 55])
 
     def test_find_proper_records_force_all(self):
         """bibindex - checks if all recids will be assigned to all specified indexes"""
