@@ -559,6 +559,25 @@ class BibIndexItemCountIndexTest(InvenioTestCase):
        as well as occurrences of particular number of copies in test data.
     """
 
+    def setUp(self):
+        index_name = 'itemcount'
+        index_id = get_index_id_from_index_name(index_name)
+        index_tags = get_word_tables([index_name])[0][2]
+
+        query = """SELECT termlist FROM idxWORD%02dR
+                   WHERE id_bibrec=21""" % index_id
+        count = int(deserialize_via_marshal(run_sql(query)[0][0])[0])
+        # crcITEM table wasn't updated before initial indexing
+        # we need to update ItemCount index if count == 0
+        if count == 0:
+            wt = WordTable(index_name=index_name,
+                           index_id=index_id,
+                           fields_to_index=index_tags,
+                           table_name_pattern='idxWORD%02dF',
+                           wordtable_type = CFG_BIBINDEX_INDEX_TABLE_TYPE["Words"],
+                           tag_to_tokenizer_map={})
+            wt.add_recIDs([[1, 100]], 10000)
+
     def test_occurrences_in_itemcount_index_two_copies(self):
         """checks content of itemcount index for records with two copies of a book"""
         word = '2'
