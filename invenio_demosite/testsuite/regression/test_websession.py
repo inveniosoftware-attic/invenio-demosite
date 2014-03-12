@@ -74,13 +74,13 @@ class WebSessionLostYourPasswordTest(InvenioTestCase):
     def test_lost_your_password_for_internal_accounts(self):
         """websession - sending lost password for internal admin account"""
 
-        try_with_account = cfg['CFG_SITE_ADMIN_EMAIL']
+        try_with_account = cfg['CFG_SITE_ADMIN_EMAIL'].encode('utf8')
 
         # click on "send lost password" for cfg['CFG_SITE_ADMIN_EMAIL'] internal account
         browser = Browser()
         browser.open(cfg['CFG_SITE_SECURE_URL'] + "/youraccount/lost")
         browser.select_form(nr=0)
-        browser['p_email'] = try_with_account
+        browser['email'] = try_with_account
         try:
             browser.submit()
         except Exception, e:
@@ -93,7 +93,7 @@ class WebSessionLostYourPasswordTest(InvenioTestCase):
 
 
         # verify the response:
-        expected_response = "Okay, a password reset link has been emailed to " + \
+        expected_response = "A password reset link has been sent to " + \
                             try_with_account
         lost_password_response_body = browser.response().read()
         try:

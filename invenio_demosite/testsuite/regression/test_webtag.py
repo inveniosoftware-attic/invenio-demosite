@@ -21,15 +21,14 @@
 
 from invenio.base.globals import cfg
 from invenio.base.wrappers import lazy_import
+from invenio.ext.sqlalchemy import db
 from invenio.testsuite import \
     InvenioTestCase, \
     make_test_suite, \
     run_test_suite
 from mechanize import Browser
 
-models = lazy_import('invenio.modules.tags:models')
-#FIXME unknown import
-db = lazy_import('invenio.sqlalchemyutils:db')
+models = lazy_import('invenio.modules.tags.models')
 
 
 class WebTagDeletionTest(InvenioTestCase):
@@ -80,7 +79,7 @@ class WebTagUserSettingsTest(InvenioTestCase):
 
         try:
             browser.submit()
-        except Exception, e:
+        except Exception:
             self.fail("Cannot login with nickname={name} password={pw}."\
                 .format(name=username, pw=password))
 
@@ -91,16 +90,16 @@ class WebTagUserSettingsTest(InvenioTestCase):
 
         browser.open(cfg['CFG_SITE_SECURE_URL'] + "/youraccount/edit/WebTagSettings")
         browser.select_form(nr=0)
-        browser['display_tags_private'] = '0'
+        browser.form.find_control(name='display_tags_public').items[0].selected = False
         browser.submit()
 
         browser.open(cfg['CFG_SITE_SECURE_URL'] + "/youraccount/edit/WebTagSettings")
         browser.select_form(nr=0)
 
-        if browser['display_tags_private'] != '0':
-            self.fail("Setting 'display_tags_private' saved as False, but is still True")
+        if browser.form.find_control(name='display_tags_public').items[0].selected == False:
+            self.fail("Setting 'display_tags_public' saved as False, but is still True")
 
-        browser['display_tags_private'] = '1'
+        browser.form.find_control(name='display_tags_public').items[0].selected = True
         browser.submit()
 
 
