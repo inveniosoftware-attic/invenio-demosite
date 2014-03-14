@@ -47,7 +47,7 @@ from invenio.testsuite import make_test_suite, \
                               get_authenticated_mechanize_browser
 from invenio.utils.url import same_urls_p
 
-reindex_word_tables_into_testtables = lazy_import('invenio.bibindex_regression_tests:reindex_word_tables_into_testtables')
+reindex_word_tables_into_testtables = lazy_import('invenio_demosite.testsuite.regression.test_bibindex:reindex_word_tables_into_testtables')
 run_sql = lazy_import('invenio.legacy.dbquery:run_sql')
 GOT_DATEUTIL = lazy_import('invenio.utils.date:GOT_DATEUTIL')
 
@@ -2041,9 +2041,10 @@ class WebSearchSearchEngineWebAPITest(InvenioTestCase):
 
     def test_search_engine_web_api_textmarc_full(self):
         """websearch - search engine Web API for Text MARC output, full"""
+        from invenio.config import CFG_SITE_URL
         from invenio.legacy.bibrecord import get_fieldvalues
         self.assertEqual([],
-                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=higgs&of=tm',
+                         test_web_page_content(CFG_SITE_URL + '/search?p=higgs&of=tm',
                                                expected_text="""\
 000000107 001__ 107
 000000107 003__ SzGeCERN
@@ -2158,7 +2159,7 @@ class WebSearchSearchEngineWebAPITest(InvenioTestCase):
 000000001 909CP $$rCalder, N
 000000001 909CS $$sn$$w200231
 000000001 980__ $$aPICTURE
-""" % {'siteurl': cfg['CFG_SITE_URL'],
+""" % {'siteurl': CFG_SITE_URL,
        'rec_1_rev': get_fieldvalues(1, '005__')[0],
        'rec_85_rev': get_fieldvalues(85, '005__')[0],
        'rec_107_rev': get_fieldvalues(107, '005__')[0]}))
@@ -2212,9 +2213,10 @@ Zaffaroni, A
 
     def test_search_engine_web_api_xmlmarc_full(self):
         """websearch - search engine Web API for XMLMARC output, full"""
+        from invenio.config import CFG_SITE_URL
         from invenio.legacy.bibrecord import get_fieldvalues
         self.assertEqual([],
-                         test_web_page_content(cfg['CFG_SITE_URL'] + '/search?p=higgs&of=xm',
+                         test_web_page_content(CFG_SITE_URL + '/search?p=higgs&of=xm',
                                                expected_text="""\
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Search-Engine-Total-Number-Of-Results: 3 -->
@@ -2644,7 +2646,7 @@ Zaffaroni, A
     <subfield code="a">PICTURE</subfield>
   </datafield>
 </record>
-</collection>""" % {'siteurl': cfg['CFG_SITE_URL'],
+</collection>""" % {'siteurl': CFG_SITE_URL,
                     'rec_1_rev': get_fieldvalues(1, '005__')[0],
                     'rec_85_rev': get_fieldvalues(85, '005__')[0],
                     'rec_107_rev': get_fieldvalues(107, '005__')[0]}))

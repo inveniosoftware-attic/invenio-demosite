@@ -444,8 +444,8 @@ class CollectionData(DataSet):
 
     class theoreticalPhysics(siteCollection):
         id = 11
-        name = 'Theoretical Physics'
-        dbquery = None
+        name = 'Theoretical Physics (TH)'
+        dbquery = 'division:TH'
         names = {
             ('en', 'ln'): u'Theoretical Physics (TH)',
             ('fr', 'ln'): u'Physique Théorique (TH)',
@@ -479,8 +479,8 @@ class CollectionData(DataSet):
 
     class experimentalPhysics(siteCollection):
         id = 12
-        name = 'Experimental Physics'
-        dbquery = None
+        name = 'Experimental Physics (EP)'
+        dbquery = 'division:EP'
         names = {
             ('en', 'ln'): u'Experimental Physics (EP)',
             ('fr', 'ln'): u'Physique Expérimentale (EP)',
