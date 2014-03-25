@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 ##
 ## This file is part of Invenio.
-## Copyright (C) 2013, 2014 CERN.
+## Copyright (C) 2014 CERN.
 ##
 ## Invenio is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License as
@@ -18,14 +18,15 @@
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
 
-def get_number_of_comments(recid):
-    """
-    Returns number of comments for given record.
+def util_merge_authors(self):
+    if self.get('_first_author'):
+        authors = [self.get('_first_author')]
+    else:
+        authors = []
 
-    :param recid:
+    if isinstance(self.get('_additional_authors', []), list):
+        authors.extend(self.get('_additional_authors', []))
+    else:
+        authors.append(self.get('_additional_authors'))
 
-    :return: Number of comments
-    """
-    from invenio.legacy.webcomment.adminlib import get_nb_comments
-    if recid:
-        return get_nb_comments(recid)
+    return authors
