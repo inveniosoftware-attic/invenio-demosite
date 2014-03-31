@@ -21,13 +21,15 @@ notifications:
   email: false
 
 services:
-  - mysql # will start mysqld
-  - rabbitmq # will start rabbitmq-server
-  - redis # will start memcached
+  - mysql
+  - rabbitmq
+  - redis
+
+language: python
 
 python:
-  - "2.7"
   - "2.6"
+  - "2.7"
 
 install:
   - "sudo apt-get update"
@@ -35,17 +37,13 @@ install:
   - "sudo a2enmod actions"
   - "sudo a2enmod version"
   - "sudo a2enmod rewrite"
-  - "sudo a2enmod ssl || echo ':('" # enable SSL module
+  - "sudo a2enmod ssl || echo ':('"  # enable SSL module
   - "sudo a2enmod xsendfile || echo ':('"
   - "sudo mkdir -p /etc/apache2/ssl"
-  - "mkdir -p /home/travis/.virtualenvs/invenio/var/tmp/"
+  - "mkdir -p $VIRTUAL_ENV/var/tmp/"
   - "sudo /usr/sbin/make-ssl-cert /usr/share/ssl-cert/ssleay.cnf /etc/apache2/ssl/apache.pem"
-  - "travis_retry sudo pip install --upgrade virtualenvwrapper"
-  - ". `which virtualenvwrapper.sh`"
-  - "mkvirtualenv invenio"
-  - "workon invenio"
   - "travis_retry pip install nose"
-  - "travis_retry pip install . --process-dependency-links --allow-all-external > /dev/null"
+  - "travis_retry pip install . --quiet --process-dependency-links --allow-all-external"
   - "inveniomanage config create secret-key"
   - "inveniomanage config set CFG_SITE_URL http://localhost"
   - "inveniomanage config set CFG_SITE_SECURE_URL https://localhost"
@@ -56,8 +54,8 @@ before_script:
   - "inveniomanage collect"
   - "inveniomanage apache create-config"
   - "sudo /usr/sbin/a2dissite default || echo ':('"
-  - "sudo mv /home/travis/.virtualenvs/invenio/var/invenio.base-instance/apache/invenio-apache-vhost.conf /etc/apache2/sites-enabled/invenio"
-  - "sudo mv /home/travis/.virtualenvs/invenio/var/invenio.base-instance/apache/invenio-apache-vhost-ssl.conf /etc/apache2/sites-enabled/invenio-ssl"
+  - "sudo mv $VIRTUAL_ENV/var/invenio.base-instance/apache/invenio-apache-vhost.conf /etc/apache2/sites-enabled/invenio"
+  - "sudo mv $VIRTUAL_ENV/var/invenio.base-instance/apache/invenio-apache-vhost-ssl.conf /etc/apache2/sites-enabled/invenio-ssl"
   - "inveniomanage database init --yes-i-know"
   - "inveniomanage database create"
   - "sudo apachectl configtest && sudo service apache2 restart || echo 'Apache failed ...'"
