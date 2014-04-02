@@ -18,6 +18,7 @@
 ## 59 Temple Place, Suite 330, Boston, MA 02D111-1307, USA.
 
 PACKAGES = [
-    "invenio_demosite",
+    "invenio_demosite.base",
+    "invenio_demosite.modules.*",
     "invenio.modules.*",
 ]
