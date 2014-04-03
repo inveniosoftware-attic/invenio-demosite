@@ -20,7 +20,7 @@
 from __future__ import absolute_import, print_function
 
 from wtforms import validators
-
+from werkzeug.local import LocalProxy
 from invenio.base.i18n import _, language_list_long
 from datetime import date
 from invenio.modules.deposit.types import SimpleRecordDeposition
@@ -226,7 +226,8 @@ class ArticleForm(WebDepositForm):
     )
 
     language = fields.SelectField(
-        choices=lambda: language_list_long(enabled_langs_only=False),
+        choices=LocalProxy(lambda: language_list_long(
+            enabled_langs_only=False)),
         default='english',
         icon='fa fa-globe fa-fw',
         widget_classes='form-control',
