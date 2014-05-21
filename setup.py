@@ -43,7 +43,7 @@ setup(
     zip_safe=False,
     platforms='any',
     install_requires=[
-        'Invenio>=1.9999.2,<1.9999.3',
+        'Invenio>=1.9999.3,<1.9999.4',
     ],
     extras_require={
         'development': [

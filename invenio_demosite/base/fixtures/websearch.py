@@ -19,7 +19,7 @@
 
 from invenio.config import CFG_SITE_NAME
 from fixture import DataSet
-from invenio.modules.search.fixtures import FormatData, FieldData
+from invenio.modules.search.fixtures import FormatData, FieldData, CollectionData
 from invenio.modules.search import fixtures as default
 
 
@@ -3872,6 +3872,28 @@ class CollectionFieldFieldvalueData(DataSet):
         score = 1
         score_fieldvalue = 0
 
+
+class FacetCollectionData(DataSet):
+
+    class FacetCollection_1:
+        id = 1
+        id_collection = CollectionData.siteCollection.ref('id')
+        order = 1
+        facet_name = 'collection'
+
+    class FacetCollection_2:
+        id = 2
+        id_collection = CollectionData.siteCollection.ref('id')
+        order = 2
+        facet_name = 'author'
+
+    class FacetCollection_3:
+        id = 3
+        id_collection = CollectionData.siteCollection.ref('id')
+        order = 3
+        facet_name = 'year'
+
+
 __all__ = (
     'ExternalcollectionData',
     'CollectionData',
@@ -3884,4 +3906,5 @@ __all__ = (
     'CollectionPortalboxData',
     'CollectionFormatData',
     'CollectionFieldFieldvalueData',
+    'FacetCollectionData',
 )
