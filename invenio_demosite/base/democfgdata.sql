@@ -62,11 +62,11 @@ INSERT INTO collection VALUES (30, 'ISOLDE Papers', '980:"ISOLDEPAPER"', NULL, N
 INSERT INTO collection VALUES (31, 'ISOLDE Internal Notes', '980:"ISOLDENOTE"', NULL, NULL);
 INSERT INTO collection VALUES (32, 'Drafts', '980:"DRAFT"', NULL, NULL);
 INSERT INTO collection VALUES (33,'Videos','980:"VIDEO"',NULL,NULL);
-INSERT INTO collection VALUES (34, 'Authority Records', 'collection:AUTHORITY', null, null);
-INSERT INTO collection VALUES (35, 'Authority Author', 'collection:AUTHOR', null, null);
-INSERT INTO collection VALUES (36, 'Authority Institution', 'collection:INSTITUTION', null, null);
-INSERT INTO collection VALUES (37, 'Authority Journal', 'collection:JOURNAL', null, null);
-INSERT INTO collection VALUES (38, 'Authority Subject', 'collection:SUBJECT', null, null);
+INSERT INTO collection VALUES (34, 'Records', 'collection:AUTHORITY', null, null);
+INSERT INTO collection VALUES (35, 'Author', 'collection:AUTHOR', null, null);
+INSERT INTO collection VALUES (36, 'Institution', 'collection:INSTITUTION', null, null);
+INSERT INTO collection VALUES (37, 'Journal', 'collection:JOURNAL', null, null);
+INSERT INTO collection VALUES (38, 'Subject', 'collection:SUBJECT', null, null);
 
 INSERT INTO collectiondetailedrecordpagetabs VALUES (8, 'usage;comments;metadata');
 INSERT INTO collectiondetailedrecordpagetabs VALUES (19, 'usage;comments;metadata');
@@ -598,8 +598,8 @@ INSERT INTO collectionname VALUES (33,'en','ln','Videos');
 INSERT INTO collectionname VALUES (33,'fr','ln','Vidéos');
 INSERT INTO collectionname VALUES (33,'it','ln','Filmati');
 
-INSERT INTO collectionname VALUES (34,'en','ln','Authority Records');
-INSERT INTO collectionname VALUES (34,'fr','ln','Notices d''autorité');
+INSERT INTO collectionname VALUES (34,'en','ln','Authorities');
+INSERT INTO collectionname VALUES (34,'fr','ln','Autorités');
 INSERT INTO collectionname VALUES (34,'pl','ln','Rekordy kontrolne');
 
 INSERT INTO collectionname VALUES (35,'en','ln','Authors');

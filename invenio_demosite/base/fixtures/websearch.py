@@ -400,6 +400,10 @@ class CollectionData(DataSet):
             ('hu', 'ln'): u'CERN részlegek',
             ('af', 'ln'): u'CERN Afdelings',
         }
+        boxes = {
+            ('en', 'r'): 'Browse by division:',
+            ('fr', 'r'): 'Naviguer par division:',
+        }
 
     class CERNExperiments(siteCollection):
         id = 10
@@ -849,17 +853,21 @@ class CollectionData(DataSet):
             ('fr', 'ln'): u'Vidéos',
             ('it', 'ln'): u'Filmati',
         }
+        boxes = {
+            ('en', 'l'): 'Latest videos:',
+            ('fr', 'l'): 'Dernières vidéos:',
+        }
         name = u'Videos'
 
     class Collection_34:
         id = 34
         dbquery = u'collection:AUTHORITY'
         names = {
-            ('en','ln'): u'Authority Records',
-            ('fr','ln'): u'Notices d\'autorité',
+            ('en','ln'): u'Authorities',
+            ('fr','ln'): u'Autorités',
             ('pl','ln'): u'Rekordy kontrolne',
         }
-        name = u'Authority Records'
+        name = u'Records'
 
     class Collection_35:
         id = 35
@@ -869,7 +877,7 @@ class CollectionData(DataSet):
             ('fr','ln'): u'Auteurs',
             ('pl','ln'): u'Autorzy',
         }
-        name = u'Authority Author'
+        name = u'Author'
 
     class Collection_36:
         id = 36
@@ -879,7 +887,7 @@ class CollectionData(DataSet):
             ('fr','ln'): u'Institutions',
             ('pl','ln'): u'Instytucje',
         }
-        name = u'Authority Institution'
+        name = u'Institution'
 
     class Collection_37:
         id = 37
@@ -889,7 +897,7 @@ class CollectionData(DataSet):
             ('fr','ln'): u'Journals',
             ('pl','ln'): u'Czasopisma',
         }
-        name = u'Authority Journal'
+        name = u'Journal'
 
     class Collection_38:
         id = 38
@@ -899,7 +907,7 @@ class CollectionData(DataSet):
             ('fr','ln'): u'Sujets',
             ('pl','ln'): u'Tematy',
         }
-        name = u'Authority Subject'
+        name = u'Subject'
 
 
 class CollectionCollectionData(DataSet):
