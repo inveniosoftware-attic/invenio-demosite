@@ -15,76 +15,36 @@
 ## along with Invenio; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
-"""
-Invenio Demosite
-----------------
+"""Example demosite repository."""
 
-Example demosite repository.
-"""
-from __future__ import print_function
-
-import re
-import glob
-
+import os
 from setuptools import setup, find_packages
 
 
-def match_feature_name(filename):
-    return re.match(r".*requirements-(\w+).txt$", filename).group(1)
+# Load __version__, should not be done using import.
+# http://python-packaging-user-guide.readthedocs.org/en/latest/tutorial.html
+g = {}
+with open(os.path.join('invenio_demosite', 'version.py'), 'rt') as fp:
+    exec(fp.read(), g)
+version = g['__version__']
 
-
-def match_egg_name_and_version(dependency_link, version='=='):
-    return version.join(
-        re.sub(
-            r'.+://.*[@#&]egg=([^&]*)&?.*$',
-            r'\1',
-            dependency_link
-        ).rsplit('-', 1))
-
-
-def read_requirements(filename='requirements.txt'):
-    req = []
-    dep = []
-    with open(filename, 'r') as f:
-        for line in f.readlines():
-            line = line.strip('\n')
-            if line.startswith('#'):
-                continue
-            if '://' in line:
-                dep.append(str(line))
-                req.append(match_egg_name_and_version(str(line)))
-            else:
-                req.append(str(line))
-    return req, dep
-
-install_requires, dependency_links = read_requirements()
-
-# Finds all `requirements-*.txt` files and prepares dictionary with extra
-# requirements (NOTE: no links are allowed here!)
-extras_require = dict(map(
-    lambda filename: (match_feature_name(filename),
-                      read_requirements(filename)[0]),
-    glob.glob('requirements-*.txt')))
-
-packages = find_packages(exclude=['docs'])
 
 setup(
-    name='Invenio Demosite',
-    version='1.9999-dev',
+    name='Invenio-Demosite',
+    version=version,
     url='https://github.com/inveniosoftware/invenio-demosite',
     license='GPLv2',
     author='CERN',
     author_email='info@invenio-software.org',
-    description='Digital library software',
-    long_description=__doc__,
-    packages=packages,
-    package_dir={'invenio_docs': 'docs'},
+    description=__doc__,
+    long_description=open('README.rst', 'rt').read(),
+    packages=find_packages(),
     include_package_data=True,
     zip_safe=False,
     platforms='any',
-    install_requires=install_requires,
-    dependency_links=dependency_links,
-    extras_require=extras_require,
+    install_requires=[
+        'Invenio>=1.9999',
+    ],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
@@ -96,8 +56,12 @@ setup(
     ],
     entry_points={
         'invenio.config': [
-            "demosite = invenio_demosite.config"
+            'demosite = invenio_demosite.config'
         ]
     },
-    test_suite='invenio_demosite.testsuite.suite'
+    test_suite='nose.collector',
+    tests_require=[
+        'nose',
+        'Flask-Testing'
+    ]
 )

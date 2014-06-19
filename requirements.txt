@@ -1,1 +1,34 @@
-git+https://github.com/jirikuncar/invenio@pu#egg=Invenio-1.9999
+# START
+
+# from invenio/requirements.txt
+#
+-e git+git://github.com/lnielsen-cern/dictdiffer.git#egg=dictdiffer
+-e hg+https://code.google.com/p/py-editdist/#egg=editdist
+-e git+https://github.com/david-e/flask-admin.git@bootstrap3#egg=Flask-Admin
+-e git+https://github.com/miracle2k/flask-assets.git#egg=Flask-Assets-dev
+-e git+https://github.com/inveniosoftware/flask-breadcrumbs.git#egg=Flask-Breadcrumbs
+-e git+https://github.com/greut/Flask-Collect.git@setup-py-fix#egg=Flask-Collect-dev
+-e git+https://github.com/inveniosoftware/flask-menu.git#egg=Flask-Menu
+-e git+https://github.com/inveniosoftware/flask-registry.git#egg=Flask-Registry
+-e git+git://github.com/jirikuncar/flask-sso.git#egg=flask-sso
+-e git+https://github.com/mitsuhiko/flask-sqlalchemy#egg=Flask-SQLAlchemy-dev
+https://www.reportlab.com/ftp/pyRXP-1.16-daily-unix.tar.gz#egg=pyRXP
+-e git+https://github.com/lnielsen-cern/setuptools-bower.git#egg=setuptools-bower
+-e git+git://github.com/romanchyla/workflow.git@e41299579501704b1486c72cc2509a9f82e63ea6#egg=workflow
+
+# from invenio/setup.py,
+#
+# They were pulled by the above packages and are specified in invenio's setup.py
+# We will be able to remove them once the requirements.txt of Invenio is made
+# history, I hope.
+#
+WTForms>=1.0.5,<2.0
+SQLAlchemy==0.8.3
+# [img]
+qrcode
+Pillow
+# END
+
+-e git+https://github.com/inveniosoftware/invenio@pu#egg=Invenio-dev
+
+-e .
