@@ -61,12 +61,12 @@ INSERT INTO collection VALUES (29, 'ALEPH Theses', '980:"ALEPHTHESIS"', NULL, NU
 INSERT INTO collection VALUES (30, 'ISOLDE Papers', '980:"ISOLDEPAPER"', NULL, NULL);
 INSERT INTO collection VALUES (31, 'ISOLDE Internal Notes', '980:"ISOLDENOTE"', NULL, NULL);
 INSERT INTO collection VALUES (32, 'Drafts', '980:"DRAFT"', NULL, NULL);
-INSERT INTO collection VALUES (33,'Videos','980:"VIDEO"',NULL,NULL);
-INSERT INTO collection VALUES (34, 'Records', 'collection:AUTHORITY', null, null);
-INSERT INTO collection VALUES (35, 'Author', 'collection:AUTHOR', null, null);
-INSERT INTO collection VALUES (36, 'Institution', 'collection:INSTITUTION', null, null);
-INSERT INTO collection VALUES (37, 'Journal', 'collection:JOURNAL', null, null);
-INSERT INTO collection VALUES (38, 'Subject', 'collection:SUBJECT', null, null);
+INSERT INTO collection VALUES (33, 'Videos','980:"VIDEO"',NULL,NULL);
+INSERT INTO collection VALUES (34, 'Authorities', 'collection:AUTHORITY', null, null);
+INSERT INTO collection VALUES (35, 'People', 'collection:AUTHOR', null, null);
+INSERT INTO collection VALUES (36, 'Institutes', 'collection:INSTITUTE', null, null);
+INSERT INTO collection VALUES (37, 'Journals', 'collection:JOURNAL', null, null);
+INSERT INTO collection VALUES (38, 'Subjects', 'collection:SUBJECT', null, null);
 
 INSERT INTO collectiondetailedrecordpagetabs VALUES (8, 'usage;comments;metadata');
 INSERT INTO collectiondetailedrecordpagetabs VALUES (19, 'usage;comments;metadata');
@@ -602,12 +602,12 @@ INSERT INTO collectionname VALUES (34,'en','ln','Authorities');
 INSERT INTO collectionname VALUES (34,'fr','ln','Autorités');
 INSERT INTO collectionname VALUES (34,'pl','ln','Rekordy kontrolne');
 
-INSERT INTO collectionname VALUES (35,'en','ln','Authors');
+INSERT INTO collectionname VALUES (35,'en','ln','People');
 INSERT INTO collectionname VALUES (35,'fr','ln','Auteurs');
 INSERT INTO collectionname VALUES (35,'pl','ln','Autorzy');
 
-INSERT INTO collectionname VALUES (36,'en','ln','Institutions');
-INSERT INTO collectionname VALUES (36,'fr','ln','Institutions');
+INSERT INTO collectionname VALUES (36,'en','ln','Institutes');
+INSERT INTO collectionname VALUES (36,'fr','ln','Instituts');
 INSERT INTO collectionname VALUES (36,'pl','ln','Instytucje');
 
 INSERT INTO collectionname VALUES (37,'en','ln','Journals');
@@ -617,6 +617,12 @@ INSERT INTO collectionname VALUES (37,'pl','ln','Czasopisma');
 INSERT INTO collectionname VALUES (38,'en','ln','Subjects');
 INSERT INTO collectionname VALUES (38,'fr','ln','Sujets');
 INSERT INTO collectionname VALUES (38,'pl','ln','Tematy');
+
+INSERT INTO collectionboxname VALUES (33,'en','l','Latest videos:');
+INSERT INTO collectionboxname VALUES (33,'fr','l','Dernières vidéos:');
+INSERT INTO collectionboxname VALUES (9,'en','r','Browse by division:');
+INSERT INTO collectionboxname VALUES (9,'fr','r','Naviguer par division:');
+
 
 INSERT INTO collection_collection VALUES (1,15,'r',60);
 INSERT INTO collection_collection VALUES (1,16,'r',40);
@@ -1201,7 +1207,7 @@ INSERT INTO sbmFIELD VALUES ('SBIDEMOART',1,6,'DEMOART_LANG','<br /><br /><span 
 INSERT INTO sbmFIELD VALUES ('SBIDEMOART',1,7,'DEMOART_DATE','<br /><br /><span style=\"color: red;\">*</span>Date of Document: <i>(dd/mm/yyyy)</i>&nbsp;','M','Date of Document','DatCheckNew','2008-03-07','2008-03-07',NULL,NULL);
 INSERT INTO sbmFIELD VALUES ('SBIDEMOART',1,8,'DEMOART_KW','<br /><br />Keywords/Key-phrases: <i>(one per line)</i><br />','O','Keywords/Key-phrases','','2008-03-07','2008-03-07',NULL,NULL);
 INSERT INTO sbmFIELD VALUES ('SBIDEMOART',1,9,'DEMOART_NOTE','<br /><br />Additional Notes or Comments:<br />','O','Notes/Comments','','2008-03-07','2008-03-07',NULL,NULL);
-INSERT INTO sbmFIELD VALUES ('SBIDEMOART',1,10,'DEMOART_FILE','<br><br><span style=\"color: red;\">*</span>Enter the full path to the source file to upload:<br />','M','Source File','','2008-03-07','2008-03-07',NULL,NULL);
+INSERT INTO sbmFIELD VALUES ('SBIDEMOART',1,10,'DEMOART_FILE','<br/><br/>Choose file(s) to upload:<br />','O','Source File','','2008-03-07','2012-11-05',NULL,NULL);
 INSERT INTO sbmFIELD VALUES ('SBIDEMOART',1,11,'DEMOART_END','<br /><br /></td></tr></table><br />','O','','','2008-03-07','2008-03-07',NULL,NULL);
 INSERT INTO sbmFIELD VALUES ('MBIDEMOART',1,1,'DEMOART_RN','<table width=\"100%\" bgcolor=\"#D3E3E2\" align=\"center\" cellspacing=\"2\" cellpadding=\"2\" border=\"1\"><tr><td align=\"left\"><br /><b>Modify an article\'s bibliographic information:</b><br /><br /><span style=\'color: red;\'>*</span>Document Reference Number:&nbsp;&nbsp;','M','Reference Number','','2008-03-07','2008-03-07',NULL,NULL);
 INSERT INTO sbmFIELD VALUES ('MBIDEMOART',1,2,'DEMOART_CHANGE','<br /><br /><span style=\"color: red;\">*</span>Choose the fields to be modified:<br />','M','Fields to Modify','','2008-03-07','2008-03-07',NULL,NULL);
@@ -1285,11 +1291,11 @@ INSERT INTO sbmFIELDDESC VALUES ('DEMOTHE_CHANGE',NULL,'','S',NULL,NULL,NULL,NUL
 INSERT INTO sbmFIELDDESC VALUES ('DEMOTHE_CONT',NULL,'','D',NULL,NULL,NULL,NULL,NULL,'<div align=\"center\">\r\n<input type=\"button\" class=\"adminbutton\" width=\"400\" height=\"50\" name=\"endS\" value=\"Continue\" onclick=\"finish();\" />\r\n</div>','2008-03-05','2008-03-05',NULL,NULL,0);
 INSERT INTO sbmFIELDDESC VALUES ('DEMOART_ABS',NULL,'520__a','T',NULL,12,80,NULL,NULL,NULL,'2008-03-07','2008-03-07','<br />Abstract:<br />',NULL,0);
 INSERT INTO sbmFIELDDESC VALUES ('DEMOART_AU',NULL,'100__a','T',NULL,6,60,NULL,NULL,NULL,'2008-03-07','2008-03-07','<br />Authors: <i>(one per line)</i><br />',NULL,0);
-INSERT INTO sbmFIELDDESC VALUES ('DEMOART_CHANGE',NULL,'','S',NULL,NULL,NULL,NULL,NULL,'<select name=\"DEMOART_CHANGE[]\" size=\"8\" multiple>\r\n <option value=\"Select:\">Select:</option>\r\n <option value=\"DEMOART_REP\">Other Report Numbers</option>\r\n <option value=\"DEMOART_TITLE\">Title</option>\r\n <option value=\"DEMOART_AU\">Author(s)</option>\r\n <option value=\"DEMOART_LANG\">Language</option>\r\n <option value=\"DEMOART_KW\">Keywords</option>\r\n <option value=\"DEMOART_ABS\">Abstract</option>\r\n <option value=\"DEMOART_NUMP\">Number of Pages</option>\r\n</select>','2008-03-07','2008-03-07',NULL,NULL,0);
+INSERT INTO sbmFIELDDESC VALUES ('DEMOART_CHANGE',NULL,'','S',NULL,NULL,NULL,NULL,NULL,'<select name=\"DEMOART_CHANGE[]\" size=\"9\" multiple>\r\n <option value=\"Select:\">Select:</option>\r\n <option value=\"DEMOART_REP\">Other Report Numbers</option>\r\n <option value=\"DEMOART_TITLE\">Title</option>\r\n <option value=\"DEMOART_AU\">Author(s)</option>\r\n <option value=\"DEMOART_LANG\">Language</option>\r\n <option value=\"DEMOART_KW\">Keywords</option>\r\n <option value=\"DEMOART_ABS\">Abstract</option>\r\n <option value=\"DEMOART_NUMP\">Number of Pages</option>\r\n <option value=\"DEMOART_FILE\">File(s)</option>\r\n</select>','2008-03-07','2008-03-07',NULL,NULL,0);
 INSERT INTO sbmFIELDDESC VALUES ('DEMOART_CONT',NULL,'','D',NULL,NULL,NULL,NULL,NULL,'<div align=\"center\">\r\n<input type=\"button\" class=\"adminbutton\" width=\"400\" height=\"50\" name=\"endS\" value=\"Continue\" onclick=\"finish();\" />\r\n</div>','2008-03-07','2008-03-07',NULL,NULL,0);
 INSERT INTO sbmFIELDDESC VALUES ('DEMOART_DATE',NULL,'269__c','I',10,NULL,NULL,NULL,NULL,NULL,'2008-03-07','2008-03-07','<br />Date:&nbsp;',NULL,0);
 INSERT INTO sbmFIELDDESC VALUES ('DEMOART_END',NULL,'','D',NULL,NULL,NULL,NULL,NULL,'<div align=\"center\">\r\n<INPUT TYPE=\"button\" class=\"adminbutton\" name=\"endS\" width=\"400\" height=\"50\" value=\"Finish Submission\" onclick=\"finish();\">\r\n</div>','2008-03-07','2008-03-07',NULL,NULL,0);
-INSERT INTO sbmFIELDDESC VALUES ('DEMOART_FILE',NULL,'','F',60,NULL,NULL,NULL,NULL,NULL,'2008-03-07','2008-03-07',NULL,NULL,0);
+INSERT INTO sbmFIELDDESC VALUES ('DEMOART_FILE',NULL,'','R',60,NULL,NULL,NULL,NULL,'\"\"\"\r\nThis is an example of element that creates a file upload interface.\r\nClone it, customize it and integrate it into your submission. Then add function \r\n\'Move_Uploaded_Files_to_Storage\' to your submission functions list, in order for files \r\nuploaded with this interface to be attached to the record. More information in \r\nthe WebSubmit admin guide.\r\n\"\"\"\r\nimport os\r\nfrom invenio.bibdocfile_managedocfiles import create_file_upload_interface\r\nfrom invenio.websubmit_functions.Shared_Functions import ParamFromFile\r\n\r\nindir = ParamFromFile(os.path.join(curdir, \'indir\'))\r\ndoctype = ParamFromFile(os.path.join(curdir, \'doctype\'))\r\naccess = ParamFromFile(os.path.join(curdir, \'access\'))\r\ntry:\r\n    sysno = int(ParamFromFile(os.path.join(curdir, \'SN\')).strip())\r\nexcept:\r\n    sysno = -1\r\nln = ParamFromFile(os.path.join(curdir, \'ln\'))\r\n\r\n\"\"\"\r\nRun the following to get the list of parameters of function \'create_file_upload_interface\':\r\necho -e \'from invenio.bibdocfile_managedocfiles import create_file_upload_interface as f\\nprint f.__doc__\' | python\r\n\"\"\"\r\ntext = create_file_upload_interface(recid=sysno,\r\n                                 print_outside_form_tag=False,\r\n                                 include_headers=True,\r\n                                 ln=ln,\r\n                                 doctypes_and_desc=[(\'main\',\'Main document\'),\r\n                                                    (\'additional\',\'Figure, schema, etc.\')],\r\n                                 can_revise_doctypes=[\'*\'],\r\n                                 can_describe_doctypes=[\'main\'],\r\n                                 can_delete_doctypes=[\'additional\'],\r\n                                 can_rename_doctypes=[\'main\'],\r\n                                 sbm_indir=indir, sbm_doctype=doctype, sbm_access=access)[1]\r\n','2008-03-07','2012-11-02',NULL,NULL,0);
 INSERT INTO sbmFIELDDESC VALUES ('DEMOART_KW',NULL,'6531_a','T',NULL,4,50,NULL,NULL,NULL,'2008-03-07','2008-03-07','<br /><br />Keywords:<br /><i>(one keyword/key-phrase per line)</i><br />',NULL,0);
 INSERT INTO sbmFIELDDESC VALUES ('DEMOART_LANG',NULL,'041__a','S',NULL,NULL,NULL,NULL,NULL,'<SELECT name=\"DEMOART_LANG\">\r\n        <option value=\"Select:\">Select:</option>\r\n        <option value=\"eng\">English</option>\r\n        <option value=\"fre\">French</option>\r\n        <option value=\"ger\">German</option>\r\n        <option value=\"dut\">Dutch</option>\r\n        <option value=\"ita\">Italian</option>\r\n        <option value=\"spa\">Spanish</option>\r\n        <option value=\"por\">Portuguese</option>\r\n        <option value=\"gre\">Greek</option>\r\n        <option value=\"slo\">Slovak</option>\r\n        <option value=\"cze\">Czech</option>\r\n        <option value=\"hun\">Hungarian</option>\r\n        <option value=\"pol\">Polish</option>\r\n        <option value=\"nor\">Norwegian</option>\r\n        <option value=\"swe\">Swedish</option>\r\n        <option value=\"fin\">Finnish</option>\r\n        <option value=\"rus\">Russian</option>\r\n</SELECT>','2008-03-07','2008-03-07','<br /><br />Select the Language:&nbsp;',NULL,0);
 INSERT INTO sbmFIELDDESC VALUES ('DEMOART_NOTE',NULL,'500__a','T',NULL,6,60,NULL,NULL,NULL,'2008-03-07','2008-03-07','<br /><br />Additional Comments or Notes:<br />',NULL,0);
@@ -1400,7 +1406,8 @@ INSERT INTO sbmFUNCTIONS VALUES ('MBI','DEMOTHE','Make_Modify_Record',40,2);
 INSERT INTO sbmFUNCTIONS VALUES ('MBI','DEMOTHE','Is_Original_Submitter',30,2);
 INSERT INTO sbmFUNCTIONS VALUES ('MBI','DEMOTHE','Get_Recid',20,2);
 INSERT INTO sbmFUNCTIONS VALUES ('MBI','DEMOTHE','Get_Report_Number',10,2);
-INSERT INTO sbmFUNCTIONS VALUES ('SBI','DEMOART','Print_Success',50,1);
+INSERT INTO sbmFUNCTIONS VALUES ('SBI','DEMOART','Print_Success',60,1);
+INSERT INTO sbmFUNCTIONS VALUES ('SBI','DEMOART','Move_Uploaded_Files_to_Storage',50,1);
 INSERT INTO sbmFUNCTIONS VALUES ('SBI','DEMOART','Insert_Record',40,1);
 INSERT INTO sbmFUNCTIONS VALUES ('SBI','DEMOART','Make_Record',30,1);
 INSERT INTO sbmFUNCTIONS VALUES ('SBI','DEMOART','Report_Number_Generation',20,1);
@@ -1410,9 +1417,10 @@ INSERT INTO sbmFUNCTIONS VALUES ('MBI','DEMOART','Create_Modify_Interface',40,1)
 INSERT INTO sbmFUNCTIONS VALUES ('MBI','DEMOART','Get_Recid',20,1);
 INSERT INTO sbmFUNCTIONS VALUES ('MBI','DEMOART','Is_Original_Submitter',30,1);
 INSERT INTO sbmFUNCTIONS VALUES ('MBI','DEMOART','Get_Report_Number',10,1);
-INSERT INTO sbmFUNCTIONS VALUES ('MBI','DEMOART','Move_to_Done',80,2);
-INSERT INTO sbmFUNCTIONS VALUES ('MBI','DEMOART','Send_Modify_Mail',70,2);
-INSERT INTO sbmFUNCTIONS VALUES ('MBI','DEMOART','Print_Success_MBI',60,2);
+INSERT INTO sbmFUNCTIONS VALUES ('MBI','DEMOART','Move_to_Done',90,2);
+INSERT INTO sbmFUNCTIONS VALUES ('MBI','DEMOART','Send_Modify_Mail',80,2);
+INSERT INTO sbmFUNCTIONS VALUES ('MBI','DEMOART','Print_Success_MBI',70,2);
+INSERT INTO sbmFUNCTIONS VALUES ('MBI','DEMOART','Move_Uploaded_Files_to_Storage',60,2);
 INSERT INTO sbmFUNCTIONS VALUES ('MBI','DEMOART','Insert_Modify_Record',50,2);
 INSERT INTO sbmFUNCTIONS VALUES ('MBI','DEMOART','Make_Modify_Record',40,2);
 INSERT INTO sbmFUNCTIONS VALUES ('MBI','DEMOART','Is_Original_Submitter',30,2);
@@ -1605,6 +1613,7 @@ INSERT INTO sbmPARAMETERS VALUES ('DEMOART','sourceTemplate','DEMOART.tpl');
 INSERT INTO sbmPARAMETERS VALUES ('DEMOART','status','ADDED');
 INSERT INTO sbmPARAMETERS VALUES ('DEMOART','titleFile','DEMOART_TITLE');
 INSERT INTO sbmPARAMETERS VALUES ('DEMOART','yeargen','AUTO');
+INSERT INTO sbmPARAMETERS VALUES ('DEMOART','createIconDoctypes','*');
 INSERT INTO sbmPARAMETERS VALUES ('DEMOBOO','autorngen','Y');
 INSERT INTO sbmPARAMETERS VALUES ('DEMOBOO','counterpath','lastid_DEMOBOO_<PA>yy</PA>');
 INSERT INTO sbmPARAMETERS VALUES ('DEMOBOO','edsrn','DEMOBOO_RN');
@@ -1864,6 +1873,27 @@ INSERT INTO collection_externalcollection (id_collection,id_externalcollection,t
 INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (6,19,0);
 INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (6,20,0);
 
+INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (7,1,1);
+INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (7,2,1);
+INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (7,3,1);
+INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (7,4,1);
+INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (7,5,1);
+INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (7,6,1);
+INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (7,7,1);
+INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (7,8,1);
+INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (7,9,1);
+INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (7,10,1);
+INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (7,11,1);
+INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (7,12,1);
+INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (7,13,1);
+INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (7,14,1);
+INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (7,15,1);
+INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (7,16,1);
+INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (7,17,1);
+INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (7,18,1);
+INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (7,19,0);
+INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (7,20,0);
+
 INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (8,1,1);
 INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (8,2,1);
 INSERT INTO collection_externalcollection (id_collection,id_externalcollection,type) VALUES (8,3,1);
@@ -2104,6 +2134,7 @@ INSERT INTO knwKB VALUES ('5','INDEX-SYNONYM-TITLE','Knowledge base of title wor
 INSERT INTO knwKB VALUES ('6','DBCOLLID2OPENGRAPHTYPE','Maps collection 980 field to an Open Graph Type', NULL);
 INSERT INTO knwKB VALUES ('7','LICENSE2URL','Map a license name to its URL', NULL);
 INSERT INTO knwKB VALUES ('8','DBCOLLID2TWITTERCARDTYPE','Maps collection 980 field to a Twitter Card type', NULL);
+INSERT INTO knwKB VALUES ('9','FAQ','Map (whitespace-separated) keywords to an answer (label|url), to be used in FAQ search service', NULL);
 
 INSERT INTO knwKBRVAL (m_key,m_value,id_knwKB) VALUES ('ARTICLE','Published Article', '1');
 INSERT INTO knwKBRVAL (m_key,m_value,id_knwKB) VALUES ('PREPRINT','Preprint', '1');
@@ -2461,6 +2492,7 @@ INSERT INTO knwKBRVAL (m_key,m_value,id_knwKB) VALUES ('CC-BY-NC-SA-3.0','http:/
 INSERT INTO knwKBRVAL (m_key,m_value,id_knwKB) VALUES ('CC-BY-NC-ND-3.0','http://creativecommons.org/licenses/by-nc-nd/3.0/', '7');
 INSERT INTO knwKBRVAL (m_key,m_value,id_knwKB) VALUES ('VIDEO','player', '8');
 INSERT INTO knwKBRVAL (m_key,m_value,id_knwKB) VALUES ('PICTURE','photo', '8');
+INSERT INTO knwKBRVAL (m_key,m_value,id_knwKB) VALUES ('search syntax find looking help','Search tips|/help/search-tips', '9');
 
 -- crcLIBRARY demo data:
 INSERT INTO crcLIBRARY (name, address, email, phone, type, notes) VALUES ('Atlantis Main Library', 'CH-1211 Geneva 23', 'atlantis@cds.cern.ch', '1234567', 'main', '');

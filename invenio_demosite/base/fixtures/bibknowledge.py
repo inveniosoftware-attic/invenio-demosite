@@ -64,6 +64,17 @@ class KnwKBData(DataSet):
         kbtype = None
         id = 7
 
+    class KnwKB_8:
+        name = u'DBCOLLID2TWITTERCARDTYPE'
+        description = u'Maps collection 980 field to a Twitter Card type'
+        kbtype = None
+        id = 8
+
+    class KnwKB_9:
+        name = u'FAQ'
+        description = u'Map (whitespace-separated) keywords to an answer (label|url), to be used in FAQ search service'
+        kbtype = None
+        id = 9
 
 class KnwKBRVALData(DataSet):
 
@@ -2190,3 +2201,21 @@ class KnwKBRVALData(DataSet):
         m_value = u'http://creativecommons.org/licenses/by-nc-nd/3.0/'
         id = 354
         id_knwKB = KnwKBData.KnwKB_7.ref('id')
+
+    class KnwKBRVAL_355:
+        m_key = u'VIDEO'
+        m_value = u'player'
+        id = 355
+        id_knwKB = KnwKBData.KnwKB_8.ref('id')
+
+    class KnwKBRVAL_356:
+        m_key = u'PICTURE'
+        m_value = u'http://creativecommons.org/licenses/by-nc-nd/3.0/'
+        id = 356
+        id_knwKB = KnwKBData.KnwKB_8.ref('id')
+
+    class KnwKBRVAL_357:
+        m_key = u'search syntax find looking help'
+        m_value = u'Search tips|/help/search-tips'
+        id = 357
+        id_knwKB = KnwKBData.KnwKB_9.ref('id')

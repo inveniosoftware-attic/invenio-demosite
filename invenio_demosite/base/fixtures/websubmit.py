@@ -550,11 +550,11 @@ class SbmFIELDData(DataSet):
         subname = u'SBIDEMOART'
 
     class SbmFIELD_SBIDEMOART_1_DEMOARTFILE:
-        fitext = u'<br><br><span style="color: red;">*</span>Enter the full path to the source file to upload:<br />'
+        fitext = u'<br/><br/>Choose file(s) to upload:<br />'
         checkn = u''
         fiefi1 = None
         pagenb = 1L
-        md = datetime.date(2008, 3, 7)
+        md = datetime.date(2012, 11, 5)
         sdesc = u'Source File'
         level = u'M'
         fieldnb = 10L
@@ -1519,7 +1519,7 @@ class SbmFIELDDESCData(DataSet):
         fddfi2 = None
         cols = None
         cd = datetime.date(2008, 3, 7)
-        fidesc = u'<select name="DEMOART_CHANGE[]" size="8" multiple>\r\n <option value="Select:">Select:</option>\r\n <option value="DEMOART_REP">Other Report Numbers</option>\r\n <option value="DEMOART_TITLE">Title</option>\r\n <option value="DEMOART_AU">Author(s)</option>\r\n <option value="DEMOART_LANG">Language</option>\r\n <option value="DEMOART_KW">Keywords</option>\r\n <option value="DEMOART_ABS">Abstract</option>\r\n <option value="DEMOART_NUMP">Number of Pages</option>\r\n</select>'
+        fidesc = u'<select name=\"DEMOART_CHANGE[]\" size=\"9\" multiple>\r\n <option value=\"Select:\">Select:</option>\r\n <option value=\"DEMOART_REP\">Other Report Numbers</option>\r\n <option value=\"DEMOART_TITLE\">Title</option>\r\n <option value=\"DEMOART_AU\">Author(s)</option>\r\n <option value=\"DEMOART_LANG\">Language</option>\r\n <option value=\"DEMOART_KW\">Keywords</option>\r\n <option value=\"DEMOART_ABS\">Abstract</option>\r\n <option value=\"DEMOART_NUMP\">Number of Pages</option>\r\n <option value=\"DEMOART_FILE\">File(s)</option>\r\n</select>'
         cookie = 0L
         maxlength = None
         size = None
@@ -1579,7 +1579,7 @@ class SbmFIELDDESCData(DataSet):
         modifytext = None
 
     class SbmFIELDDESC_DEMOARTFILE:
-        md = datetime.date(2008, 3, 7)
+        md = datetime.date(2012, 11, 02)
         rows = None
         name = u'DEMOART_FILE'
         val = None
@@ -1587,11 +1587,11 @@ class SbmFIELDDESCData(DataSet):
         fddfi2 = None
         cols = None
         cd = datetime.date(2008, 3, 7)
-        fidesc = None
+        fidesc = u'\"\"\"\r\nThis is an example of element that creates a file upload interface.\r\nClone it, customize it and integrate it into your submission. Then add function \r\n\'Move_Uploaded_Files_to_Storage\' to your submission functions list, in order for files \r\nuploaded with this interface to be attached to the record. More information in \r\nthe WebSubmit admin guide.\r\n\"\"\"\r\nimport os\r\nfrom invenio.bibdocfile_managedocfiles import create_file_upload_interface\r\nfrom invenio.websubmit_functions.Shared_Functions import ParamFromFile\r\n\r\nindir = ParamFromFile(os.path.join(curdir, \'indir\'))\r\ndoctype = ParamFromFile(os.path.join(curdir, \'doctype\'))\r\naccess = ParamFromFile(os.path.join(curdir, \'access\'))\r\ntry:\r\n    sysno = int(ParamFromFile(os.path.join(curdir, \'SN\')).strip())\r\nexcept:\r\n    sysno = -1\r\nln = ParamFromFile(os.path.join(curdir, \'ln\'))\r\n\r\n\"\"\"\r\nRun the following to get the list of parameters of function \'create_file_upload_interface\':\r\necho -e \'from invenio.bibdocfile_managedocfiles import create_file_upload_interface as f\\nprint f.__doc__\' | python\r\n\"\"\"\r\ntext = create_file_upload_interface(recid=sysno,\r\n                                 print_outside_form_tag=False,\r\n                                 include_headers=True,\r\n                                 ln=ln,\r\n                                 doctypes_and_desc=[(\'main\',\'Main document\'),\r\n                                                    (\'additional\',\'Figure, schema, etc.\')],\r\n                                 can_revise_doctypes=[\'*\'],\r\n                                 can_describe_doctypes=[\'main\'],\r\n                                 can_delete_doctypes=[\'additional\'],\r\n                                 can_rename_doctypes=[\'main\'],\r\n                                 sbm_indir=indir, sbm_doctype=doctype, sbm_access=access)[1]\r\n'
         cookie = 0L
         maxlength = None
         size = 60L
-        type = u'F'
+        type = u'R'
         alephcode = None
         modifytext = None
 
@@ -3311,25 +3311,32 @@ class SbmFUNCTIONSData(DataSet):
         score = 40L
         doctype = u'DEMOART'
 
-    class SbmFUNCTIONS_MBI_DEMOART_MovetoDone_80_2:
+    class SbmFUNCTIONS_MBI_DEMOART_MovetoDone_90_2:
         action = u'MBI'
         function = u'Move_to_Done'
+        step = 2
+        score = 90L
+        doctype = u'DEMOART'
+
+    class SbmFUNCTIONS_MBI_DEMOART_PrintSuccessMBI_70_2:
+        action = u'MBI'
+        function = u'Print_Success_MBI'
+        step = 2
+        score = 70L
+        doctype = u'DEMOART'
+
+    class SbmFUNCTIONS_MBI_DEMOART_SendModifyMail_80_2:
+        action = u'MBI'
+        function = u'Send_Modify_Mail'
         step = 2
         score = 80L
         doctype = u'DEMOART'
 
-    class SbmFUNCTIONS_MBI_DEMOART_PrintSuccessMBI_60_2:
+    class SbmFUNCTIONS_MBI_DEMOART_MoveUploadedFilestoStorage_60_2:
         action = u'MBI'
-        function = u'Print_Success_MBI'
+        function = u'Move_Uploaded_Files_to_Storage'
         step = 2
         score = 60L
-        doctype = u'DEMOART'
-
-    class SbmFUNCTIONS_MBI_DEMOART_SendModifyMail_70_2:
-        action = u'MBI'
-        function = u'Send_Modify_Mail'
-        step = 2
-        score = 70L
         doctype = u'DEMOART'
 
     class SbmFUNCTIONS_MBI_DEMOBOO_CreateModifyInterface_40_1:
@@ -3787,9 +3794,16 @@ class SbmFUNCTIONSData(DataSet):
         score = 30L
         doctype = u'DEMOART'
 
-    class SbmFUNCTIONS_SBI_DEMOART_PrintSuccess_50_1:
+    class SbmFUNCTIONS_SBI_DEMOART_PrintSuccess_60_1:
         action = u'SBI'
         function = u'Print_Success'
+        step = 1
+        score = 60L
+        doctype = u'DEMOART'
+
+    class SbmFUNCTIONS_SBI_DEMOART_Move_Uploaded_Files_to_Storage_50_1:
+        action = u'SBI'
+        function = u'Move_Uploaded_Files_to_Storage'
         step = 1
         score = 50L
         doctype = u'DEMOART'
@@ -4542,6 +4556,11 @@ class SbmPARAMETERSData(DataSet):
         doctype = u'DEMOART'
         value = u'AUTO'
         name = u'yeargen'
+
+    class SbmPARAMETERS_DEMOART_createIconDoctypes:
+        doctype = u'DEMOART'
+        value = u'*'
+        name = u'createIconDoctypes'
 
     class SbmPARAMETERS_DEMOBOO_addressesAPP:
         doctype = u'DEMOBOO'
