@@ -29,4 +29,5 @@ recursive-include invenio_demosite/modules/*/format_templates *
 recursive-include invenio_demosite/modules/*/output_formats *
 recursive-include invenio_demosite/modules/*/rankext *
 
+recursive-exclude invenio_demosite/testsuite *
 recursive-exclude * *.pyc *.pyo

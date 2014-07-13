@@ -43,8 +43,14 @@ setup(
     zip_safe=False,
     platforms='any',
     install_requires=[
-        'Invenio>=1.9999,<1.9999.1',
+        'Invenio>=1.9999.1,<1.9999.2',
     ],
+    extras_require={
+        'development': [
+            'Flask-DebugToolbar>=0.9',
+            'setuptools-bower>=0.2'
+        ],
+    },
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',

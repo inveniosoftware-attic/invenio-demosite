@@ -44,3 +44,8 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
+
+# Assets (bower and generated)
+bower.json
+**/static/vendors/**
+**/static/gen/**
