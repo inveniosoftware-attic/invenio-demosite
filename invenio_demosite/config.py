@@ -17,11 +17,12 @@
 ## along with Invenio; if not, write to the Free Software Foundation, Inc.,
 ## 59 Temple Place, Suite 330, Boston, MA 02D111-1307, USA.
 
+from invenio.base.config import PACKAGES as _PACKAGES
+
 PACKAGES = [
     "invenio_demosite.base",
     "invenio_demosite.modules.*",
-    "invenio.modules.*",
-]
+] + _PACKAGES
 
 DEPOSIT_TYPES = [
     'invenio_demosite.modules.deposit.workflows.article.article',
