@@ -73,7 +73,7 @@ class AuthorInlineForm(WebDepositForm):
     Author inline form
     """
     name = fields.TextField(
-        placeholder="Family name, First name",
+        placeholder=_("Family name, First name"),
         widget_classes='form-control',
         #autocomplete=map_result(
         #    dummy_autocomplete,
@@ -84,12 +84,12 @@ class AuthorInlineForm(WebDepositForm):
             required_if(
                 'affiliation',
                 [lambda x: bool(x.strip()), ],  # non-empty
-                message="Creator name is required if you specify affiliation."
+                message=_("Creator name is required if you specify affiliation.")
             ),
         ],
     )
     affiliation = fields.TextField(
-        placeholder="Affiliation",
+        placeholder=_("Affiliation"),
         widget_classes='form-control',
         widget=ColumnInput(class_="col-xs-4 col-pad-0"),
     )
@@ -100,8 +100,8 @@ class ArticleForm(WebDepositForm):
     # Fields
     #
     doi = fields.TextField(
-        label="Digital Object Identifier",
-        placeholder="e.g. 10.1234/foo.bar...",
+        label=_("Digital Object Identifier"),
+        placeholder=_("e.g. 10.1234/foo.bar..."),
         widget_classes="form-control",
         icon='fa fa-barcode fa-fw',
         validators=[
@@ -119,7 +119,7 @@ class ArticleForm(WebDepositForm):
     publication_date = fields.Date(
         label=_('Publication date'),
         icon='fa fa-calendar fa-fw',
-        description='Required. Format: YYYY-MM-DD.',
+        description=_('Required. Format: YYYY-MM-DD.'),
         default=date.today(),
         validators=[validators.required()],
         widget=date_widget,
@@ -143,8 +143,8 @@ class ArticleForm(WebDepositForm):
                 html_tag='div',
             ),
         ),
-        label='Authors',
-        add_label='Add another author',
+        label=_('Authors'),
+        add_label=_('Add another author'),
         icon='fa fa-user fa-fw',
         min_entries=1,
         widget_classes='',
@@ -156,7 +156,7 @@ class ArticleForm(WebDepositForm):
 
     abstract = fields.TextAreaField(
         label=_("Description"),
-        description='Required.',
+        description=_('Required.'),
         default='',
         icon='fa fa-pencil fa-fw',
         validators=[validators.required(), ],
@@ -181,23 +181,23 @@ class ArticleForm(WebDepositForm):
     )
 
     journal_title = fields.TextField(
-        label="Journal title",
-        description="Optional.",
+        label=_("Journal title"),
+        description=_("Optional."),
         validators=[
             required_if(
                 'journal_volume', [lambda x: bool(x.strip()), ],  # non-empty
-                message="Journal title is required if you specify either "
-                        "volume, issue or pages."
+                message=_("Journal title is required if you specify either "
+                          "volume, issue or pages.")
             ),
             required_if(
                 'journal_issue', [lambda x: bool(x.strip()), ],  # non-empty
-                message="Journal title is required if you specify either "
-                        "volume, issue or pages."
+                message=_("Journal title is required if you specify either "
+                          "volume, issue or pages.")
             ),
             required_if(
                 'journal_pages', [lambda x: bool(x.strip()), ],  # non-empty
-                message="Journal title is required if you specify either "
-                        "volume, issue or pages."
+                message=_("Journal title is required if you specify either "
+                          "volume, issue or pages.")
             ),
         ],
         export_key='journal_info.title',
@@ -205,22 +205,22 @@ class ArticleForm(WebDepositForm):
     )
 
     journal_volume = fields.TextField(
-        label="Volume",
-        description="Optional.",
+        label=_("Volume"),
+        description=_("Optional."),
         export_key='journal_info.volume',
         widget_classes='form-control',
     )
 
     journal_issue = fields.TextField(
-        label="Issue",
-        description="Optional.",
+        label=_("Issue"),
+        description=_("Optional."),
         export_key='journal_info.issue',
         widget_classes='form-control',
     )
 
     journal_pages = fields.TextField(
-        label="Pages",
-        description="Optional.",
+        label=_("Pages"),
+        description=_("Optional."),
         export_key='journal_info.pagination',
         widget_classes='form-control',
     )
@@ -239,16 +239,16 @@ class ArticleForm(WebDepositForm):
             autocomplete=keywords_autocomplete,
             widget=ColumnInput(class_="col-xs-10"),
         ),
-        label='Keywords',
-        add_label='Add another keyword',
+        label=_('Keywords'),
+        add_label=_('Add another keyword'),
         icon='fa fa-tags fa-fw',
         widget_classes='',
         min_entries=1,
     )
 
     notes = fields.TextAreaField(
-        label="Notes",
-        description='Optional.',
+        label=_("Notes"),
+        description=_('Optional.'),
         default='',
         validators=[validators.optional()],
         filters=[
@@ -269,10 +269,10 @@ class ArticleForm(WebDepositForm):
     # Form configuration
     #
     _title = _('New article')
-    _subtitle = 'Instructions: (i) Press "Save" to save your upload for '\
-                'editing later, as many times you like. (ii) Upload or remove'\
-                ' extra files in the bottom of the form. (iii) When ready, '\
-                'press "Submit" to finalize your upload.'
+    _subtitle = _('Instructions: (i) Press "Save" to save your upload for '
+                  'editing later, as many times you like. (ii) Upload or '
+                  'remove  extra files in the bottom of the form. (iii) When '
+                  'ready, press "Submit" to finalize your upload.')
 
     groups = [
         ('Basic Information',
@@ -302,9 +302,9 @@ class ArticleForm(WebDepositForm):
 # Workflow
 #
 class article(SimpleRecordDeposition):
-    name = "Article"
-    name_plural = "Articles"
-    group = "Articles & Preprints"
+    name = _("Article")
+    name_plural = _("Articles")
+    group = _("Articles & Preprints")
     draft_definitions = {
         'default': ArticleForm,
     }
