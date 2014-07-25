@@ -43,7 +43,7 @@ setup(
     zip_safe=False,
     platforms='any',
     install_requires=[
-        'Invenio>=1.9999',
+        'Invenio>=1.9999,<1.9999.1',
     ],
     classifiers=[
         'Development Status :: 4 - Beta',
