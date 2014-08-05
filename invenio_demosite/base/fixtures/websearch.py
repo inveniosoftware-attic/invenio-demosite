@@ -20,6 +20,7 @@
 from invenio.config import CFG_SITE_NAME
 from fixture import DataSet
 from invenio.modules.search.fixtures import FormatData, FieldData
+from invenio.modules.search import fixtures as default
 
 
 class ExternalcollectionData(DataSet):
@@ -107,7 +108,7 @@ class ExternalcollectionData(DataSet):
 
 class CollectionData(DataSet):
 
-    class siteCollection:
+    class siteCollection(default.CollectionData.siteCollection):
         id = 1
         name = CFG_SITE_NAME
         dbquery = None

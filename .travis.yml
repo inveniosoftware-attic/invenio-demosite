@@ -65,7 +65,6 @@ before_script:
   - "inveniomanage database init --yes-i-know"
   - "inveniomanage database create"
   - "sudo apachectl configtest && sudo service apache2 restart || echo 'Apache failed ...'"
-  - "inveniomanage demosite create"
   - "inveniomanage demosite populate"
 
 script:
