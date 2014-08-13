@@ -5316,3 +5316,16 @@ class SbmPARAMETERSData(DataSet):
         doctype = u'DEMOVID'
         value = u'AUTO'
         name = u'yeargen'
+
+__all__ = (
+    'SbmCOLLECTIONData',
+    'SbmCOLLECTIONSbmCOLLECTIONData',
+    'SbmDOCTYPEData',
+    'SbmCOLLECTIONSbmDOCTYPEData',
+    'SbmCATEGORIESData',
+    'SbmFIELDData',
+    'SbmFIELDDESCData',
+    'SbmFUNCTIONSData',
+    'SbmIMPLEMENTData',
+    'SbmPARAMETERSData',
+)

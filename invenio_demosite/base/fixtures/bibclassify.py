@@ -47,3 +47,5 @@ class CollectionClsMETHODData(DataSet):
     class CollectionClsMETHOD_2_1:
         id_clsMETHOD = ClsMETHODData.ClsMETHOD_1.ref('id')
         id_collection = CollectionData.preprints.ref('id')
+
+__all__ = ('ClsMETHODData', 'CollectionClsMETHODData')

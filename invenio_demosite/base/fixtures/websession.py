@@ -118,3 +118,5 @@ class UserUsergroupData(DataSet):
         user = UserData.benvolio
         usergroup = UsergroupData.montagueFamily
         user_status = CFG_WEBSESSION_USERGROUP_STATUS['MEMBER']
+
+__all__ = ('UserData', 'UsergroupData', 'UserUsergroupData')

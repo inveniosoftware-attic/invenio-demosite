@@ -60,3 +60,5 @@ class OaiREPOSITORYData(DataSet):
         m1 = u'a'
         m3 = u''
         m2 = u'e'
+
+__all__ = ('OaiREPOSITORYData', )

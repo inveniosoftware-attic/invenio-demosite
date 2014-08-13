@@ -43,3 +43,5 @@ class JrnISSUEData(DataSet):
         date_announced = None
         issue_display = u'02-03/2009'
         date_released = datetime.datetime(2009, 1, 16, 0, 0)
+
+__all__ = ('JrnJOURNALData', 'JrnISSUEData')

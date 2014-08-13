@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 ## This file is part of Invenio.
-## Copyright (C) 2013 CERN.
+## Copyright (C) 2013, 2014 CERN.
 ##
 ## Invenio is free software; you can redistribute it and/or
 ## modify it under the terms of the GNU General Public License as
@@ -18,8 +18,7 @@
 ## 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
 from fixture import DataSet
-from .websearch import \
-    CollectionData as CollectionDataDemosite
+from .websearch import CollectionData as CollectionDataDemosite
 
 
 class RnkMETHODData(DataSet):
@@ -96,3 +95,5 @@ class CollectionRnkMETHODData(DataSet):
         score = 10
         id_rnkMETHOD = RnkMETHODData.RnkMETHOD_7.ref('id')
         id_collection = CollectionDataDemosite.siteCollection.ref('id')
+
+__all__ = ('RnkMETHODData', 'CollectionRnkMETHODData')

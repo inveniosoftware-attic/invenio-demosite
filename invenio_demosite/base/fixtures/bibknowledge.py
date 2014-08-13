@@ -2219,3 +2219,5 @@ class KnwKBRVALData(DataSet):
         m_value = u'Search tips|/help/search-tips'
         id = 357
         id_knwKB = KnwKBData.KnwKB_9.ref('id')
+
+__all__ = ('KnwKBData', 'KnwKBRVALData')
