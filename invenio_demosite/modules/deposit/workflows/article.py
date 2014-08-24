@@ -174,7 +174,7 @@ class ArticleForm(WebDepositForm):
             removePlugins='elementspath',
         ),
         filters=[
-            sanitize_html,
+            sanitize_html(),
             strip_string,
         ],
         export_key='abstract.summary',
