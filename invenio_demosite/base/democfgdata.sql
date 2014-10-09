@@ -2605,13 +2605,4 @@ INSERT INTO jrnJOURNAL (id,name) VALUES(1,'AtlantisTimes');
 INSERT INTO jrnISSUE (id_jrnJOURNAL,issue_number,issue_display,date_released,date_announced) VALUES (1,'02/2009','02-03/2009','2009-01-09','2009-01-09');
 INSERT INTO jrnISSUE (id_jrnJOURNAL,issue_number,issue_display,date_released) VALUES (1,'03/2009','02-03/2009','2009-01-16');
 
--- BibAuthorID demo person assignment:
-INSERT INTO aidPERSONIDDATA (personid, tag, data) VALUES (1,'uid','2');
-INSERT INTO aidPERSONIDDATA (personid, tag, data) VALUES (2,'uid','1');
-INSERT INTO aidPERSONIDDATA (personid, tag, data) VALUES (3,'uid','4');
-INSERT INTO aidPERSONIDDATA (personid, tag, data) VALUES (4,'uid','5');
-INSERT INTO aidPERSONIDDATA (personid, tag, data) VALUES (5,'uid','6');
-INSERT INTO aidPERSONIDDATA (personid, tag, data) VALUES (6,'uid','7');
-INSERT INTO aidPERSONIDDATA (personid, tag, data) VALUES (7,'uid','8');
-
 -- end of file

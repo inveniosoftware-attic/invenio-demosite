@@ -51,14 +51,8 @@ class SelfCitesIndexerTests(InvenioTestCase):
     def test_get_authors_from_record(self):
         from invenio.legacy.bibrank.selfcites_indexer import get_authors_from_record
         from invenio.legacy.bibrank.selfcites_indexer import get_authors_tags
-        from invenio.config import CFG_BIBRANK_SELFCITES_USE_BIBAUTHORID
-        old_config = CFG_BIBRANK_SELFCITES_USE_BIBAUTHORID
         tags = get_authors_tags()
-        CFG_BIBRANK_SELFCITES_USE_BIBAUTHORID = 0
         self.assert_(get_authors_from_record(1, tags))
-        CFG_BIBRANK_SELFCITES_USE_BIBAUTHORID = 1
-        get_authors_from_record(1, tags)
-        CFG_BIBRANK_SELFCITES_USE_BIBAUTHORID = old_config
 
     def test_get_collaborations_from_record(self):
         from invenio.legacy.bibrank.selfcites_indexer import get_collaborations_from_record
@@ -210,11 +204,6 @@ class SelfCitesTaskTests(InvenioTestCase):
         for algorithm in ALL_ALGORITHMS.iterkeys():
             config = {'algorithm': algorithm, 'friends_threshold': 3}
             assert rebuild_tables(config)
-
-    def test_fetch_bibauthorid_last_update(self):
-        from invenio.legacy.bibrank.selfcites_task import \
-                                                fetch_bibauthorid_last_update
-        self.assert_(fetch_bibauthorid_last_update())
 
     def test_fetch_index_update(self):
         from invenio.legacy.bibrank.selfcites_task import fetch_index_update

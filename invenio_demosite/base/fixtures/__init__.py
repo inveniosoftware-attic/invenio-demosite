@@ -1,4 +1,3 @@
-from .bibauthorid import *
 from .bibclassify import *
 from .bibexport import *
 from .bibknowledge import *
