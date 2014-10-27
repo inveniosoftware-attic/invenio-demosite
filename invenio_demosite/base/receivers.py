@@ -28,7 +28,7 @@ def post_handler_demosite_populate(sender, default_data='', *args, **kwargs):
     """Loads data after records are created."""
 
     if default_data != 'demosite':
-        print '>>> You can define your own post hadler for `demosite populate`'
+        print '>>> You can define your own post handler for `demosite populate`'
     print '>>> Loading demosite data for BibCirculation ...'
 
     class CrcLIBRARYData(DataSet):
