@@ -22,7 +22,7 @@ from setuptools import setup, find_packages
 
 
 # Load __version__, should not be done using import.
-# http://python-packaging-user-guide.readthedocs.org/en/latest/tutorial.html
+# http://python-packaging-user-guide.readthedocs.org/en/latest/development.html#single-sourcing-the-version
 g = {}
 with open(os.path.join('invenio_demosite', 'version.py'), 'rt') as fp:
     exec(fp.read(), g)
