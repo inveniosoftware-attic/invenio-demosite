@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio.
-# Copyright (C) 2012, 2013, 2014 CERN.
+# Copyright (C) 2012, 2013, 2014, 2015 CERN.
 #
 # Invenio is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -17,32 +17,37 @@
 # along with Invenio; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
+"""Workflow for articles."""
+
 from __future__ import absolute_import, print_function
 
-from wtforms import validators
-from werkzeug.local import LocalProxy
-from invenio.base.i18n import _, language_list_long
 from datetime import date
-from invenio.modules.deposit.types import SimpleRecordDeposition
-from invenio.modules.deposit.form import WebDepositForm
+
+from invenio.base.i18n import _, language_list_long
 from invenio.modules.deposit import fields
-from invenio.modules.deposit.filter_utils import strip_string, sanitize_html, \
-    strip_prefixes
-from invenio.modules.deposit.field_widgets import date_widget, \
-    plupload_widget, ExtendedListWidget, CKEditorWidget, \
-    ColumnInput, ItemWidget
-from invenio.modules.deposit.validation_utils import required_if, \
-    list_length, doi_syntax_validator
+from invenio.modules.deposit.field_widgets import CKEditorWidget, \
+    ColumnInput, ExtendedListWidget, ItemWidget, date_widget, plupload_widget
+from invenio.modules.deposit.filter_utils import sanitize_html, \
+    strip_prefixes, strip_string
+from invenio.modules.deposit.form import WebDepositForm
+from invenio.modules.deposit.types import SimpleRecordDeposition
+from invenio.modules.deposit.validation_utils import doi_syntax_validator, \
+    list_length, required_if
+
+from werkzeug.local import LocalProxy
+
+from wtforms import validators
 
 
 def keywords_autocomplete(form, field, term, limit=50):
+    """Return keywords for autocomplete."""
     return [{'value': "Keyword 1"}, {'value': "Keyword 2"}]
 
 
 def missing_doi_warning(dummy_form, field, submit=False, fields=None):
-    """
-    Field processor, checking for existence of a DOI, and otherwise
-    asking people to provide it.
+    """Field processor.
+
+    Checking for existence of a DOI, and otherwise asking people to provide it.
     """
     if not field.errors and not field.data:
         field.add_message("Please provide a DOI if possible.", state="warning")
@@ -53,7 +58,7 @@ def missing_doi_warning(dummy_form, field, submit=False, fields=None):
 # Helpers
 #
 def filter_empty_helper(keys=None):
-    """ Remove empty elements from a list"""
+    """Remove empty elements from a list."""
     def _inner(elem):
         if isinstance(elem, dict):
             for k, v in elem.items():
@@ -69,22 +74,23 @@ def filter_empty_helper(keys=None):
 # Forms
 #
 class AuthorInlineForm(WebDepositForm):
-    """
-    Author inline form
-    """
+
+    """Author inline form."""
+
     name = fields.TextField(
         placeholder=_("Family name, First name"),
         widget_classes='form-control',
-        #autocomplete=map_result(
-        #    dummy_autocomplete,
-        #    authorform_mapper
-        #),
+        # autocomplete=map_result(
+        #     dummy_autocomplete,
+        #     authorform_mapper
+        # ),
         widget=ColumnInput(class_="col-xs-6"),
         validators=[
             required_if(
                 'affiliation',
                 [lambda x: bool(x.strip()), ],  # non-empty
-                message=_("Creator name is required if you specify affiliation.")
+                message=_(
+                    "Creator name is required if you specify affiliation.")
             ),
         ],
     )
@@ -96,6 +102,9 @@ class AuthorInlineForm(WebDepositForm):
 
 
 class ArticleForm(WebDepositForm):
+
+    """Article form."""
+
     #
     # Fields
     #
@@ -121,7 +130,7 @@ class ArticleForm(WebDepositForm):
         icon='fa fa-calendar fa-fw',
         description=_('Required. Format: YYYY-MM-DD.'),
         default=date.today(),
-        validators=[validators.required()],
+        validators=[validators.DataRequired()],
         widget=date_widget,
         widget_classes='input-sm',
         export_key='imprint.date',
@@ -132,7 +141,7 @@ class ArticleForm(WebDepositForm):
         export_key='title.title',
         icon='fa fa-book fa-fw',
         widget_classes="form-control",
-        validators=[validators.Required()],
+        validators=[validators.DataRequired()],
     )
 
     authors = fields.DynamicFieldList(
@@ -149,7 +158,7 @@ class ArticleForm(WebDepositForm):
         min_entries=1,
         widget_classes='',
         export_key='authors',
-        validators=[validators.Required(), list_length(
+        validators=[validators.DataRequired(), list_length(
             min_num=1, element_filter=filter_empty_helper(),
         )],
     )
@@ -159,7 +168,7 @@ class ArticleForm(WebDepositForm):
         description=_('Required.'),
         default='',
         icon='fa fa-pencil fa-fw',
-        validators=[validators.required(), ],
+        validators=[validators.DataRequired(), ],
         widget=CKEditorWidget(
             toolbar=[
                 ['PasteText', 'PasteFromWord'],
@@ -302,6 +311,9 @@ class ArticleForm(WebDepositForm):
 # Workflow
 #
 class article(SimpleRecordDeposition):
+
+    """Article."""
+
     name = _("Article")
     name_plural = _("Articles")
     group = _("Articles & Preprints")
@@ -311,7 +323,7 @@ class article(SimpleRecordDeposition):
 
     @classmethod
     def process_sip_metadata(cls, deposition, metadata):
-        # Map keywords to match jsonalchemy configuration
+        """Map keywords to match jsonalchemy configuration."""
         metadata['keywords'] = map(
             lambda x: {'term': x},
             metadata['keywords']
