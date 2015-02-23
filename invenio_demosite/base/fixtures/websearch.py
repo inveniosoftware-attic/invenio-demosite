@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio Demosite.
-# Copyright (C) 2012, 2013 CERN.
+# Copyright (C) 2012, 2013, 2015 CERN.
 #
 # Invenio Demosite is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -19,7 +19,7 @@
 
 from invenio.config import CFG_SITE_NAME
 from fixture import DataSet
-from invenio.modules.search.fixtures import FormatData, FieldData, CollectionData
+from invenio.modules.search.fixtures import FieldData, CollectionData
 from invenio.modules.search import fixtures as default
 
 
@@ -2809,217 +2809,217 @@ class CollectionFormatData(DataSet):
 
     class CollectionFormat_15_1:
         score = 100
-        id_format = 1  # FormatData.Format_1.ref('id')
+        format_code = "hb"  # FormatData.Format_1.ref('id')
         id_collection = CollectionData.articlesPreprints.ref('id')
 
     class CollectionFormat_15_18:
         score = 85
-        id_format = 18  # FormatData.Format_18.ref('id')
+        format_code = "hcs2"  # FormatData.Format_18.ref('id')
         id_collection = CollectionData.articlesPreprints.ref('id')
 
     class CollectionFormat_15_2:
         score = 90
-        id_format = 2  # FormatData.Format_2.ref('id')
+        format_code = "xn"  # FormatData.Format_2.ref('id')
         id_collection = CollectionData.articlesPreprints.ref('id')
 
     class CollectionFormat_15_3:
         score = 80
-        id_format = 3  # FormatData.Format_3.ref('id')
+        format_code = "excel"  # FormatData.Format_3.ref('id')
         id_collection = CollectionData.articlesPreprints.ref('id')
 
     class CollectionFormat_15_4:
         score = 70
-        id_format = 4  # FormatData.Format_4.ref('id')
+        format_code = "hs"  # FormatData.Format_4.ref('id')
         id_collection = CollectionData.articlesPreprints.ref('id')
 
     class CollectionFormat_15_5:
         score = 60
-        id_format = 5  # FormatData.Format_5.ref('id')
+        format_code = "xr"  # FormatData.Format_5.ref('id')
         id_collection = CollectionData.articlesPreprints.ref('id')
 
     class CollectionFormat_1_1:
         score = 100
-        id_format = 1  # FormatData.Format_1.ref('id')
+        format_code = "hb"  # FormatData.Format_1.ref('id')
         id_collection = CollectionData.siteCollection.ref('id')
 
     class CollectionFormat_1_2:
         score = 90
-        id_format = 2  # FormatData.Format_2.ref('id')
+        format_code = "xn"  # FormatData.Format_2.ref('id')
         id_collection = CollectionData.siteCollection.ref('id')
 
     class CollectionFormat_1_3:
         score = 80
-        id_format = 3  # FormatData.Format_3.ref('id')
+        format_code = "excel"  # FormatData.Format_3.ref('id')
         id_collection = CollectionData.siteCollection.ref('id')
 
     class CollectionFormat_1_4:
         score = 70
-        id_format = 4  # FormatData.Format_4.ref('id')
+        format_code = "hs"  # FormatData.Format_4.ref('id')
         id_collection = CollectionData.siteCollection.ref('id')
 
     class CollectionFormat_1_5:
         score = 60
-        id_format = 5  # FormatData.Format_5.ref('id')
+        format_code = "xr"  # FormatData.Format_5.ref('id')
         id_collection = CollectionData.siteCollection.ref('id')
 
     class CollectionFormat_2_1:
         score = 100
-        id_format = 1  # FormatData.Format_1.ref('id')
+        format_code = "hb"  # FormatData.Format_1.ref('id')
         id_collection = CollectionData.preprints.ref('id')
 
     class CollectionFormat_2_2:
         score = 90
-        id_format = 2  # FormatData.Format_2.ref('id')
+        format_code = "xn"  # FormatData.Format_2.ref('id')
         id_collection = CollectionData.preprints.ref('id')
 
     class CollectionFormat_2_3:
         score = 80
-        id_format = 3  # FormatData.Format_3.ref('id')
+        format_code = "excel"  # FormatData.Format_3.ref('id')
         id_collection = CollectionData.preprints.ref('id')
 
     class CollectionFormat_2_4:
         score = 70
-        id_format = 4  # FormatData.Format_4.ref('id')
+        format_code = "hs"  # FormatData.Format_4.ref('id')
         id_collection = CollectionData.preprints.ref('id')
 
     class CollectionFormat_2_5:
         score = 60
-        id_format = 5  # FormatData.Format_5.ref('id')
+        format_code = "xr"  # FormatData.Format_5.ref('id')
         id_collection = CollectionData.preprints.ref('id')
 
     class CollectionFormat_3_1:
         score = 100
-        id_format = 1  # FormatData.Format_1.ref('id')
+        format_code = "hb"  # FormatData.Format_1.ref('id')
         id_collection = CollectionData.books.ref('id')
 
     class CollectionFormat_3_2:
         score = 90
-        id_format = 2  # FormatData.Format_2.ref('id')
+        format_code = "xn"  # FormatData.Format_2.ref('id')
         id_collection = CollectionData.books.ref('id')
 
     class CollectionFormat_3_3:
         score = 80
-        id_format = 3  # FormatData.Format_3.ref('id')
+        format_code = "excel"  # FormatData.Format_3.ref('id')
         id_collection = CollectionData.books.ref('id')
 
     class CollectionFormat_3_4:
         score = 70
-        id_format = 4  # FormatData.Format_4.ref('id')
+        format_code = "hs"  # FormatData.Format_4.ref('id')
         id_collection = CollectionData.books.ref('id')
 
     class CollectionFormat_3_5:
         score = 60
-        id_format = 5  # FormatData.Format_5.ref('id')
+        format_code = "xr"  # FormatData.Format_5.ref('id')
         id_collection = CollectionData.books.ref('id')
 
     class CollectionFormat_4_1:
         score = 100
-        id_format = 1  # FormatData.Format_1.ref('id')
+        format_code = "hb"  # FormatData.Format_1.ref('id')
         id_collection = CollectionData.theses.ref('id')
 
     class CollectionFormat_4_2:
         score = 90
-        id_format = 2  # FormatData.Format_2.ref('id')
+        format_code = "xn"  # FormatData.Format_2.ref('id')
         id_collection = CollectionData.theses.ref('id')
 
     class CollectionFormat_4_3:
         score = 80
-        id_format = 3  # FormatData.Format_3.ref('id')
+        format_code = "excel"  # FormatData.Format_3.ref('id')
         id_collection = CollectionData.theses.ref('id')
 
     class CollectionFormat_4_4:
         score = 70
-        id_format = 4  # FormatData.Format_4.ref('id')
+        format_code = "hs"  # FormatData.Format_4.ref('id')
         id_collection = CollectionData.theses.ref('id')
 
     class CollectionFormat_4_5:
         score = 60
-        id_format = 5  # FormatData.Format_5.ref('id')
+        format_code = "xr"  # FormatData.Format_5.ref('id')
         id_collection = CollectionData.theses.ref('id')
 
     class CollectionFormat_5_1:
         score = 100
-        id_format = 1  # FormatData.Format_1.ref('id')
+        format_code = "hb"  # FormatData.Format_1.ref('id')
         id_collection = CollectionData.reports.ref('id')
 
     class CollectionFormat_5_2:
         score = 90
-        id_format = 2  # FormatData.Format_2.ref('id')
+        format_code = "xn"  # FormatData.Format_2.ref('id')
         id_collection = CollectionData.reports.ref('id')
 
     class CollectionFormat_5_3:
         score = 80
-        id_format = 3  # FormatData.Format_3.ref('id')
+        format_code = "excel"  # FormatData.Format_3.ref('id')
         id_collection = CollectionData.reports.ref('id')
 
     class CollectionFormat_5_4:
         score = 70
-        id_format = 4  # FormatData.Format_4.ref('id')
+        format_code = "hs"  # FormatData.Format_4.ref('id')
         id_collection = CollectionData.reports.ref('id')
 
     class CollectionFormat_5_5:
         score = 60
-        id_format = 5  # FormatData.Format_5.ref('id')
+        format_code = "xr"  # FormatData.Format_5.ref('id')
         id_collection = CollectionData.reports.ref('id')
 
     class CollectionFormat_6_1:
         score = 100
-        id_format = 1  # FormatData.Format_1.ref('id')
+        format_code = "hb"  # FormatData.Format_1.ref('id')
         id_collection = CollectionData.articles.ref('id')
 
     class CollectionFormat_6_2:
         score = 90
-        id_format = 2  # FormatData.Format_2.ref('id')
+        format_code = "xn"  # FormatData.Format_2.ref('id')
         id_collection = CollectionData.articles.ref('id')
 
     class CollectionFormat_6_3:
         score = 80
-        id_format = 3  # FormatData.Format_3.ref('id')
+        format_code = "excel"  # FormatData.Format_3.ref('id')
         id_collection = CollectionData.articles.ref('id')
 
     class CollectionFormat_6_4:
         score = 70
-        id_format = 4  # FormatData.Format_4.ref('id')
+        format_code = "hs"  # FormatData.Format_4.ref('id')
         id_collection = CollectionData.articles.ref('id')
 
     class CollectionFormat_6_5:
         score = 60
-        id_format = 5  # FormatData.Format_5.ref('id')
+        format_code = "xr"  # FormatData.Format_5.ref('id')
         id_collection = CollectionData.articles.ref('id')
 
     class CollectionFormat_8_1:
         score = 100
-        id_format = 1  # FormatData.Format_1.ref('id')
+        format_code = "hb"  # FormatData.Format_1.ref('id')
         id_collection = CollectionData.pictures.ref('id')
 
     class CollectionFormat_8_2:
         score = 90
-        id_format = 2  # FormatData.Format_2.ref('id')
+        format_code = "xn"  # FormatData.Format_2.ref('id')
         id_collection = CollectionData.pictures.ref('id')
 
     class CollectionFormat_8_3:
         score = 80
-        id_format = 3  # FormatData.Format_3.ref('id')
+        format_code = "excel"  # FormatData.Format_3.ref('id')
         id_collection = CollectionData.pictures.ref('id')
 
     class CollectionFormat_8_4:
         score = 70
-        id_format = 4  # FormatData.Format_4.ref('id')
+        format_code = "hs"  # FormatData.Format_4.ref('id')
         id_collection = CollectionData.pictures.ref('id')
 
     class CollectionFormat_8_5:
         score = 60
-        id_format = 5  # FormatData.Format_5.ref('id')
+        format_code = "xr"  # FormatData.Format_5.ref('id')
         id_collection = CollectionData.pictures.ref('id')
 
     class CollectionFormat_8_6:
         score = 96
-        id_format = 6  # FormatData.Format_6.ref('id')
+        format_code = "xoaidc"  # FormatData.Format_6.ref('id')
         id_collection = CollectionData.pictures.ref('id')
 
     class CollectionFormat_8_7:
         score = 93
-        id_format = 7  # FormatData.Format_7.ref('id')
+        format_code = "hdfile"  # FormatData.Format_7.ref('id')
         id_collection = CollectionData.pictures.ref('id')
 
 
