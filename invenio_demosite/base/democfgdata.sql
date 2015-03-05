@@ -1,4 +1,4 @@
--- This file is part of Invenio.
+-- This file is part of Invenio Demosite.
 -- Copyright (C) 2007, 2008, 2009, 2010, 2011, 2012, 2013 CERN.
 --
 -- Invenio is free software; you can redistribute it and/or
