@@ -77,7 +77,7 @@ class AuthorInlineForm(WebDepositForm):
 
     """Author inline form."""
 
-    name = fields.TextField(
+    full_name = fields.TextField(
         placeholder=_("Family name, First name"),
         widget_classes='form-control',
         # autocomplete=map_result(
@@ -328,3 +328,4 @@ class article(SimpleRecordDeposition):
             lambda x: {'term': x},
             metadata['keywords']
         )
+        metadata["collections"] = {"primary": "ARTICLES"}
