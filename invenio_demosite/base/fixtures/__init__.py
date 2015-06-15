@@ -4,7 +4,5 @@ from .bibknowledge import *
 from .bibrank import *
 from .indexer import *
 from .oai_harvest import *
-from .webjournal import *
 from .websearch import *
 from .websession import *
-from .websubmit import *
