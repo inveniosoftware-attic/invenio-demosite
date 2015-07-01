@@ -862,7 +862,7 @@ class CollectionData(DataSet):
 
     class Collection_34:
         id = 34
-        dbquery = u'collection:AUTHORITY'
+        dbquery = u'980:"AUTHORITY"'
         names = {
             ('en','ln'): u'Authorities',
             ('fr','ln'): u'Autorités',
@@ -872,7 +872,7 @@ class CollectionData(DataSet):
 
     class Collection_35:
         id = 35
-        dbquery = u'collection:AUTHOR'
+        dbquery = u'980:"AUTHOR"'
         names = {
             ('en','ln'): u'Authors',
             ('fr','ln'): u'Auteurs',
@@ -882,7 +882,7 @@ class CollectionData(DataSet):
 
     class Collection_36:
         id = 36
-        dbquery = u'collection:INSTITUTION'
+        dbquery = u'980:"INSTITUTION"'
         names = {
             ('en','ln'): u'Institutions',
             ('fr','ln'): u'Institutions',
@@ -892,7 +892,7 @@ class CollectionData(DataSet):
 
     class Collection_37:
         id = 37
-        dbquery = u'collection:JOURNAL'
+        dbquery = u'980:"JOURNAL"'
         names = {
             ('en','ln'): u'Journals',
             ('fr','ln'): u'Journals',
@@ -902,7 +902,7 @@ class CollectionData(DataSet):
 
     class Collection_38:
         id = 38
-        dbquery = u'collection:SUBJECT'
+        dbquery = u'980:"SUBJECT"'
         names = {
             ('en','ln'): u'Subjects',
             ('fr','ln'): u'Sujets',
