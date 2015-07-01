@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio Demosite.
-# Copyright (C) 2011, 2012, 2013 CERN.
+# Copyright (C) 2011, 2012, 2013, 2015 CERN.
 #
 # Invenio Demosite is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -18,9 +18,3 @@
 # 59 Temple Place, Suite 330, Boston, MA 02D111-1307, USA.
 
 from __future__ import absolute_import
-
-from .receivers import post_handler_demosite_populate
-from invenio.base.scripts.demosite import populate as demosite_populate
-from invenio.base.signals import post_command
-
-post_command.connect(post_handler_demosite_populate, sender=demosite_populate)
