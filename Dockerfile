@@ -38,7 +38,6 @@ RUN python setup.py compile_catalog
 RUN mkdir -p /code-overlay/src && \
     chown -R invenio:invenio /code-overlay && \
     chown -R root:root /code-overlay/invenio_demosite && \
-    chown -R root:root /code-overlay/scripts && \
     chown -R root:root /code-overlay/setup.* && \
     chown -R root:root /code-overlay/src
 

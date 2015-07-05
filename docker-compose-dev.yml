@@ -29,9 +29,10 @@ web:
     - DEBUG_TB_INTERCEPT_REDIRECTS=False
     - INVENIO_APP_CONFIG_ENVS=CACHE_REDIS_HOST,CFG_DATABASE_HOST,DEBUG,DEBUG_TB_INTERCEPT_REDIRECTS
   volumes:
-    - ./invenio:/code/invenio:ro
-    - ./docs:/code/docs:rw
-    - ./scripts:/code/scripts:ro
+    - ../invenio/invenio:/code/invenio:ro
+    - ../invenio/docs:/code/docs:rw
+    - ../invenio/scripts:/code/scripts:ro
+    - ./invenio_demosite:/code-overlay/invenio_demosite:ro
     - /code/invenio/base/translations
   links:
     - mysql:db
