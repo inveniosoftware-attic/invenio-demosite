@@ -16,7 +16,7 @@
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
 # based on the right Invenio base image
-FROM invenio:2.0
+FROM invenio:2.1
 
 # get root rights again
 USER root
@@ -38,7 +38,6 @@ RUN python setup.py compile_catalog
 RUN mkdir -p /code-overlay/src && \
     chown -R invenio:invenio /code-overlay && \
     chown -R root:root /code-overlay/invenio_demosite && \
-    chown -R root:root /code-overlay/scripts && \
     chown -R root:root /code-overlay/setup.* && \
     chown -R root:root /code-overlay/src
 
