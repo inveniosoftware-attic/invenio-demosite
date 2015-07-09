@@ -16,7 +16,7 @@
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
 # based on the right Invenio base image
-FROM invenio:2.1
+FROM invenio:latest
 
 # get root rights again
 USER root
@@ -40,6 +40,11 @@ RUN mkdir -p /code-overlay/src && \
     chown -R root:root /code-overlay/invenio_demosite && \
     chown -R root:root /code-overlay/setup.* && \
     chown -R root:root /code-overlay/src
+
+# add volumes
+# do this AFTER `chown`, because otherwise directory permissions are not
+# preserved
+VOLUME /code-overlay
 
 # finally step back again
 USER invenio
