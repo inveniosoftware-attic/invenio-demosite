@@ -328,4 +328,4 @@ class article(SimpleRecordDeposition):
             lambda x: {'term': x},
             metadata['keywords']
         )
-        metadata["collections"] = {"primary": "ARTICLES"}
+        metadata["collections"] = {"primary": "ARTICLE"}
