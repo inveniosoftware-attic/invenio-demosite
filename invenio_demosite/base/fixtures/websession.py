@@ -20,8 +20,18 @@
 
 from fixture import DataSet
 from invenio.config import CFG_SITE_ADMIN_EMAIL
-from invenio.legacy.websession.websession_config import CFG_WEBSESSION_USERGROUP_STATUS, \
-    CFG_WEBSESSION_GROUP_JOIN_POLICY
+
+CFG_WEBSESSION_GROUP_JOIN_POLICY = {'VISIBLEOPEN': 'VO',
+                                    'VISIBLEMAIL': 'VM',
+                                    'INVISIBLEOPEN': 'IO',
+                                    'INVISIBLEMAIL': 'IM',
+                                    'VISIBLEEXTERNAL' : 'VE'
+                                    }
+
+CFG_WEBSESSION_USERGROUP_STATUS = {'ADMIN':  'A',
+                                   'MEMBER':'M',
+                                   'PENDING':'P'
+                                   }
 
 
 class UserData(DataSet):
