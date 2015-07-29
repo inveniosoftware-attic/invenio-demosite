@@ -19,19 +19,13 @@
 
 
 from fixture import DataSet
+
 from invenio.config import CFG_SITE_ADMIN_EMAIL
 
-CFG_WEBSESSION_GROUP_JOIN_POLICY = {'VISIBLEOPEN': 'VO',
-                                    'VISIBLEMAIL': 'VM',
-                                    'INVISIBLEOPEN': 'IO',
-                                    'INVISIBLEMAIL': 'IM',
-                                    'VISIBLEEXTERNAL' : 'VE'
-                                    }
+from invenio.modules.accounts.models import UserUsergroup, Usergroup
 
-CFG_WEBSESSION_USERGROUP_STATUS = {'ADMIN':  'A',
-                                   'MEMBER':'M',
-                                   'PENDING':'P'
-                                   }
+JOIN_POLICIES = Usergroup.JOIN_POLICIES
+USER_STATUS = UserUsergroup.USER_STATUS
 
 
 class UserData(DataSet):
@@ -98,13 +92,13 @@ class UsergroupData(DataSet):
         id = 1
         name = 'Theses viewers'
         description = 'Theses viewers internal group'
-        join_policy = CFG_WEBSESSION_GROUP_JOIN_POLICY['VISIBLEOPEN']
+        join_policy = JOIN_POLICIES['VISIBLEOPEN']
 
     class montagueFamily:
         id = 2
         name = 'montague-family'
         description = 'The Montague family.'
-        join_policy = CFG_WEBSESSION_GROUP_JOIN_POLICY['VISIBLEMAIL']
+        join_policy = JOIN_POLICIES['VISIBLEMAIL']
 
 
 class UserUsergroupData(DataSet):
@@ -112,21 +106,21 @@ class UserUsergroupData(DataSet):
     class jekyllThesesViewers:
         user = UserData.jekyll
         usergroup = UsergroupData.thesesViewers
-        user_status = CFG_WEBSESSION_USERGROUP_STATUS['MEMBER']
+        user_status = USER_STATUS['MEMBER']
 
     class romeoMontagueFamily:
         user = UserData.romeo
         usergroup = UsergroupData.montagueFamily
-        user_status = CFG_WEBSESSION_USERGROUP_STATUS['ADMIN']
+        user_status = USER_STATUS['ADMIN']
 
     class julietMontagueFamily:
         user = UserData.juliet
         usergroup = UsergroupData.montagueFamily
-        user_status = CFG_WEBSESSION_USERGROUP_STATUS['MEMBER']
+        user_status = USER_STATUS['MEMBER']
 
     class benvolioMontagueFamily:
         user = UserData.benvolio
         usergroup = UsergroupData.montagueFamily
-        user_status = CFG_WEBSESSION_USERGROUP_STATUS['MEMBER']
+        user_status = USER_STATUS['MEMBER']
 
 __all__ = ('UserData', 'UsergroupData', 'UserUsergroupData')
