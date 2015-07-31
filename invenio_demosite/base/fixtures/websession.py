@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio Demosite.
-# Copyright (C) 2012, 2013 CERN.
+# Copyright (C) 2012, 2013, 2015 CERN.
 #
 # Invenio Demosite is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -22,10 +22,8 @@ from fixture import DataSet
 
 from invenio.config import CFG_SITE_ADMIN_EMAIL
 
-from invenio_accounts.models import UserUsergroup, Usergroup
-
-JOIN_POLICIES = Usergroup.JOIN_POLICIES
-USER_STATUS = UserUsergroup.USER_STATUS
+from invenio_groups.models import PrivacyPolicy, SubscriptionPolicy, \
+    MembershipState
 
 
 class UserData(DataSet):
@@ -86,41 +84,51 @@ class UserData(DataSet):
         nickname = 'balthasar'
 
 
-class UsergroupData(DataSet):
+class GroupData(DataSet):
 
     class thesesViewers:
         id = 1
         name = 'Theses viewers'
         description = 'Theses viewers internal group'
-        join_policy = JOIN_POLICIES['VISIBLEOPEN']
+        is_managed = False
+        privacy_policy = PrivacyPolicy.ADMINS
+        subscription_policy = SubscriptionPolicy.CLOSED
 
     class montagueFamily:
         id = 2
         name = 'montague-family'
         description = 'The Montague family.'
-        join_policy = JOIN_POLICIES['VISIBLEMAIL']
+        is_managed = False
+        privacy_policy = PrivacyPolicy.ADMINS
+        subscription_policy = SubscriptionPolicy.CLOSED
 
 
-class UserUsergroupData(DataSet):
+class MembershipData(DataSet):
 
     class jekyllThesesViewers:
         user = UserData.jekyll
-        usergroup = UsergroupData.thesesViewers
-        user_status = USER_STATUS['MEMBER']
-
-    class romeoMontagueFamily:
-        user = UserData.romeo
-        usergroup = UsergroupData.montagueFamily
-        user_status = USER_STATUS['ADMIN']
+        group = GroupData.thesesViewers
+        state = MembershipState.ACTIVE
 
     class julietMontagueFamily:
         user = UserData.juliet
-        usergroup = UsergroupData.montagueFamily
-        user_status = USER_STATUS['MEMBER']
+        group = GroupData.montagueFamily
+        state = MembershipState.ACTIVE
 
     class benvolioMontagueFamily:
         user = UserData.benvolio
-        usergroup = UsergroupData.montagueFamily
-        user_status = USER_STATUS['MEMBER']
+        group = GroupData.montagueFamily
+        state = MembershipState.ACTIVE
 
-__all__ = ('UserData', 'UsergroupData', 'UserUsergroupData')
+
+class GroupAdminData(DataSet):
+
+    class romeoMontagueFamily:
+        group = GroupData.montagueFamily
+        admin = UserData.romeo
+
+    class romeoThesesViewers:
+        group = GroupData.thesesViewers
+        admin = UserData.romeo
+
+__all__ = ('UserData', 'GroupData', 'MembershipData', 'GroupAdminData')
