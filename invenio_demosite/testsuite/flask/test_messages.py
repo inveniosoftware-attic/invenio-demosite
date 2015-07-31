@@ -27,7 +27,7 @@ from invenio.webaccount_fixtures import UserData
 
 
 def fixture_builder():
-    from invenio.modules.accounts.models import User
+    from invenio_accounts.models import User
     return SQLAlchemyFixture(env={'UserData': User}, engine=db.metadata.bind,
                              session=db.session)
 
@@ -39,7 +39,7 @@ class MsgMESSAGETest(FlaskSQLAlchemyTest):
 
     @fixture.with_data(UserData)
     def test_index(data, self):
-        from invenio.modules.accounts.models import User
+        from invenio_accounts.models import User
         from invenio.modules.messages.models import MsgMESSAGE, UserMsgMESSAGE
 
         users = data.UserData
@@ -100,7 +100,7 @@ class MsgMESSAGETest(FlaskSQLAlchemyTest):
 
     @fixture.with_data(UserData)
     def test_send_later(data, self):
-        from invenio.modules.accounts.models import User
+        from invenio_accounts.models import User
         from invenio.modules.messages.models import MsgMESSAGE, UserMsgMESSAGE
 
         users = data.UserData
@@ -171,13 +171,13 @@ class MsgMESSAGETest(FlaskSQLAlchemyTest):
 
     @fixture.with_data(UserData)
     def test_with_fixture(data, self):
-        from invenio.modules.accounts.models import User
+        from invenio_accounts.models import User
         u = User.query.all()
         assert len(u) == len(dict(data.UserData))
         db.session.commit()
 
     def test_without_fixture(self):
-        from invenio.modules.accounts.models import User
+        from invenio_accounts.models import User
         u = User.query.all()
         assert len(u) == 0
 

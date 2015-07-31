@@ -26,7 +26,7 @@ from invenio.websearch_fixtures import CollectionData, \
 
 
 def fixture_builder():
-    from invenio.modules.accounts.models import User, Usergroup, UserUsergroup
+    from invenio_accounts.models import User, Usergroup, UserUsergroup
     from invenio.modules.search.models import Collection, CollectionCollection, \
         Externalcollection
 

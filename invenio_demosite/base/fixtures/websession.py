@@ -22,7 +22,7 @@ from fixture import DataSet
 
 from invenio.config import CFG_SITE_ADMIN_EMAIL
 
-from invenio.modules.accounts.models import UserUsergroup, Usergroup
+from invenio_accounts.models import UserUsergroup, Usergroup
 
 JOIN_POLICIES = Usergroup.JOIN_POLICIES
 USER_STATUS = UserUsergroup.USER_STATUS

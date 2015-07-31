@@ -27,7 +27,7 @@ from invenio.webaccount_fixtures import UserData, UsergroupData, \
 
 
 def fixture_builder():
-    from invenio.modules.accounts.models import User, Usergroup, UserUsergroup
+    from invenio_accounts.models import User, Usergroup, UserUsergroup
     return SQLAlchemyFixture(env={'UserData': User, 'UsergroupData': Usergroup,
                                   'UserUsergroupData': UserUsergroup},
                              engine=db.metadata.bind,
@@ -86,7 +86,7 @@ class WebAccountTest(FlaskSQLAlchemyTest):
 
     @fixture.with_data(UserData)
     def test_change_password(data, self):
-        from invenio.modules.accounts.models import User
+        from invenio_accounts.models import User
         NEW_PASSWORD = 'admin'
         users = data.UserData
 
@@ -116,7 +116,7 @@ class UserGroupTest(FlaskSQLAlchemyTest):
 
     @fixture.with_data(UserData, UsergroupData, UserUsergroupData)
     def test_group_relation_consistency(data, self):
-        from invenio.modules.accounts.models import User, Usergroup
+        from invenio_accounts.models import User, Usergroup
         orig_len = len(dict(data.UserUsergroupData))
         user_len = sum(len(u.usergroups) for u in User.query.all())
         ugrp_len = sum(len(g.users) for g in Usergroup.query.all())
