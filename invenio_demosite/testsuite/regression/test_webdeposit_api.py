@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio Demosite.
-# Copyright (C) 2012, 2013 CERN.
+# Copyright (C) 2012, 2013, 2015 CERN.
 #
 # Invenio Demosite is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -18,7 +18,7 @@
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
 
-from invenio.testsuite import make_test_suite, run_test_suite, InvenioTestCase
+from invenio.testsuite import InvenioTestCase, make_test_suite, run_test_suite
 
 
 class TestWebDepositAPI(InvenioTestCase):
@@ -34,8 +34,8 @@ class TestWebDepositAPI(InvenioTestCase):
         from random import randint
         from invenio.modules.apikeys import create_new_web_api_key, \
             get_available_web_api_keys
-        #FIXME unknown import 'deposition_metadata'
-        from invenio.modules.deposit.loader import deposition_metadata
+        # FIXME unknown import 'deposition_metadata'
+        from invenio_deposit.loader import deposition_metadata
         # self.clear_tables()
 
         create_new_web_api_key(1, key_description='webdeposit_api_testing')
@@ -43,7 +43,8 @@ class TestWebDepositAPI(InvenioTestCase):
         self.apikey = keys[0].id
 
         # Test random deposition
-        self.deposition = deposition_metadata.keys()[randint(0, len(deposition_metadata.keys()) - 1)]
+        self.deposition = deposition_metadata.keys()[
+            randint(0, len(deposition_metadata.keys()) - 1)]
         super(TestWebDepositAPI, self).setUp()
 
     def tearDown(self):
@@ -69,11 +70,11 @@ class TestWebDepositAPI(InvenioTestCase):
     def test_json_get_set_functions(self):
         import json
         from flask import current_app, url_for
-        from invenio.modules.deposit.loader import \
+        from invenio_deposit.loader import \
             deposition_metadata
         from invenio.webdeposit_utils import create_workflow
         from wtforms import TextAreaField
-        from invenio.modules.deposit import forms
+        from invenio_deposit import forms
         from invenio.modules.apikeys import build_web_request
 
         self.uuid = create_workflow(self.deposition, user_id=1).get_uuid()
@@ -102,7 +103,8 @@ class TestWebDepositAPI(InvenioTestCase):
             response = c.post(url_set, data=data)
             assert response._status_code == 200
 
-            url = url_for('webdeposit_api.json_get', deposition_metadata=self.deposition)
+            url = url_for(
+                'webdeposit_api.json_get', deposition_metadata=self.deposition)
             url_get = build_web_request(url, {'uuid':
                                         self.uuid},
                                         uid=1, api_key=self.apikey,

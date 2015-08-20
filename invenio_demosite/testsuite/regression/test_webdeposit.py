@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # This file is part of Invenio Demosite.
-# Copyright (C) 2013 CERN.
+# Copyright (C) 2013, 2015 CERN.
 #
 # Invenio Demosite is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
@@ -17,8 +17,8 @@
 # along with Invenio; if not, write to the Free Software Foundation, Inc.,
 # 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA.
 
-from invenio.testsuite import make_test_suite, run_test_suite, \
-    InvenioTestCase, make_pdf_fixture
+from invenio.testsuite import InvenioTestCase, make_pdf_fixture, \
+    make_test_suite, run_test_suite
 
 
 class TestWebDepositUtils(InvenioTestCase):
@@ -61,7 +61,7 @@ class TestWebDepositUtils(InvenioTestCase):
     #
     def test_deposit_files(self):
         from flask import current_app, url_for
-        from invenio.modules.deposit.loader import \
+        from invenio_deposit.loader import \
             deposition_metadata
         from invenio.modules.workflows.models import Workflow
         from invenio.webdeposit_utils import create_workflow, deposit_files, \
@@ -101,7 +101,7 @@ class TestWebDepositUtils(InvenioTestCase):
             assert filemeta['content_type'] == 'application/pdf'
 
     def test_workflow_creation(self):
-        from invenio.modules.deposit.loader import \
+        from invenio_deposit.loader import \
             deposition_metadata
         from invenio.modules.workflows.models import Workflow
         from invenio.webdeposit_workflow import DepositionWorkflow
@@ -159,9 +159,9 @@ class TestWebDepositUtils(InvenioTestCase):
         self.assertTrue(workflow is None)
 
     def test_form_functions(self):
-        from invenio.modules.deposit.loader import \
+        from invenio_deposit.loader import \
             deposition_metadata
-        from invenio.modules.deposit import forms
+        from invenio_deposit import forms
         from invenio.webdeposit_workflow import DepositionWorkflow
         from invenio.webdeposit_utils import get_form, \
             get_form_status, set_form_status, CFG_DRAFT_STATUS
@@ -257,7 +257,7 @@ class TestWebDepositUtils(InvenioTestCase):
 
         from invenio.webdeposit_utils import get_form, create_workflow, \
             set_form_status, CFG_DRAFT_STATUS
-        from invenio.modules.deposit.loader import \
+        from invenio_deposit.loader import \
             deposition_metadata
         from invenio.webdeposit_workflow_utils import \
             create_record_from_marc
@@ -277,7 +277,7 @@ class TestWebDepositUtils(InvenioTestCase):
                     function_exists = True
             if not function_exists:
                 # if a record is not created,
-                #continue with the next deposition
+                # continue with the next deposition
                 continue
 
             uuid = deposition.get_uuid()

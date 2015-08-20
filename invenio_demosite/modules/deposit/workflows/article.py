@@ -24,14 +24,15 @@ from __future__ import absolute_import, print_function
 from datetime import date
 
 from invenio.base.i18n import _, language_list_long
-from invenio.modules.deposit import fields
-from invenio.modules.deposit.field_widgets import CKEditorWidget, \
+
+from invenio_deposit import fields
+from invenio_deposit.field_widgets import CKEditorWidget, \
     ColumnInput, ExtendedListWidget, ItemWidget, date_widget, plupload_widget
-from invenio.modules.deposit.filter_utils import sanitize_html, \
+from invenio_deposit.filter_utils import sanitize_html, \
     strip_prefixes, strip_string
-from invenio.modules.deposit.form import WebDepositForm
-from invenio.modules.deposit.types import SimpleRecordDeposition
-from invenio.modules.deposit.validation_utils import doi_syntax_validator, \
+from invenio_deposit.form import WebDepositForm
+from invenio_deposit.types import SimpleRecordDeposition
+from invenio_deposit.validation_utils import doi_syntax_validator, \
     list_length, required_if
 
 from werkzeug.local import LocalProxy
