@@ -44,6 +44,7 @@ setup(
     platforms='any',
     install_requires=[
         'invenio>2.1',
+        'invenio-knowledge>=0.1.0',
     ],
     extras_require={
         'development': [
