@@ -20,6 +20,7 @@ Authors and contributors: (active)
 - Jiri Kuncar <jiri.kuncar@cern.ch>
 - Laura Rueda <laura.rueda@cern.ch>
 - Lars Holm Nielsen <lars.holm.nielsen@cern.ch>
+- Sami Hiltunen <sami.mikael.hiltunen@cern.ch>
 - Sebastian Witowski <sebastian.witowski@cern.ch>
 - Wojciech Ziolek <wojciech.ziolek@cern.ch>
 - Grzegorz Szpura <grzegorz.szpura@cern.ch>

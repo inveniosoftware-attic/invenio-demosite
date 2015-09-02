@@ -19,7 +19,7 @@
 
 """Access module configuration values."""
 
-from invenio.modules.access.local_config import VIEWRESTRCOLL
+from invenio_access.local_config import VIEWRESTRCOLL
 
 # Demo site roles
 DEF_DEMO_ROLES = (

@@ -88,8 +88,8 @@ class WebAccessFireRoleTest(InvenioTestCase):
 
     def setUp(self):
         """Create a fake role."""
-        from invenio.modules.access.control import acc_add_role
-        from invenio.modules.access.firerole import compile_role_definition, \
+        from invenio_access.control import acc_add_role
+        from invenio_access.firerole import compile_role_definition, \
             serialize
         self.role_name = 'test'
         self.role_description = 'test role'
@@ -101,13 +101,13 @@ class WebAccessFireRoleTest(InvenioTestCase):
 
     def tearDown(self):
         """Drop the fake role."""
-        from invenio.modules.access.control import acc_delete_role
+        from invenio_access.control import acc_delete_role
         acc_delete_role(self.role_id)
 
     def test_webaccess_firerole_serialization(self):
         """webaccess - firerole role definition correctly serialized"""
-        from invenio.modules.access.control import acc_get_role_definition
-        from invenio.modules.access.firerole import compile_role_definition, \
+        from invenio_access.control import acc_get_role_definition
+        from invenio_access.firerole import compile_role_definition, \
             deserialize
         def_ser = compile_role_definition(self.role_definition)
         tmp_def_ser = acc_get_role_definition(self.role_id)
@@ -146,7 +146,7 @@ if False: #FIXME cfg['CFG_DEVEL_SITE']:
                 run_sql("DELETE FROM userEXT WHERE id=%s", (nickname, ))
 
         def setUp(self):
-            from invenio.modules.access.local_config import CFG_EXTERNAL_AUTHENTICATION
+            from invenio_access.local_config import CFG_EXTERNAL_AUTHENTICATION
             self.robot_login_methods = dict([(method_name, CFG_EXTERNAL_AUTHENTICATION[method_name]) for method_name in CFG_EXTERNAL_AUTHENTICATION if CFG_EXTERNAL_AUTHENTICATION[method_name] and CFG_EXTERNAL_AUTHENTICATION[method_name].robot_login_method_p()])
             self.a_robot = "regression-test"
             self.a_password = "123"

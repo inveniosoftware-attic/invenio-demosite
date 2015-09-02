@@ -32,7 +32,7 @@ from invenio.testsuite import InvenioTestCase, make_test_suite, run_test_suite
 
 from invenio.utils.mimetype import CFG_HAS_MAGIC
 
-CFG_WEBACCESS_WARNING_MSGS = lazy_import('invenio.modules.access.local_config:CFG_WEBACCESS_WARNING_MSGS')
+CFG_WEBACCESS_WARNING_MSGS = lazy_import('invenio_access.local_config:CFG_WEBACCESS_WARNING_MSGS')
 MoreInfo = lazy_import('invenio.legacy.bibdocfile.api:MoreInfo')
 Md5Folder = lazy_import('invenio.legacy.bibdocfile.api:Md5Folder')
 guess_format_from_url = lazy_import('invenio.legacy.bibdocfile.api:guess_format_from_url')
