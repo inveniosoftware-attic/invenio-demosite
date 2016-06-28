@@ -19,7 +19,7 @@ code repository for more information.*
 Good luck and thanks for choosing Invenio.
 
 | Invenio Development Team
-|   Email: info@invenio-software.org
+|   Email: info@inveniosoftware.org
 |   IRC: #invenio on irc.freenode.net
 |   Twitter: @inveniosoftware
-|   URL: http://invenio-software.org
+|   URL: http://inveniosoftware.org

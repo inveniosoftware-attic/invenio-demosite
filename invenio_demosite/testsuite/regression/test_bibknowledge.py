@@ -142,7 +142,7 @@ class BibknowledgeRegressionTests(InvenioTestCase):
         #what was the name?
         new_kb_name = get_kb_name(new_kb_id)
         #get the taxonomy file
-        response = mechanize.urlopen("http://invenio-software.org/download/invenio-demo-site-files/HEP.rdf")
+        response = mechanize.urlopen("http://inveniosoftware.org/download/invenio-demo-site-files/HEP.rdf")
         content = response.read()
         f = open(cfg['CFG_TMPDIR']+"/HEP.rdf","w")
         f.write(content)

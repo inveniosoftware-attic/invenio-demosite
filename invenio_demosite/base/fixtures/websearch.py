@@ -1071,7 +1071,7 @@ class PortalboxData(DataSet):
         title = u'ABOUT THIS SITE'
 
     class Portalbox_2:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 2
         title = u'SEE ALSO'
 
@@ -1191,7 +1191,7 @@ class PortalboxData(DataSet):
         title = u'\xc0 PROPOS DE CE SITE'
 
     class Portalbox_26:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 26
         title = u'VOIR AUSSI'
 
@@ -1201,7 +1201,7 @@ class PortalboxData(DataSet):
         title = u'O T\xddCHTO STR\xc1NKACH'
 
     class Portalbox_28:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 28
         title = u'VI\u010e TIE\u017d'
 
@@ -1211,7 +1211,7 @@ class PortalboxData(DataSet):
         title = u'O T\u011aCHTO STR\xc1NK\xc1CH'
 
     class Portalbox_30:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 30
         title = u'VIZ T\xc9\u017d'
 
@@ -1221,7 +1221,7 @@ class PortalboxData(DataSet):
         title = u'\xdcBER DIESEN SEITEN'
 
     class Portalbox_32:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 32
         title = u'SEHEN SIE AUCH'
 
@@ -1231,7 +1231,7 @@ class PortalboxData(DataSet):
         title = u'ACERCA DE ESTAS P\xc1GINAS'
 
     class Portalbox_34:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 34
         title = u'VEA TAMBI\xc9N'
 
@@ -1241,7 +1241,7 @@ class PortalboxData(DataSet):
         title = u'A PROPOSITO DI QUESTO SITO'
 
     class Portalbox_36:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 36
         title = u'VEDI ANCHE'
 
@@ -1251,7 +1251,7 @@ class PortalboxData(DataSet):
         title = u'OM DENNE SIDEN'
 
     class Portalbox_38:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 38
         title = u'SE OGS\xc5'
 
@@ -1261,7 +1261,7 @@ class PortalboxData(DataSet):
         title = u'SOBRE ESTE SITE'
 
     class Portalbox_40:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 40
         title = u'VEJA TAMB\xc9M'
 
@@ -1271,7 +1271,7 @@ class PortalboxData(DataSet):
         title = u'\u041e\u0411 \u042d\u0422\u041e\u041c \u0421\u0410\u0419\u0422\u0415'
 
     class Portalbox_42:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 42
         title = u'\u0421\u041c\u041e\u0422\u0420\u0418\u0422\u0415 \u0422\u0410\u041a\u0416\u0415'
 
@@ -1281,7 +1281,7 @@ class PortalboxData(DataSet):
         title = u'OM DENNA WEBBPLATS'
 
     class Portalbox_44:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 44
         title = u'SE \xc4VEN'
 
@@ -1336,7 +1336,7 @@ class PortalboxData(DataSet):
         title = u'\u03a3\u03a7\u0395\u03a4\u0399\u039a\u0391 \u039c\u0395 \u03a4\u0397\u039d \u03a3\u0395\u039b\u0399\u0394\u0391'
 
     class Portalbox_55:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 55
         title = u'\u0394\u0395\u0399\u03a4\u0395 \u0395\u03a0\u0399\u03a3\u0397\u03a3'
 
@@ -1346,7 +1346,7 @@ class PortalboxData(DataSet):
         title = u'\u041f\u0420\u041e \u0426\u0415\u0419 \u0421\u0410\u0419\u0422'
 
     class Portalbox_57:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 57
         title = u'\u0414\u0418\u0412\u0418\u0421\u042c \u0422\u0410\u041a\u041e\u0416'
 
@@ -1356,7 +1356,7 @@ class PortalboxData(DataSet):
         title = u'SOBRE AQUEST LLOC'
 
     class Portalbox_59:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 59
         title = u'VEGEU TAMB\xc9'
 
@@ -1366,7 +1366,7 @@ class PortalboxData(DataSet):
         title = u'\u3053\u306e\u5834\u6240\u306b\u3064\u3044\u3066'
 
     class Portalbox_61:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 61
         title = u'\u307e\u305f\u898b\u306a\u3055\u3044'
 
@@ -1376,7 +1376,7 @@ class PortalboxData(DataSet):
         title = u'O TEJ STRONIE'
 
     class Portalbox_63:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 63
         title = u'ZOBACZ TAK\u017bE'
 
@@ -1386,7 +1386,7 @@ class PortalboxData(DataSet):
         title = u'\u0417\u0410 \u0421\u0410\u0419\u0422\u0410'
 
     class Portalbox_65:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 65
         title = u'\u0412\u0418\u0416 \u0421\u042a\u0429\u041e'
 
@@ -1396,7 +1396,7 @@ class PortalboxData(DataSet):
         title = u'O OVOM SITE-u'
 
     class Portalbox_67:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 67
         title = u'TAKO\u0110ER POGLEDAJTE'
 
@@ -1406,7 +1406,7 @@ class PortalboxData(DataSet):
         title = u'\u5173\u4e8e\u8fd9\u4e2a\u7f51\u7ad9'
 
     class Portalbox_69:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 69
         title = u'\u53c2\u89c1'
 
@@ -1416,7 +1416,7 @@ class PortalboxData(DataSet):
         title = u'\u95dc\u65bc\u9019\u500b\u7db2\u7ad9'
 
     class Portalbox_71:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 71
         title = u'\u53c3\u898b'
 
@@ -1426,7 +1426,7 @@ class PortalboxData(DataSet):
         title = u'IMPRESSZUM'
 
     class Portalbox_73:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 73
         title = u'L\xc1SD M\xc9G'
 
@@ -1436,7 +1436,7 @@ class PortalboxData(DataSet):
         title = u'OMTRENT HIERDIE TUISTE'
 
     class Portalbox_75:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 75
         title = u'SIEN OOK'
 
@@ -1446,7 +1446,7 @@ class PortalboxData(DataSet):
         title = u'ACERCA DESTE SITIO'
 
     class Portalbox_77:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 77
         title = u'VEXA TAM\xc9N'
 
@@ -1461,7 +1461,7 @@ class PortalboxData(DataSet):
         title = u'DESPRE ACEST SITE'
 
     class Portalbox_80:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 80
         title = u'ALTE RESURSE'
 
@@ -1471,7 +1471,7 @@ class PortalboxData(DataSet):
         title = u"IBYEREKERANYE N'IYI WEB"
 
     class Portalbox_82:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 82
         title = u"REBA N'IBI"
 
@@ -1481,7 +1481,7 @@ class PortalboxData(DataSet):
         title = u'\u10e1\u10d0\u10d8\u10e2\u10d8\u10e1 \u10e8\u10d4\u10e1\u10d0\u10ee\u10d4\u10d1'
 
     class Portalbox_84:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 84
         title = u'\u10d0\u10e1\u10d4\u10d5\u10d4 \u10d8\u10ee\u10d8\u10da\u10d4\u10d7'
 
@@ -1491,7 +1491,7 @@ class PortalboxData(DataSet):
         title = u'APIE PUSLAP\u012e'
 
     class Portalbox_86:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 86
         title = u'TAIP PAT \u017dI\u016aR\u0116KITE'
 
@@ -1501,7 +1501,7 @@ class PortalboxData(DataSet):
         title = u'\u062d\u0648\u0644 \u0647\u0630\u0627 \u0627\u0644\u0645\u0648\u0642\u0639'
 
     class Portalbox_88:
-        body = u'<a href="http://invenio-software.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
+        body = u'<a href="http://inveniosoftware.org/">Invenio</a><br /><a href="http://www.cern.ch/">CERN</a>'
         id = 88
         title = u'\u0632\u0648\u0631\u0648\u0627 \u0623\u064a\u0636\u0627'
 
